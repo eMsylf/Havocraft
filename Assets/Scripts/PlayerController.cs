@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     private GameControls controls;
@@ -28,10 +29,6 @@ public class PlayerController : MonoBehaviour
             if (rigidbody == null)
             {
                 rigidbody = GetComponent<Rigidbody>();
-                if (rigidbody == null)
-                {
-                    rigidbody = gameObject.AddComponent<Rigidbody>();
-                }
             }
             return rigidbody;
         }
@@ -114,8 +111,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public GameObject deathObject;
+
     private void ExplodeViolently()
     {
-
+        //foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
+        //{
+        //    renderer.enabled = false;
+        //}
+        enabled = false;
+        Rigidbody.constraints = RigidbodyConstraints.None;
+        if (deathObject != null)
+        {
+            Instantiate(deathObject, transform, true);
+        }
     }
 }

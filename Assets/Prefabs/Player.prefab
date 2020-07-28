@@ -158,6 +158,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 10
   RotationSpeed: 1
+  deathObject: {fileID: 4524988155524020226, guid: f2518bbff47ff494b9a311f3c483b3f1,
+    type: 3}
 --- !u!1 &2096349603872121131
 GameObject:
   m_ObjectHideFlags: 0
