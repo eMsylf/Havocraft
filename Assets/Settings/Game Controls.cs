@@ -79,13 +79,21 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Boost"",
+                    ""type"": ""Button"",
+                    ""id"": ""837ba05d-5d93-47df-8121-97df2ab5a941"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""b657d68e-7d5b-4e98-aa24-dd22b365fde6"",
-                    ""path"": ""<Keyboard>/anyKey"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
@@ -94,7 +102,18 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""2D Vector"",
+                    ""name"": """",
+                    ""id"": ""73fa396e-7756-48bb-9683-a9220d5dbbae"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Arrows"",
                     ""id"": ""0bc1770c-a1da-458a-a1e3-8cc06ae781b3"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
@@ -147,6 +166,127 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""00c89d32-d91e-4f30-a7a8-0c00ef92ee70"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""f8d93955-6851-47c3-aa53-8135f1831b44"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""b8cf813a-f341-465e-ab95-2d035b379c60"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""26b7ed71-a990-470f-a638-2bea011e6aed"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""f9cec3ec-6dd4-492e-b65b-dcb8c7447fd9"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Thumbstick"",
+                    ""id"": ""51ec604c-e7b6-4620-aea9-6e9391a17759"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""767e7eba-f30c-450d-a7ab-fe87745bdec6"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""ec43c386-e867-46b4-a8eb-f1447d481482"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""544f2712-6b54-452b-b9c4-5302d3e84706"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""0e226d0f-0916-4828-9026-1c956a6991a9"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f1d52ad-ed68-4ffd-9284-5fa2ab7a1c47"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -189,6 +329,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_InGame = asset.FindActionMap("In Game", throwIfNotFound: true);
         m_InGame_Shoot = m_InGame.FindAction("Shoot", throwIfNotFound: true);
         m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
+        m_InGame_Boost = m_InGame.FindAction("Boost", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -281,12 +422,14 @@ public class @GameControls : IInputActionCollection, IDisposable
     private IInGameActions m_InGameActionsCallbackInterface;
     private readonly InputAction m_InGame_Shoot;
     private readonly InputAction m_InGame_Movement;
+    private readonly InputAction m_InGame_Boost;
     public struct InGameActions
     {
         private @GameControls m_Wrapper;
         public InGameActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Shoot => m_Wrapper.m_InGame_Shoot;
         public InputAction @Movement => m_Wrapper.m_InGame_Movement;
+        public InputAction @Boost => m_Wrapper.m_InGame_Boost;
         public InputActionMap Get() { return m_Wrapper.m_InGame; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -302,6 +445,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnMovement;
+                @Boost.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
+                @Boost.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
+                @Boost.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
             }
             m_Wrapper.m_InGameActionsCallbackInterface = instance;
             if (instance != null)
@@ -312,6 +458,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Boost.started += instance.OnBoost;
+                @Boost.performed += instance.OnBoost;
+                @Boost.canceled += instance.OnBoost;
             }
         }
     }
@@ -343,5 +492,6 @@ public class @GameControls : IInputActionCollection, IDisposable
     {
         void OnShoot(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+        void OnBoost(InputAction.CallbackContext context);
     }
 }

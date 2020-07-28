@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -42,31 +43,31 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
-        controls.InGame.Movement.canceled += _ => StopMove();
+        Controls.InGame.Movement.canceled += _ => StopMove();
+        Controls.InGame.Shoot.performed += _ => Shoot();
+        Controls.InGame.Boost.performed += _ => Boost(true);
+        Controls.InGame.Boost.canceled += _ => Boost(false);
+    }
+
+    bool boostActivated = false;
+    float boostSpeedMultiplier = 2f;
+    private void Boost(bool enabled)
+    {
+        boostActivated = enabled;
     }
 
     void Start()
     {
-        
     }
 
     void Update()
     {
-        GetInput();
     }
 
     private void FixedUpdate()
     {
-        Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed);
+        Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated?boostSpeedMultiplier:1f));
         Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
-    }
-
-    void GetInput()
-    {
-        //if (Controls.InGame.Movement.phase == InputActionPhase.Started)
-        //{
-        //    Debug.Log("Started");
-        //}
     }
 
     Vector2 movementInput;
@@ -74,7 +75,6 @@ public class PlayerController : MonoBehaviour
     void Move(Vector2 direction)
     {
         Debug.Log("Move! " + direction);
-        //Controls.InGame.Movement.
         movementInput = direction;
     }
 
@@ -82,6 +82,15 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Stop moving");
         movementInput = Vector2.zero;
+    }
+
+    void Shoot()
+    {
+        Debug.Log("Shoot");
+        foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
+        {
+            weapon.Fire();
+        }
     }
 
     private void OnEnable()
@@ -94,5 +103,19 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Disable " + name, gameObject);
         Controls.Disable();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Projectile projectile = collision.collider.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            ExplodeViolently();
+        }
+    }
+
+    private void ExplodeViolently()
+    {
+
     }
 }
