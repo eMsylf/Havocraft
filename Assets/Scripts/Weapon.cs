@@ -8,7 +8,13 @@ public class Weapon : MonoBehaviour
     public GameObject Ammunition;
     public float Firepower = 10f;
     [Tooltip("The end of the barrel of the weapon")]
-    public Transform FirePoint;
+    public Transform Barrel;
+    public Transform Muzzle;
+
+    private void Start()
+    {
+        
+    }
 
     public virtual void Fire()
     {
@@ -16,10 +22,10 @@ public class Weapon : MonoBehaviour
         if (Ammunition != null)
         {
             // Instantiate
-            GameObject projectile = Instantiate(Ammunition, FirePoint.position, transform.rotation);
+            GameObject projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
 
             // Add force
-            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity + FirePoint.forward * Firepower, ForceMode.Impulse);
+            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity + Muzzle.forward * Firepower, ForceMode.Impulse);
 
             // Add an owner
             Projectile projectileComponent = projectile.GetComponent<Projectile>();

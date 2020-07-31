@@ -5,64 +5,119 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(Collider))]
+[DisallowMultipleComponent]
 public class Projectile : MonoBehaviour
 {
     public PlayerController Owner;
-    public float ExplosionForce = 10f;
-    public float ExplosionRadius = 2f;
-    public float UpwardsModifier = 1f;
+    public bool ArmDelay = true;
+    public ArmType ArmType;
+    [Min(0f)]
+    public float ArmDelayTime = .1f;
+    [Min(0f)]
+    public float ArmDelayDistance = .1f;
+    [Min(0f)]
+    public float MaxLifetime = 5f;
 
-    Vector3 start;
-    Vector3 impact;
-    bool hasImpacted = false;
-
-    public List<Rigidbody> ExplodedRbList = new List<Rigidbody>();
+    public bool DisappearUponImpact = true;
+    
+    protected Vector3 impact;
+    private float startTime = 0f;
+    private Vector3 startPos;
+    private bool armed = false;
+    private bool hasImpacted = false;
 
     private void OnCollisionEnter(Collision collision)
     {
-        string output = "";
-        if (Owner != null)
-        {
-            output += Owner.name + " with ";
-        }
-        output += name;
-        Debug.Log(collision.gameObject.name + " was hit by " + output);
-
-        impact = transform.position;
-        hasImpacted = true;
-        foreach (Collider col in Physics.OverlapSphere(impact, ExplosionRadius))
-        {
-            if (col.attachedRigidbody != null)
-            {
-                col.attachedRigidbody.AddExplosionForce(ExplosionForce, impact, ExplosionRadius, UpwardsModifier);
-                col.attachedRigidbody.AddTorque(ExplosionForce, 0f, 0f);
-                ExplodedRbList.Add(col.attachedRigidbody);
-                Debug.Log("Add explosion force to " + col.name, col);
-            }
-        }
-        //collision.rigidbody?.AddExplosionForce(ExplosionForce, impact, ExplosionRadius, UpwardsModifier);
-
-        // Disable the projectile
-        GetComponent<Collider>().enabled = false;
-        GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<MeshRenderer>().enabled = false;
+        Impact(collision);
     }
 
     private void Start()
     {
-        start = transform.position;
+        startPos = transform.position;
+        startTime = Time.time;
+        if (ArmDelay) GetComponent<Collider>().enabled = false;
     }
 
+    private void Update()
+    {
+        if (!armed)
+        {
+            switch (ArmType)
+            {
+                case ArmType.Distance:
+                    if (Vector3.Distance(startPos, transform.position) > ArmDelayDistance)
+                    {
+                        Arm(true);
+                    }
+                    break;
+                case ArmType.Time:
+                    if (Time.time - startTime > ArmDelayTime)
+                    {
+                        Arm(true);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (Time.time - startTime > MaxLifetime)
+        {
+            Impact(null);
+        }
+    }
 
     private void OnDrawGizmos()
     {
         if (!hasImpacted)
             Gizmos.DrawRay(transform.position, GetComponent<Rigidbody>().velocity);
-        Gizmos.DrawLine(start, transform.position);
+        Gizmos.DrawLine(startPos, transform.position);
+    }
 
-        foreach (Rigidbody rb in ExplodedRbList)
+    private void Arm(bool state)
+    {
+        Debug.Log("Arm " + name);
+        armed = state;
+        GetComponent<Collider>().enabled = state;
+    }
+
+    protected virtual void Impact(Collision collisionData)
+    {
+        if (collisionData != null)
         {
-            Gizmos.DrawLine(transform.position, rb.position);
+            string output = "";
+            if (Owner != null)
+            {
+                output += Owner.name + " with ";
+            }
+            output += name;
+            Debug.Log(collisionData.gameObject.name + " was hit by " + output);
+        }
+
+        impact = transform.position;
+        hasImpacted = true;
+        Explosive explosive = GetComponent<Explosive>();
+        if (explosive != null)
+        {
+            explosive.Explode();
+        }
+        if (DisappearUponImpact)
+        {
+            gameObject.SetActive(false);
         }
     }
+}
+
+public enum ArmType
+{
+    Distance,
+    Time
+}
+
+[System.Serializable]
+public class ExplosionData
+{
+    public bool Explosive = false;
+    public float Force = 10f;
+    public float Radius = 2f;
 }
