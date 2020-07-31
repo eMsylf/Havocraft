@@ -189,8 +189,8 @@ MonoBehaviour:
   RotationSpeed: 1
   boostSpeedMultiplier: 2
   Animation: 1
-  AnimationTiltAngle: {x: 17.38, y: 26.459007}
-  AnimationRollAngle: {x: 18.45, y: 27.103327}
+  AnimationTiltAngle: {x: 9.834772, y: 18.914772}
+  AnimationRollAngle: {x: 11.301891, y: 19.95189}
   AnimationRigidity: 0.15
   UpwardsThrust: 0
   ContinuouslyResetAnimationY: 1

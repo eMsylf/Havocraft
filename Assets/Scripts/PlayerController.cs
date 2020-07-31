@@ -114,19 +114,19 @@ public class PlayerController : MonoBehaviour
 
     void Move(Vector2 direction)
     {
-        Debug.Log("Move! " + direction);
+        //Debug.Log("Move! " + direction);
         movementInput = direction;
     }
 
     void StopMove()
     {
-        Debug.Log("Stop moving");
+        //Debug.Log("Stop moving");
         movementInput = Vector2.zero;
     }
     public bool PauseAfterFiring = false;
     void Shoot()
     {
-        Debug.Log("Shoot");
+        //Debug.Log("Shoot");
         foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
         {
             weapon.Fire();

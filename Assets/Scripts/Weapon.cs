@@ -25,6 +25,8 @@ public class Weapon : MonoBehaviour
         //    Cooldown.Update(Time.deltaTime);
     }
 
+    public float ParentVelocityInfluence = 1f;
+
     public virtual void Fire()
     {
         if (Cooldown.Check())
@@ -39,7 +41,7 @@ public class Weapon : MonoBehaviour
             GameObject projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
 
             // Add force
-            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity + Muzzle.forward * Firepower, ForceMode.Impulse);
+            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + (Muzzle.forward / ParentVelocityInfluence) * Firepower, ForceMode.Impulse);
 
             // Add an owner to the projectile
             Projectile projectileComponent = projectile.GetComponent<Projectile>();
