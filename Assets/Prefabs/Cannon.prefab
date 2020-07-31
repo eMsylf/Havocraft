@@ -81,6 +81,8 @@ MonoBehaviour:
   Firepower: 10
   Barrel: {fileID: 2627325244360202046}
   Muzzle: {fileID: 7397072763526713342}
+  Cooldown:
+    Duration: 1
 --- !u!33 &1177354218608199479
 MeshFilter:
   m_ObjectHideFlags: 0

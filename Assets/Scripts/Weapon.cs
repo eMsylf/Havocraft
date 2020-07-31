@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BJ;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -11,13 +12,26 @@ public class Weapon : MonoBehaviour
     public Transform Barrel;
     public Transform Muzzle;
 
+    public Cooldown Cooldown;
+
     private void Start()
     {
         
     }
 
+    private void Update()
+    {
+        if (Cooldown.Active)
+            Cooldown.Update(Time.deltaTime);
+    }
+
     public virtual void Fire()
     {
+        if (Cooldown.Active)
+        {
+            Debug.Log(name + " is on cooldown.", this);
+            return;
+        }
         Debug.Log("Fire " + name);
         if (Ammunition != null)
         {
@@ -34,6 +48,8 @@ public class Weapon : MonoBehaviour
                 projectileComponent = projectile.AddComponent<Projectile>();
             }
             projectileComponent.Owner = GetComponentInParent<PlayerController>();
+
+            Cooldown.Start();
         }
     }
 }
