@@ -42,8 +42,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        //Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
-        //Controls.InGame.Movement.canceled += _ => StopMove();
+        Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
+        Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
+        Controls.InGame.Movement.canceled += _ => StopMove();
         Controls.InGame.Shoot.performed += _ => Shoot();
         Controls.InGame.Boost.performed += _ => Boost(true);
         Controls.InGame.Boost.canceled += _ => Boost(false);
@@ -63,12 +64,15 @@ public class PlayerController : MonoBehaviour
     public bool Animation = true;
     [Range(0f, 90f)]
     public float AnimationTiltAngle = 10f;
+    [Range(0f, 90f)]
+    public float AnimationRollAngle = 10f;
     [Range(0f, 1f)]
     public float AnimationRigidity = .5f;
 
     void Update()
     {
-        movementInput = controls.InGame.Movement.ReadValue<Vector2>();
+        // The below line is an alternative for the Move() and StopMove() functions
+        //movementInput = controls.InGame.Movement.ReadValue<Vector2>();
     }
 
     private void FixedUpdate()
@@ -77,9 +81,10 @@ public class PlayerController : MonoBehaviour
         Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
         if (Animation)
         {
-            Vector3 rotation = Body.localRotation.eulerAngles;
-            rotation.x = movementInput.y * AnimationTiltAngle;
-            Body.localRotation = Quaternion.Lerp(Body.localRotation, Quaternion.Euler(rotation), AnimationRigidity);
+            Vector3 animRotation = Body.localRotation.eulerAngles;
+            animRotation.x = movementInput.y * AnimationTiltAngle * (boostActivated ? boostSpeedMultiplier : 1f);
+            animRotation.z = -movementInput.x * AnimationRollAngle * (boostActivated ? boostSpeedMultiplier : 1f);
+            Body.localRotation = Quaternion.Lerp(Body.localRotation, Quaternion.Euler(animRotation), AnimationRigidity);
         }
     }
 
