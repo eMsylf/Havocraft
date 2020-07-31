@@ -176,7 +176,6 @@ public class PlayerController : MonoBehaviour
                         vfx.SetVector3("Additional Velocity", Rigidbody.velocity);
                 }
             }
-            
         }
         enabled = false;
     }

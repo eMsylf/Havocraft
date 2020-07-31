@@ -83,6 +83,8 @@ MonoBehaviour:
   Muzzle: {fileID: 7397072763526713342}
   Cooldown:
     Duration: 1
+    Current: 0
+    Active: 0
 --- !u!33 &1177354218608199479
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -220,7 +222,7 @@ BoxCollider:
   m_GameObject: {fileID: 7462197735461691061}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

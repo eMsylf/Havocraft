@@ -540,6 +540,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216079737525880137, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}
+    - target: {fileID: 7397072764568207531, guid: dbda4b0a2c0a2d242a0a66042ea3209d,
+        type: 3}
+      propertyPath: Cooldown.Seconds
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbda4b0a2c0a2d242a0a66042ea3209d, type: 3}
 --- !u!4 &7766933769719118692 stripped
@@ -1366,6 +1371,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7397072764568207531, guid: dbda4b0a2c0a2d242a0a66042ea3209d,
+        type: 3}
+      propertyPath: Cooldown.Seconds
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbda4b0a2c0a2d242a0a66042ea3209d, type: 3}
 --- !u!4 &2096349604908904051 stripped
@@ -1512,6 +1522,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216079737525880137, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}
+    - target: {fileID: 7397072764568207531, guid: dbda4b0a2c0a2d242a0a66042ea3209d,
+        type: 3}
+      propertyPath: Cooldown.Seconds
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbda4b0a2c0a2d242a0a66042ea3209d, type: 3}
 --- !u!4 &1882342217987146704 stripped

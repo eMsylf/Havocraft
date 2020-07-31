@@ -7,13 +7,28 @@ namespace BJ
     [System.Serializable]
     public class Cooldown
     {
-        public float Seconds = 1f;
+        public float Duration = 1f;
         public float Current = 0f;
         public bool Active = false;
+        private float startTime = -Mathf.Infinity;
 
         public Cooldown(float duration)
         {
-            Seconds = duration;
+            Duration = duration;
+        }
+        /// <summary>
+        /// Checks if the cooldown is complete
+        /// </summary>
+        /// <returns>True if the cooldown is over</returns>
+        public bool Check()
+        {
+            //return Current <= Seconds;
+            Current = Time.time - startTime;
+            if (Current < 0)
+            {
+                Stop();
+            }
+            return Current < 0;
         }
 
         public void Update(float deltaTime)
@@ -47,17 +62,22 @@ namespace BJ
         public void Start()
         {
             Active = true;
-            Current = Seconds;
+            Current = Duration;
+            startTime = Time.time;
+            Debug.Log("Start cooldown");
         }
 
         public void Pause()
         {
             Active = false;
+            Debug.Log("Pause cooldown");
         }
 
         public void Stop()
         {
             Active = false;
+            Current = Duration;
+            Debug.Log("Stop cooldown");
         }
     }
 

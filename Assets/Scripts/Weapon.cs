@@ -16,20 +16,20 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        
+        Cooldown.Stop();
     }
 
     private void Update()
     {
-        if (Cooldown.Active)
-            Cooldown.Update(Time.deltaTime);
+        //if (Cooldown.Active)
+        //    Cooldown.Update(Time.deltaTime);
     }
 
     public virtual void Fire()
     {
-        if (Cooldown.Active)
+        if (Cooldown.Check())
         {
-            Debug.Log(name + " is on cooldown.", this);
+            Debug.Log(name + " is on cooldown. Time remaining: " + Cooldown.Current, this);
             return;
         }
         Debug.Log("Fire " + name);
@@ -41,7 +41,7 @@ public class Weapon : MonoBehaviour
             // Add force
             projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity + Muzzle.forward * Firepower, ForceMode.Impulse);
 
-            // Add an owner
+            // Add an owner to the projectile
             Projectile projectileComponent = projectile.GetComponent<Projectile>();
             if (projectileComponent == null)
             {
