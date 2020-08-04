@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
-    public List<GameObject> Squares;
+    public Transform SquaresParent;
+    public Transform[] Squares;
 
     public GizmoSettings GizmoSettings; 
 
@@ -21,20 +22,24 @@ public class GameBoard : MonoBehaviour
         
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
-        for (int i = 0; i < Squares.Count; i++)
+        if (!GizmoSettings.Enabled)
+            return;
+        Transform[] squares = GetSquares();
+
+        for (int i = 0; i < squares.Length; i++)
         {
-            GameObject square = Squares[i];
-            GameObject nextSquare = null;
+            Transform square = squares[i];
+            Transform nextSquare = null;
             //Debug.Log("i = " + i + ", i + 1 = " + (i + 1) + ", square count: " + Squares.Count);
-            if (i + 1 < Squares.Count)
+            if (i + 1 < squares.Length)
             {
                 //Debug.Log("Valid");
-                nextSquare = Squares[i + 1];
+                nextSquare = squares[i + 1];
             }
             else if (GizmoSettings.CloseLoop)
-                nextSquare = Squares[0];
+                nextSquare = squares[0];
 
             if (square == null)
             {
@@ -47,8 +52,17 @@ public class GameBoard : MonoBehaviour
                 return;
             }
             Handles.color = GizmoSettings.ArcColor;
-            Handles.DrawPolyLine(CalculateParabola(square.transform.position, nextSquare.transform.position, GizmoSettings.ArcHeight, GizmoSettings.ArcDetail));
+            Handles.DrawPolyLine(CalculateParabola(square.position, nextSquare.position, GizmoSettings.ArcHeight, GizmoSettings.ArcDetail));
         }
+    }
+
+    Transform[] GetSquares()
+    {
+        if (SquaresParent != null)
+        {
+            return SquaresParent.GetComponentsInChildren<Transform>();
+        }
+        return Squares;
     }
 
     Vector3[] CalculateParabola(Vector3 from, Vector3 to, float amplitude, int points)
@@ -79,6 +93,7 @@ public class GameBoard : MonoBehaviour
 [Serializable]
 public class GizmoSettings
 {
+    public bool Enabled = true;
     public float ArcHeight = 1f;
     public Color ArcColor = Color.white;
     [Range(1, 20)]
