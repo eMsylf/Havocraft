@@ -9,19 +9,18 @@ public class Weapon : MonoBehaviour
     public GameObject Ammunition;
     public float Firepower = 10f;
     [Tooltip("The end of the barrel of the weapon")]
+    public Transform Base;
     public Transform Barrel;
     public Transform Muzzle;
 
     public Cooldown Cooldown;
-    public Vector3 weaponStartRotation;
-    public Vector3 barrelStartRotation;
-
-    public Transform barrelLook;
+    [HideInInspector]
+    public Vector3 weaponStartRotation, barrelStartRotation;
 
     private void Start()
     {
         Cooldown.Stop();
-        weaponStartRotation = transform.rotation.eulerAngles;
+        weaponStartRotation = Base.rotation.eulerAngles;
         barrelStartRotation = Barrel.rotation.eulerAngles;
     }
 
@@ -59,12 +58,5 @@ public class Weapon : MonoBehaviour
 
             Cooldown.Start();
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (barrelLook == null)
-            barrelLook = new GameObject().transform;
-        barrelLook.position = Handles.DoPositionHandle(barrelLook.position, barrelLook.rotation);
     }
 }

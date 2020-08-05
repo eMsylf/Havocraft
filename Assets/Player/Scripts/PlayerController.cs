@@ -117,16 +117,10 @@ public class PlayerController : MonoBehaviour
                 {
                     if (weapon.Barrel == null)
                         continue;
-                    //weapon.transform.LookAt(weapon.transform.position + transform.forward);
-                    //weapon.transform.rotation = Quaternion.Euler(weapon.weaponStartRotation.x, weapon.transform.eulerAngles.y, weapon.weaponStartRotation.z);
                     Quaternion storedRotation = weapon.Barrel.rotation;
-                    weapon.Barrel.LookAt(weapon.transform.position + transform.forward);
+                    weapon.Barrel.LookAt(weapon.Base.position + transform.forward);
                     Quaternion correctedRotation = Quaternion.Euler(weapon.barrelStartRotation.x, weapon.Barrel.rotation.eulerAngles.y, weapon.Barrel.rotation.eulerAngles.z);
-
-
-
                     weapon.Barrel.rotation = Quaternion.Lerp(storedRotation, correctedRotation, GimbalRigidity);
-                    //weapon.transform.localRotation = Quaternion.Euler(0f, weapon.transform.localRotation.y, weapon.transform.localRotation.z);
                 }
             }
         }
