@@ -13,10 +13,16 @@ public class Weapon : MonoBehaviour
     public Transform Muzzle;
 
     public Cooldown Cooldown;
+    public Vector3 weaponStartRotation;
+    public Vector3 barrelStartRotation;
+
+    public Transform barrelLook;
 
     private void Start()
     {
         Cooldown.Stop();
+        weaponStartRotation = transform.rotation.eulerAngles;
+        barrelStartRotation = Barrel.rotation.eulerAngles;
     }
 
     private void Update()
@@ -53,5 +59,12 @@ public class Weapon : MonoBehaviour
 
             Cooldown.Start();
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (barrelLook == null)
+            barrelLook = new GameObject().transform;
+        barrelLook.position = Handles.DoPositionHandle(barrelLook.position, barrelLook.rotation);
     }
 }

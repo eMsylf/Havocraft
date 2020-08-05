@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 using UnityEngine.VFX;
 using GD.MinMaxSlider;
 
@@ -81,34 +79,10 @@ public class PlayerController : MonoBehaviour
     [Min(0f)]
     public float UpwardsThrust = 9.81f;
     public bool ContinuouslyResetAnimationY = true;
-    [Tooltip("Makes sure the weapons are aimed at the same angle, so that the player doesn't shoot into the ground when tilted forward")]
+    [Tooltip("Makes sure the weapons are aimed at the same angle relative to the world, so that the player doesn't shoot into the ground when tilted forward")]
     public bool GimbalWeapons = true;
+    [Range(0f, 1f)]
     public float GimbalRigidity = 1f;
-
-    private void FixedUpdate()
-    {
-        Rigidbody.AddForce(0f, UpwardsThrust, 0f);
-        Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated?boostSpeedMultiplier:1f));
-        Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
-        if (Animation)
-        {
-            Vector3 animRotation = Body.localRotation.eulerAngles;
-            animRotation.x = movementInput.y * (boostActivated ? AnimationTiltAngle.y : AnimationTiltAngle.x);
-            animRotation.z = -movementInput.x * (boostActivated ? AnimationRollAngle.y : AnimationRollAngle.x);
-            if (ContinuouslyResetAnimationY) animRotation.y = 0f;
-            Body.localRotation = Quaternion.Lerp(Body.localRotation, Quaternion.Euler(animRotation), AnimationRigidity);
-
-            if (GimbalWeapons)
-            {
-                foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
-                {
-                    //Vector3 currentRotation = weapon.transform.rotation.eulerAngles;
-                    //weapon.transform.rotation.SetLookRotation(Vector3.Lerp(currentRotation, Quaternion.LookRotation());
-                    weapon.transform.LookAt(weapon.transform.position + transform.forward);
-                }
-            }
-        }
-    }
 
     Vector2 movementInput;
 
@@ -123,6 +97,41 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("Stop moving");
         movementInput = Vector2.zero;
     }
+
+    private void FixedUpdate()
+    {
+        Rigidbody.AddForce(0f, UpwardsThrust, 0f);
+        Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f));
+        Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
+        if (Animation)
+        {
+            Vector3 animRotation = Body.localRotation.eulerAngles;
+            animRotation.x = movementInput.y * (boostActivated ? AnimationTiltAngle.y : AnimationTiltAngle.x);
+            animRotation.z = -movementInput.x * (boostActivated ? AnimationRollAngle.y : AnimationRollAngle.x);
+            if (ContinuouslyResetAnimationY) animRotation.y = 0f;
+            Body.localRotation = Quaternion.Lerp(Body.localRotation, Quaternion.Euler(animRotation), AnimationRigidity);
+
+            if (GimbalWeapons)
+            {
+                foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
+                {
+                    if (weapon.Barrel == null)
+                        continue;
+                    //weapon.transform.LookAt(weapon.transform.position + transform.forward);
+                    //weapon.transform.rotation = Quaternion.Euler(weapon.weaponStartRotation.x, weapon.transform.eulerAngles.y, weapon.weaponStartRotation.z);
+                    Quaternion storedRotation = weapon.Barrel.rotation;
+                    weapon.Barrel.LookAt(weapon.transform.position + transform.forward);
+                    Quaternion correctedRotation = Quaternion.Euler(weapon.barrelStartRotation.x, weapon.Barrel.rotation.eulerAngles.y, weapon.Barrel.rotation.eulerAngles.z);
+
+
+
+                    weapon.Barrel.rotation = Quaternion.Lerp(storedRotation, correctedRotation, GimbalRigidity);
+                    //weapon.transform.localRotation = Quaternion.Euler(0f, weapon.transform.localRotation.y, weapon.transform.localRotation.z);
+                }
+            }
+        }
+    }
+
     public bool PauseAfterFiring = false;
     void Shoot()
     {

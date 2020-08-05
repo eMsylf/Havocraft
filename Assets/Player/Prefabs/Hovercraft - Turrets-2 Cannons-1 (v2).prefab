@@ -205,7 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Body: {fileID: 5515379624467342964}
   Speed: 10
-  RotationSpeed: 1
+  RotationSpeed: 2
   boostSpeedMultiplier: 2
   Animation: 1
   AnimationTiltAngle: {x: 9.834772, y: 18.914772}
@@ -453,17 +453,17 @@ PrefabInstance:
     - target: {fileID: -8437617939952160972, guid: d254991fcb28ae84aa77892ca5c7adde,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0132878
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8437617939952160972, guid: d254991fcb28ae84aa77892ca5c7adde,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5416198
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8437617939952160972, guid: d254991fcb28ae84aa77892ca5c7adde,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.24022555
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d254991fcb28ae84aa77892ca5c7adde,
         type: 3}
