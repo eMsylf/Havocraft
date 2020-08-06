@@ -47,6 +47,12 @@ public class PlayerController : MonoBehaviour
         Controls.InGame.Shoot.performed += _ => Shoot();
         Controls.InGame.Boost.performed += _ => Boost(true);
         Controls.InGame.Boost.canceled += _ => Boost(false);
+        Controls.InGame.OpenMenu.performed += _ => OpenMenu();
+    }
+
+    void OpenMenu()
+    {
+        FindObjectOfType<MenuManager>()?.Open();
     }
 
     bool boostActivated = false;

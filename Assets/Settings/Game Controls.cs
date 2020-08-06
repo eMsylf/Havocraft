@@ -87,6 +87,14 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Open Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""6db0e69b-6355-4a98-a66d-f0665257498c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -287,6 +295,17 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""action"": ""Boost"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4239f992-f144-4cc5-abd6-666aea291acb"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Open Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -330,6 +349,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_InGame_Shoot = m_InGame.FindAction("Shoot", throwIfNotFound: true);
         m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
         m_InGame_Boost = m_InGame.FindAction("Boost", throwIfNotFound: true);
+        m_InGame_OpenMenu = m_InGame.FindAction("Open Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -423,6 +443,7 @@ public class @GameControls : IInputActionCollection, IDisposable
     private readonly InputAction m_InGame_Shoot;
     private readonly InputAction m_InGame_Movement;
     private readonly InputAction m_InGame_Boost;
+    private readonly InputAction m_InGame_OpenMenu;
     public struct InGameActions
     {
         private @GameControls m_Wrapper;
@@ -430,6 +451,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         public InputAction @Shoot => m_Wrapper.m_InGame_Shoot;
         public InputAction @Movement => m_Wrapper.m_InGame_Movement;
         public InputAction @Boost => m_Wrapper.m_InGame_Boost;
+        public InputAction @OpenMenu => m_Wrapper.m_InGame_OpenMenu;
         public InputActionMap Get() { return m_Wrapper.m_InGame; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -448,6 +470,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Boost.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
                 @Boost.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
                 @Boost.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnBoost;
+                @OpenMenu.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
             }
             m_Wrapper.m_InGameActionsCallbackInterface = instance;
             if (instance != null)
@@ -461,6 +486,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @Boost.started += instance.OnBoost;
                 @Boost.performed += instance.OnBoost;
                 @Boost.canceled += instance.OnBoost;
+                @OpenMenu.started += instance.OnOpenMenu;
+                @OpenMenu.performed += instance.OnOpenMenu;
+                @OpenMenu.canceled += instance.OnOpenMenu;
             }
         }
     }
@@ -493,5 +521,6 @@ public class @GameControls : IInputActionCollection, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
+        void OnOpenMenu(InputAction.CallbackContext context);
     }
 }
