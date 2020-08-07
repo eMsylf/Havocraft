@@ -66,7 +66,7 @@ public class @GameControls : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Shoot"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""2fdec454-8641-4e3b-87be-e4775babe78b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

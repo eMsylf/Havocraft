@@ -59,7 +59,7 @@ public class MenuManager : MonoBehaviour
         PreviousScreen = previous;
     }
 
-    public void GoToNextScren()
+    public void GoToNextScreen()
     {
         Debug.Log("Next Screen");
         if (Screens == null)
@@ -99,14 +99,21 @@ public class MenuManager : MonoBehaviour
             Screens.Translate(Screen.width, 0f, 0f);
     }
 
+    public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
+
+    public void Toggle()
+    {
+        GetComponent<Canvas>().enabled = !GetComponent<Canvas>().enabled;
+    }
+
     public void Open()
     {
-        Screens?.gameObject.SetActive(true);
+        GetComponent<Canvas>().enabled = true;
     }
 
     public void Close()
     {
-        Screens?.gameObject.SetActive(false);
+        GetComponent<Canvas>().enabled = false;
     }
 
     void Start()

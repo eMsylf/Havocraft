@@ -1,4 +1,4 @@
-﻿using BJ;
+﻿using BobJeltes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,26 +17,25 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public Vector3 weaponStartRotation, barrelStartRotation;
 
+    public bool ContinuousFire = false;
+
     private void Start()
     {
-        Cooldown.Stop();
         weaponStartRotation = Base.rotation.eulerAngles;
         barrelStartRotation = Barrel.rotation.eulerAngles;
     }
 
     private void Update()
     {
-        //if (Cooldown.Active)
-        //    Cooldown.Update(Time.deltaTime);
     }
 
     public float ParentVelocityInfluence = 1f;
 
     public virtual void Fire()
     {
-        if (Cooldown.Check())
+        if (Cooldown.Active)
         {
-            Debug.Log(name + " is on cooldown. Time remaining: " + Cooldown.Current, this);
+            Debug.Log(name + " is on cooldown.", this);
             return;
         }
         Debug.Log("Fire " + name);
@@ -56,7 +55,7 @@ public class Weapon : MonoBehaviour
             }
             projectileComponent.Owner = GetComponentInParent<PlayerController>();
 
-            Cooldown.Start();
+            StartCoroutine(Cooldown.Start());
         }
     }
 }

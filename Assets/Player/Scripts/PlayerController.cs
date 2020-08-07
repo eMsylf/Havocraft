@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 using GD.MinMaxSlider;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -44,15 +45,17 @@ public class PlayerController : MonoBehaviour
         Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.canceled += _ => StopMove();
+        Controls.InGame.Shoot.started += _ => UpdateShooting(_.ReadValueAsButton());
+        Controls.InGame.Shoot.canceled += _ => UpdateShooting(false);
         Controls.InGame.Shoot.performed += _ => Shoot();
         Controls.InGame.Boost.performed += _ => Boost(true);
         Controls.InGame.Boost.canceled += _ => Boost(false);
-        Controls.InGame.OpenMenu.performed += _ => OpenMenu();
+        Controls.InGame.OpenMenu.performed += _ => ToggleMenu();
     }
 
-    void OpenMenu()
+    void ToggleMenu()
     {
-        FindObjectOfType<MenuManager>()?.Open();
+        FindObjectOfType<MenuManager>()?.Toggle();
     }
 
     bool boostActivated = false;
@@ -81,6 +84,8 @@ public class PlayerController : MonoBehaviour
     {
         // The below line is an alternative for the Move() and StopMove() functions
         //movementInput = controls.InGame.Movement.ReadValue<Vector2>();
+
+        ShootContinuous();
     }
     [Min(0f)]
     public float UpwardsThrust = 9.81f;
@@ -132,7 +137,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool PauseAfterFiring = false;
+    public bool PauseEditorUponFiring = false;
     void Shoot()
     {
         //Debug.Log("Shoot");
@@ -140,7 +145,28 @@ public class PlayerController : MonoBehaviour
         {
             weapon.Fire();
         }
-        if (PauseAfterFiring) UnityEditor.EditorApplication.isPaused = true;
+        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
+    }
+
+
+    bool shooting = false;
+    void UpdateShooting(bool _shooting)
+    {
+        shooting = _shooting;
+    }
+
+    void ShootContinuous()
+    {
+        if (!shooting)
+            return;
+        foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
+        {
+            if (weapon.ContinuousFire)
+            {
+                weapon.Fire();
+            }
+        }
+        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
     }
 
     private void OnEnable()
