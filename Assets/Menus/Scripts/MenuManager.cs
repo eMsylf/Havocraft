@@ -12,19 +12,25 @@ public class MenuManager : MonoBehaviour
     [Min(0f)]
     public float ScreenTransitionDuration = .5f;
 
+    public Transform StartScreen;
+    [Tooltip("Assigns the startscreen by which screen comes first in the children hierarchy")]
+    public bool AssignAutomatically = true;
+    public Transform CurrentScreen = null;
+    public Transform PreviousScreen = null;
+
     public int GetScreenCount()
     {
         return transform.childCount;
     }
 
-    public void GoToScreen(Transform screen)
+    public void GoToScreen(Transform newScreen)
     {
         if (Screens == null)
         {
             Debug.Log("Screens not assigned");
             return;
         }
-        if (screen == null)
+        if (newScreen == null)
         {
             Debug.LogError("Screen not assigned");
             return;
@@ -33,15 +39,27 @@ public class MenuManager : MonoBehaviour
         if (ScreenTransitionDuration > 0f)
         {
             InputBlockerActive(true);
-            Screens.DOMove(Screens.position + (Screens.position - screen.position), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
+            Screens.DOMove(GetMoveDelta(CurrentScreen, newScreen), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
         }
         else
         {
-            Screens.position = Screens.position + (Screens.position - screen.position);
+            Screens.position = GetMoveDelta(CurrentScreen, newScreen);
         }
+        UpdateScreens(newScreen, CurrentScreen);
     }
 
-    public void NextScreen()
+    public Vector3 GetMoveDelta(Transform current, Transform next)
+    {
+        return Screens.position + (current.position - next.position);
+    }
+
+    public void UpdateScreens(Transform current, Transform previous)
+    {
+        CurrentScreen = current;
+        PreviousScreen = previous;
+    }
+
+    public void GoToNextScren()
     {
         Debug.Log("Next Screen");
         if (Screens == null)
@@ -65,7 +83,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void PreviousScreen()
+    public void GoToPreviousScreen()
     {
         Debug.Log("Previous Screen");
         if (Screens == null)
@@ -93,7 +111,11 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        
+        if (AssignAutomatically)
+        {
+            StartScreen = Screens.childCount != 0 ? Screens.GetChild(0):null;
+        }
+        CurrentScreen = StartScreen;
     }
 
     void Update()
