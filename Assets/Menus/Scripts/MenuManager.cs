@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using BobJeltes;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 public class MenuManager : MonoBehaviour
@@ -12,18 +14,18 @@ public class MenuManager : MonoBehaviour
     [Min(0f)]
     public float ScreenTransitionDuration = .5f;
 
-    public Transform StartScreen;
+    public MenuScreen StartScreen;
     [Tooltip("Assigns the startscreen by which screen comes first in the children hierarchy")]
     public bool AssignAutomatically = true;
-    public Transform CurrentScreen = null;
-    public Transform PreviousScreen = null;
+    public MenuScreen CurrentScreen = null;
+    public List<MenuScreen> PreviousScreens = new List<MenuScreen>();
 
     public int GetScreenCount()
     {
         return transform.childCount;
     }
 
-    public void GoToScreen(Transform newScreen)
+    public void GoToScreen(MenuScreen newScreen)
     {
         if (Screens == null)
         {
@@ -39,13 +41,48 @@ public class MenuManager : MonoBehaviour
         if (ScreenTransitionDuration > 0f)
         {
             InputBlockerActive(true);
-            Screens.DOMove(GetMoveDelta(CurrentScreen, newScreen), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
+            Screens.DOMove(GetMoveDelta(CurrentScreen.transform, newScreen.transform), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
         }
         else
         {
-            Screens.position = GetMoveDelta(CurrentScreen, newScreen);
+            Screens.position = GetMoveDelta(CurrentScreen.transform, newScreen.transform);
         }
-        UpdateScreens(newScreen, CurrentScreen);
+
+        PreviousScreens.Add(CurrentScreen);
+        CurrentScreen = newScreen;
+    }
+
+    public void GoToPreviousScreen()
+    {
+        if (Screens == null)
+        {
+            Debug.Log("Screens not assigned");
+            return;
+        }
+        if (PreviousScreens == null || PreviousScreens.Count == 0)
+        {
+            Debug.Log("No previous screens to go back to");
+            return;
+        }
+        MenuScreen previousScreen = PreviousScreens[PreviousScreens.Count - 1];
+        if (previousScreen == null)
+        {
+            Debug.Log("Previous screen is null");
+            return;
+        }
+
+        if (ScreenTransitionDuration > 0f)
+        {
+            InputBlockerActive(true);
+            Screens.DOMove(GetMoveDelta(CurrentScreen.transform, previousScreen.transform), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
+        }
+        else
+        {
+            Screens.position = GetMoveDelta(CurrentScreen.transform, previousScreen.transform);
+        }
+
+        CurrentScreen = previousScreen;
+        PreviousScreens.Remove(previousScreen);
     }
 
     public Vector3 GetMoveDelta(Transform current, Transform next)
@@ -53,50 +90,17 @@ public class MenuManager : MonoBehaviour
         return Screens.position + (current.position - next.position);
     }
 
-    public void UpdateScreens(Transform current, Transform previous)
+    public void AddScreenToHistory(MenuScreen screen)
     {
-        CurrentScreen = current;
-        PreviousScreen = previous;
+        PreviousScreens.Add(screen);
     }
 
-    public void GoToNextScreen()
-    {
-        Debug.Log("Next Screen");
-        if (Screens == null)
-        {
-            return;
-        }
-        if (ScreenTransitionDuration > 0f)
-        {
-            InputBlockerActive(true);
-            Screens.DOMoveX(Screens.position.x -Screen.width, ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
-        }
-        else
-            Screens.Translate(-Screen.width, 0f, 0f);
-    }
-    
     void InputBlockerActive(bool enabled)
     {
         if (InputBlocker != null)
         {
             InputBlocker.SetActive(enabled);
         }
-    }
-
-    public void GoToPreviousScreen()
-    {
-        Debug.Log("Previous Screen");
-        if (Screens == null)
-        {
-            return;
-        }
-        if (ScreenTransitionDuration > 0f)
-        {
-            InputBlockerActive(true);
-            Screens.DOMoveX(Screens.position.x + Screen.width, ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
-        }
-        else
-            Screens.Translate(Screen.width, 0f, 0f);
     }
 
     public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
@@ -120,13 +124,34 @@ public class MenuManager : MonoBehaviour
     {
         if (AssignAutomatically)
         {
-            StartScreen = Screens.childCount != 0 ? Screens.GetChild(0):null;
+            if (Screens.childCount != 0)
+            {
+                MenuScreen firstScreen = Screens.GetChild(0).GetComponent<MenuScreen>();
+                if (firstScreen != null)
+                    StartScreen = firstScreen;
+            }
         }
         CurrentScreen = StartScreen;
     }
 
-    void Update()
+    public bool VisualizeScreenNavigation = true;
+
+    private void OnDrawGizmosSelected()
     {
-        
+        if (Screens != null)
+        {
+            return;
+        }
+
+        foreach (MenuButton button in Screens.GetComponentsInChildren<MenuButton>())
+        {
+            if (button.Target != null) 
+                Gizmos.DrawLine(button.transform.position, button.Target.transform.position);
+        }
+
+        //foreach (MenuScreen screen in Screens.GetComponentsInChildren<MenuScreen>())
+        //{
+            
+        //}
     }
 }
