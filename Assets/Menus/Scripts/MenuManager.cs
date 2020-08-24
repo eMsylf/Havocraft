@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using BobJeltes;
 using UnityEngine.UI;
+using System;
 
 [RequireComponent(typeof(Canvas))]
 public class MenuManager : MonoBehaviour
@@ -13,10 +14,9 @@ public class MenuManager : MonoBehaviour
     public GameObject InputBlocker;
     [Min(0f)]
     public float ScreenTransitionDuration = .5f;
+    public bool BlockInputsDuringTransitions = false;
 
-    public MenuScreen StartScreen;
-    [Tooltip("Assigns the startscreen by which screen comes first in the children hierarchy")]
-    public bool AssignAutomatically = true;
+    public StartScreen StartScreen;
     public MenuScreen CurrentScreen = null;
     public List<MenuScreen> PreviousScreens = new List<MenuScreen>();
 
@@ -73,8 +73,11 @@ public class MenuManager : MonoBehaviour
 
         if (ScreenTransitionDuration > 0f)
         {
-            InputBlockerActive(true);
-            Screens.DOMove(GetMoveDelta(CurrentScreen.transform, previousScreen.transform), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
+            if (BlockInputsDuringTransitions)
+                InputBlockerActive(true);
+            DG.Tweening.Core.TweenerCore<Vector3, Vector3, DG.Tweening.Plugins.Options.VectorOptions> tweenerCore = Screens.DOMove(GetMoveDelta(CurrentScreen.transform, previousScreen.transform), ScreenTransitionDuration);
+            if (BlockInputsDuringTransitions)
+                tweenerCore.OnComplete(() => InputBlockerActive(false));
         }
         else
         {
@@ -101,6 +104,8 @@ public class MenuManager : MonoBehaviour
         {
             InputBlocker.SetActive(enabled);
         }
+        else
+            Debug.LogWarning("Input Blocker is not set in " + name + " but was attempted to set active. Have you disabled BlockInputsDuringTransitions?", this);
     }
 
     public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
@@ -122,16 +127,16 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        if (AssignAutomatically)
+        if (StartScreen.AssignAutomatically)
         {
             if (Screens.childCount != 0)
             {
                 MenuScreen firstScreen = Screens.GetChild(0).GetComponent<MenuScreen>();
                 if (firstScreen != null)
-                    StartScreen = firstScreen;
+                    StartScreen.Screen = firstScreen;
             }
         }
-        CurrentScreen = StartScreen;
+        CurrentScreen = StartScreen.Screen;
     }
 
     public bool VisualizeScreenNavigation = true;
@@ -148,10 +153,13 @@ public class MenuManager : MonoBehaviour
             if (button.Target != null) 
                 Gizmos.DrawLine(button.transform.position, button.Target.transform.position);
         }
-
-        //foreach (MenuScreen screen in Screens.GetComponentsInChildren<MenuScreen>())
-        //{
-            
-        //}
     }
+}
+
+[Serializable]
+public class StartScreen
+{
+    [Tooltip("If set to TRUE, the first screen in the hierarchy will be automatically selected as the start screen of this menu.")]
+    public bool AssignAutomatically;
+    public MenuScreen Screen;
 }

@@ -822,6 +822,11 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3126918849663813046, guid: 15aa156e71133be4fbf82b81f0079cf0,
+        type: 3}
+      propertyPath: StartScreen.AssignAutomatically
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3126918849663813047, guid: 15aa156e71133be4fbf82b81f0079cf0,
         type: 3}
       propertyPath: m_LocalPosition.x

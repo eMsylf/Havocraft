@@ -17,6 +17,7 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public Vector3 weaponStartRotation, barrelStartRotation;
 
+    [Tooltip("When enabled, holding down the FIRE button will cause the weapon to keep shooting as long as the FIRE button is held down.")]
     public bool ContinuousFire = false;
 
     private void Start()

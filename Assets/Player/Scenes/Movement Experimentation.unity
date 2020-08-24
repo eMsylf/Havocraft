@@ -966,7 +966,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 2021477086}
+      objectReference: {fileID: 0}
     - target: {fileID: 3126918848512772143, guid: 15aa156e71133be4fbf82b81f0079cf0,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -1267,12 +1267,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883251910}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!224 &2021477086 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3126918847862579587, guid: 15aa156e71133be4fbf82b81f0079cf0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1876575612}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2105465603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1346,6 +1340,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 262837978011041973, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: ContinuousFire
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1035454829969658304, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1526,6 +1525,11 @@ PrefabInstance:
       propertyPath: ContinuousFire
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8603413045932918241, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: Cooldown.Time
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8699421302853288977, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: Cooldown.Duration
@@ -1535,6 +1539,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ContinuousFire
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8699421302853288977, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: Cooldown.Time
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5644d316173a75342a6676f0b22638ef, type: 3}
