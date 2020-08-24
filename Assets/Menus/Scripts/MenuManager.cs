@@ -148,7 +148,7 @@ public class MenuManager : MonoBehaviour
             return;
         }
 
-        foreach (MenuButton button in Screens.GetComponentsInChildren<MenuButton>())
+        foreach (NavigationButton button in Screens.GetComponentsInChildren<NavigationButton>())
         {
             if (button.Target != null) 
                 Gizmos.DrawLine(button.transform.position, button.Target.transform.position);

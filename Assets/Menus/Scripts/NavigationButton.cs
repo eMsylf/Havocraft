@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace BobJeltes
 {
     [RequireComponent(typeof(Button))]
-    public class MenuButton : MonoBehaviour
+    public class NavigationButton : MonoBehaviour
     {
         private MenuManager MenuManager;
         public MenuScreen Target;
