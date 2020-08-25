@@ -153,20 +153,13 @@ MonoBehaviour:
   ContinuouslyResetAnimationY: 1
   GimbalWeapons: 1
   GimbalRigidity: 0.25
-  PauseAfterFiring: 0
+  PauseEditorUponFiring: 0
   HoverJets:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  DeathEffectObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1024520763858020612}
+  - {fileID: 1024520763044882992}
+  - {fileID: 1024520762294241603}
+  - {fileID: 1024520762527760671}
+  DeathEffectObjects: []
 --- !u!1 &4772672320969898287
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +553,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4772672319792760083}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024520763858020612 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5479794449562381335, guid: 42825a39f32765a4c8b6e42a3352002b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772672319792760083}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4772672320384607572
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -652,6 +651,12 @@ PrefabInstance:
 --- !u!4 &8993082524390224767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4536858586488264235, guid: 42825a39f32765a4c8b6e42a3352002b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772672320384607572}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024520762294241603 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5479794449562381335, guid: 42825a39f32765a4c8b6e42a3352002b,
     type: 3}
   m_PrefabInstance: {fileID: 4772672320384607572}
   m_PrefabAsset: {fileID: 0}
@@ -750,6 +755,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4772672320607644936}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024520762527760671 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5479794449562381335, guid: 42825a39f32765a4c8b6e42a3352002b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772672320607644936}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4772672321127171623
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -842,6 +853,12 @@ PrefabInstance:
 --- !u!4 &8993082524587495436 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4536858586488264235, guid: 42825a39f32765a4c8b6e42a3352002b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772672321127171623}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1024520763044882992 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5479794449562381335, guid: 42825a39f32765a4c8b6e42a3352002b,
     type: 3}
   m_PrefabInstance: {fileID: 4772672321127171623}
   m_PrefabAsset: {fileID: 0}

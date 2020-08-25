@@ -140,18 +140,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c8460549483bd4ab8d192fbfc3a054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &706303841 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1024520763858020612, guid: 5644d316173a75342a6676f0b22638ef,
-    type: 3}
-  m_PrefabInstance: {fileID: 4772672320770662141}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &787542261 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1024520762294241603, guid: 5644d316173a75342a6676f0b22638ef,
-    type: 3}
-  m_PrefabInstance: {fileID: 4772672320770662141}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1022656324
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,12 +745,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7935bf05f858eef4fa2ea6e186f36324, type: 3}
---- !u!1 &1490642225 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1024520763044882992, guid: 5644d316173a75342a6676f0b22638ef,
-    type: 3}
-  m_PrefabInstance: {fileID: 4772672320770662141}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1532336408
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,6 +1259,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 594689245}
+    - target: {fileID: 4365288465878535705, guid: 621e8fa1c2654654fa1e5ff77ae6b650,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7934662465786773132, guid: 621e8fa1c2654654fa1e5ff77ae6b650,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1401,36 +1388,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: HoverJets.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: DeathEffectObjects.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: HoverJets.Array.data[0]
-      value: 
-      objectReference: {fileID: 706303841}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: HoverJets.Array.data[1]
-      value: 
-      objectReference: {fileID: 1490642225}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: HoverJets.Array.data[2]
-      value: 
-      objectReference: {fileID: 787542261}
-    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
-        type: 3}
-      propertyPath: HoverJets.Array.data[3]
-      value: 
-      objectReference: {fileID: 1606686293}
     - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: DeathEffectObjects.Array.data[0]
