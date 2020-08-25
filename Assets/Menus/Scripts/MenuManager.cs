@@ -5,6 +5,8 @@ using DG.Tweening;
 using BobJeltes;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Canvas))]
 public class MenuManager : MonoBehaviour
@@ -19,10 +21,25 @@ public class MenuManager : MonoBehaviour
     public StartScreen StartScreen;
     public MenuScreen CurrentScreen = null;
     public List<MenuScreen> PreviousScreens = new List<MenuScreen>();
+    public NavigationButton GlobalBackButton;
 
     public int GetScreenCount()
     {
         return transform.childCount;
+    }
+
+    EventSystem activeEventSystem;
+    public EventSystem FindActiveEventSystem()
+    {
+        if (activeEventSystem == null)
+        {
+            activeEventSystem = FindObjectOfType<EventSystem>();
+            if (activeEventSystem == null)
+            {
+                Debug.LogError("No event system found in scene!");
+            }
+        }
+        return activeEventSystem;
     }
 
     public void GoToScreen(MenuScreen newScreen)
@@ -40,8 +57,12 @@ public class MenuManager : MonoBehaviour
 
         if (ScreenTransitionDuration > 0f)
         {
-            InputBlockerActive(true);
-            Screens.DOMove(GetMoveDelta(CurrentScreen.transform, newScreen.transform), ScreenTransitionDuration).OnComplete(() => InputBlockerActive(false));
+            if (BlockInputsDuringTransitions)
+                InputBlockerActive(true);
+            Screens.DOComplete();
+            DG.Tweening.Core.TweenerCore<Vector3, Vector3, DG.Tweening.Plugins.Options.VectorOptions> tweenerCore = Screens.DOMove(GetMoveDelta(CurrentScreen.transform, newScreen.transform), ScreenTransitionDuration);
+            if (BlockInputsDuringTransitions)
+                tweenerCore.OnComplete(() => InputBlockerActive(false));
         }
         else
         {
@@ -50,6 +71,11 @@ public class MenuManager : MonoBehaviour
 
         PreviousScreens.Add(CurrentScreen);
         CurrentScreen = newScreen;
+
+        if (!GlobalBackButton.gameObject.activeInHierarchy)
+        {
+            GlobalBackButton.gameObject.SetActive(true);
+        }
     }
 
     public void GoToPreviousScreen()
@@ -62,6 +88,7 @@ public class MenuManager : MonoBehaviour
         if (PreviousScreens == null || PreviousScreens.Count == 0)
         {
             Debug.Log("No previous screens to go back to");
+            GlobalBackButton.gameObject.SetActive(false);
             return;
         }
         MenuScreen previousScreen = PreviousScreens[PreviousScreens.Count - 1];
@@ -75,6 +102,7 @@ public class MenuManager : MonoBehaviour
         {
             if (BlockInputsDuringTransitions)
                 InputBlockerActive(true);
+            Screens.DOComplete();
             DG.Tweening.Core.TweenerCore<Vector3, Vector3, DG.Tweening.Plugins.Options.VectorOptions> tweenerCore = Screens.DOMove(GetMoveDelta(CurrentScreen.transform, previousScreen.transform), ScreenTransitionDuration);
             if (BlockInputsDuringTransitions)
                 tweenerCore.OnComplete(() => InputBlockerActive(false));
@@ -86,6 +114,11 @@ public class MenuManager : MonoBehaviour
 
         CurrentScreen = previousScreen;
         PreviousScreens.Remove(previousScreen);
+
+        if (PreviousScreens.Count == 0)
+        {
+            GlobalBackButton.gameObject.SetActive(false);
+        }
     }
 
     public Vector3 GetMoveDelta(Transform current, Transform next)
@@ -153,6 +186,21 @@ public class MenuManager : MonoBehaviour
             if (button.Target != null) 
                 Gizmos.DrawLine(button.transform.position, button.Target.transform.position);
         }
+    }
+
+    private void OnEnable()
+    {
+        FindActiveEventSystem();
+    }
+
+    public void Quit()
+    {
+        GameManager.Instance.Quit();
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
     }
 }
 
