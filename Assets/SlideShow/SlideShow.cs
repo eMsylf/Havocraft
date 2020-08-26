@@ -78,7 +78,7 @@ public class SlideShow : MonoBehaviour
     {
         foreach (RawImage slide in Slides)
         {
-            slide.DOComplete(false);
+            slide.DOKill();
             slide.gameObject.SetActive(false);
         }
     }
@@ -94,7 +94,7 @@ public class SlideShow : MonoBehaviour
         if (!first)
         {
             // Close off the previous slide
-            Slides[currentSlide].DOComplete();
+            Slides[currentSlide].DOKill();
             Slides[currentSlide].gameObject.SetActive(false);
             currentSlide++;
         }
