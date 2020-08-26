@@ -173,7 +173,7 @@ public class MenuManager : MonoBehaviour
     }
 
     public bool VisualizeScreenNavigation = true;
-
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         if (Screens != null)
@@ -187,7 +187,7 @@ public class MenuManager : MonoBehaviour
                 Gizmos.DrawLine(button.transform.position, button.Target.transform.position);
         }
     }
-
+#endif
     private void OnEnable()
     {
         FindActiveEventSystem();

@@ -21,7 +21,7 @@ public class GameBoard : MonoBehaviour
     {
         
     }
-
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (!GizmoSettings.Enabled)
@@ -55,7 +55,7 @@ public class GameBoard : MonoBehaviour
             Handles.DrawPolyLine(CalculateParabola(square.position, nextSquare.position, GizmoSettings.ArcHeight, GizmoSettings.ArcDetail));
         }
     }
-
+#endif
     Transform[] GetSquares()
     {
         if (SquaresParent != null)

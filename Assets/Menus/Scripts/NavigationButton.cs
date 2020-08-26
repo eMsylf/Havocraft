@@ -41,7 +41,7 @@ namespace BobJeltes
                     MenuManager.GoToScreen(Target);
             }
         }
-
+#if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (Target != null)
@@ -49,5 +49,6 @@ namespace BobJeltes
                 Gizmos.DrawLine(transform.position, Target.transform.position);
             }
         }
+#endif
     }
 }

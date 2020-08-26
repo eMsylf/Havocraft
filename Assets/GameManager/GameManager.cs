@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    protected GameManager() { }
+
     public void LoadScene(string sceneName)
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);

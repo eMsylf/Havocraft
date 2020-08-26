@@ -145,7 +145,9 @@ public class PlayerController : MonoBehaviour
         {
             weapon.Fire();
         }
+#if UNITY_EDITOR
         if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
+#endif
     }
 
 
@@ -166,7 +168,9 @@ public class PlayerController : MonoBehaviour
                 weapon.Fire();
             }
         }
+#if UNITY_EDITOR
         if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
+#endif
     }
 
     private void OnEnable()

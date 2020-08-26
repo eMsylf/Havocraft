@@ -308,6 +308,96 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ToContinue"",
+            ""id"": ""e7106b90-68c6-4fcc-bb8e-d7ad1fb7a9c1"",
+            ""actions"": [
+                {
+                    ""name"": ""SkipOne"",
+                    ""type"": ""Button"",
+                    ""id"": ""7e64f5ee-115c-4c8c-80b4-9a2c8453da53"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""SkipAll"",
+                    ""type"": ""Button"",
+                    ""id"": ""34f33c9b-222b-4818-841c-92e2c9f9c649"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3bcfd030-2894-4dea-997e-de6da65d77fc"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""SkipOne"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b9f8a62b-04f9-4ba6-b9d2-55b6610f8167"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""SkipOne"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f9c36b84-8204-45e0-9ac2-dd2314b87ca3"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SkipOne"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab52b306-1875-4c91-ae31-3b73b2eb57ef"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""SkipAll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ea90cf9-123c-463b-a71a-92fe657e0a74"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""SkipAll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""137f1722-e66d-4837-8e49-ad40dc3ef0e1"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SkipAll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -350,6 +440,10 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
         m_InGame_Boost = m_InGame.FindAction("Boost", throwIfNotFound: true);
         m_InGame_OpenMenu = m_InGame.FindAction("Open Menu", throwIfNotFound: true);
+        // ToContinue
+        m_ToContinue = asset.FindActionMap("ToContinue", throwIfNotFound: true);
+        m_ToContinue_SkipOne = m_ToContinue.FindAction("SkipOne", throwIfNotFound: true);
+        m_ToContinue_SkipAll = m_ToContinue.FindAction("SkipAll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -493,6 +587,47 @@ public class @GameControls : IInputActionCollection, IDisposable
         }
     }
     public InGameActions @InGame => new InGameActions(this);
+
+    // ToContinue
+    private readonly InputActionMap m_ToContinue;
+    private IToContinueActions m_ToContinueActionsCallbackInterface;
+    private readonly InputAction m_ToContinue_SkipOne;
+    private readonly InputAction m_ToContinue_SkipAll;
+    public struct ToContinueActions
+    {
+        private @GameControls m_Wrapper;
+        public ToContinueActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SkipOne => m_Wrapper.m_ToContinue_SkipOne;
+        public InputAction @SkipAll => m_Wrapper.m_ToContinue_SkipAll;
+        public InputActionMap Get() { return m_Wrapper.m_ToContinue; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ToContinueActions set) { return set.Get(); }
+        public void SetCallbacks(IToContinueActions instance)
+        {
+            if (m_Wrapper.m_ToContinueActionsCallbackInterface != null)
+            {
+                @SkipOne.started -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
+                @SkipOne.performed -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
+                @SkipOne.canceled -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
+                @SkipAll.started -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
+                @SkipAll.performed -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
+                @SkipAll.canceled -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
+            }
+            m_Wrapper.m_ToContinueActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @SkipOne.started += instance.OnSkipOne;
+                @SkipOne.performed += instance.OnSkipOne;
+                @SkipOne.canceled += instance.OnSkipOne;
+                @SkipAll.started += instance.OnSkipAll;
+                @SkipAll.performed += instance.OnSkipAll;
+                @SkipAll.canceled += instance.OnSkipAll;
+            }
+        }
+    }
+    public ToContinueActions @ToContinue => new ToContinueActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -522,5 +657,10 @@ public class @GameControls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
+    }
+    public interface IToContinueActions
+    {
+        void OnSkipOne(InputAction.CallbackContext context);
+        void OnSkipAll(InputAction.CallbackContext context);
     }
 }
