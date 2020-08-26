@@ -314,17 +314,17 @@ public class @GameControls : IInputActionCollection, IDisposable
             ""id"": ""e7106b90-68c6-4fcc-bb8e-d7ad1fb7a9c1"",
             ""actions"": [
                 {
-                    ""name"": ""SkipOne"",
+                    ""name"": ""SkipAll"",
                     ""type"": ""Button"",
-                    ""id"": ""7e64f5ee-115c-4c8c-80b4-9a2c8453da53"",
+                    ""id"": ""34f33c9b-222b-4818-841c-92e2c9f9c649"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""SkipAll"",
+                    ""name"": ""SkipOne"",
                     ""type"": ""Button"",
-                    ""id"": ""34f33c9b-222b-4818-841c-92e2c9f9c649"",
+                    ""id"": ""7e64f5ee-115c-4c8c-80b4-9a2c8453da53"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -442,8 +442,8 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_InGame_OpenMenu = m_InGame.FindAction("Open Menu", throwIfNotFound: true);
         // ToContinue
         m_ToContinue = asset.FindActionMap("ToContinue", throwIfNotFound: true);
-        m_ToContinue_SkipOne = m_ToContinue.FindAction("SkipOne", throwIfNotFound: true);
         m_ToContinue_SkipAll = m_ToContinue.FindAction("SkipAll", throwIfNotFound: true);
+        m_ToContinue_SkipOne = m_ToContinue.FindAction("SkipOne", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -591,14 +591,14 @@ public class @GameControls : IInputActionCollection, IDisposable
     // ToContinue
     private readonly InputActionMap m_ToContinue;
     private IToContinueActions m_ToContinueActionsCallbackInterface;
-    private readonly InputAction m_ToContinue_SkipOne;
     private readonly InputAction m_ToContinue_SkipAll;
+    private readonly InputAction m_ToContinue_SkipOne;
     public struct ToContinueActions
     {
         private @GameControls m_Wrapper;
         public ToContinueActions(@GameControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @SkipOne => m_Wrapper.m_ToContinue_SkipOne;
         public InputAction @SkipAll => m_Wrapper.m_ToContinue_SkipAll;
+        public InputAction @SkipOne => m_Wrapper.m_ToContinue_SkipOne;
         public InputActionMap Get() { return m_Wrapper.m_ToContinue; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -608,22 +608,22 @@ public class @GameControls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_ToContinueActionsCallbackInterface != null)
             {
-                @SkipOne.started -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
-                @SkipOne.performed -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
-                @SkipOne.canceled -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
                 @SkipAll.started -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
                 @SkipAll.performed -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
                 @SkipAll.canceled -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipAll;
+                @SkipOne.started -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
+                @SkipOne.performed -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
+                @SkipOne.canceled -= m_Wrapper.m_ToContinueActionsCallbackInterface.OnSkipOne;
             }
             m_Wrapper.m_ToContinueActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @SkipOne.started += instance.OnSkipOne;
-                @SkipOne.performed += instance.OnSkipOne;
-                @SkipOne.canceled += instance.OnSkipOne;
                 @SkipAll.started += instance.OnSkipAll;
                 @SkipAll.performed += instance.OnSkipAll;
                 @SkipAll.canceled += instance.OnSkipAll;
+                @SkipOne.started += instance.OnSkipOne;
+                @SkipOne.performed += instance.OnSkipOne;
+                @SkipOne.canceled += instance.OnSkipOne;
             }
         }
     }
@@ -660,7 +660,7 @@ public class @GameControls : IInputActionCollection, IDisposable
     }
     public interface IToContinueActions
     {
-        void OnSkipOne(InputAction.CallbackContext context);
         void OnSkipAll(InputAction.CallbackContext context);
+        void OnSkipOne(InputAction.CallbackContext context);
     }
 }

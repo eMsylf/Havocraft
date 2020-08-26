@@ -301,17 +301,17 @@
             "id": "e7106b90-68c6-4fcc-bb8e-d7ad1fb7a9c1",
             "actions": [
                 {
-                    "name": "SkipOne",
+                    "name": "SkipAll",
                     "type": "Button",
-                    "id": "7e64f5ee-115c-4c8c-80b4-9a2c8453da53",
+                    "id": "34f33c9b-222b-4818-841c-92e2c9f9c649",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "SkipAll",
+                    "name": "SkipOne",
                     "type": "Button",
-                    "id": "34f33c9b-222b-4818-841c-92e2c9f9c649",
+                    "id": "7e64f5ee-115c-4c8c-80b4-9a2c8453da53",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""

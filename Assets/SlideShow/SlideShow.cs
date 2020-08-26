@@ -32,9 +32,24 @@ public class SlideShow : MonoBehaviour
     private void Awake()
     {
         Slides = GetComponentsInChildren<RawImage>().ToList();
+        Controls.ToContinue.Enable();
         Controls.ToContinue.SkipOne.performed += _ => Skip();
         Controls.ToContinue.SkipAll.performed += _ => SkipAll();
+        Debug.Log("Added");
+    }
 
+    private void OnDisable()
+    {
+        Controls.ToContinue.SkipOne.performed -= _ => Skip();
+        Controls.ToContinue.SkipAll.performed -= _ => SkipAll();
+        Controls.ToContinue.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        Controls.ToContinue.SkipOne.performed -= _ => Skip();
+        Controls.ToContinue.SkipAll.performed -= _ => SkipAll();
+        Controls.ToContinue.Disable();
     }
 
     private void Start()
@@ -55,24 +70,33 @@ public class SlideShow : MonoBehaviour
     private void SkipAll()
     {
         Debug.Log("Skip all slides");
-        StopAllCoroutines();
+        Complete();
         OnComplete.Invoke();
+    }
+
+    public void Complete()
+    {
+        foreach (RawImage slide in Slides)
+        {
+            slide.DOComplete(false);
+            slide.gameObject.SetActive(false);
+        }
     }
 
     private void NextSlide(bool first)
     {
+        if (currentSlide >= Slides.Count - 1)
+        {
+            Complete();
+            OnComplete.Invoke();
+            return;
+        }
         if (!first)
         {
             // Close off the previous slide
-            StopAllCoroutines();
             Slides[currentSlide].DOComplete();
             Slides[currentSlide].gameObject.SetActive(false);
             currentSlide++;
-        }
-        if (currentSlide >= Slides.Count)
-        {
-            OnComplete.Invoke();
-            return;
         }
         // Save the original color
         Color originalColor = Slides[currentSlide].color;
