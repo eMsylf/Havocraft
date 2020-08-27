@@ -61,13 +61,13 @@ public class SlideShow : MonoBehaviour
         NextSlide(true);
     }
 
-    private void Skip()
+    public void Skip()
     {
         Debug.Log("Skip slide");
         NextSlide(false);
     }
 
-    private void SkipAll()
+    public void SkipAll()
     {
         Debug.Log("Skip all slides");
         Complete();
