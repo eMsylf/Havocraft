@@ -11,6 +11,19 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Canvas))]
 public class MenuManager : MonoBehaviour
 {
+    private GameControls controls;
+    private GameControls Controls
+    {
+        get
+        {
+            if (controls == null)
+            {
+                controls = new GameControls();
+            }
+            return controls;
+        }
+    }
+
     public Transform Screens;
     public GameObject DebugNavigation;
     public GameObject InputBlocker;
@@ -190,6 +203,7 @@ public class MenuManager : MonoBehaviour
 #endif
     private void OnEnable()
     {
+        Controls.InGame.OpenMenu.performed += _ => Toggle();
         FindActiveEventSystem();
     }
 

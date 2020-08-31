@@ -13,6 +13,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216079737525880137, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}
+    - target: {fileID: 3578247220351703180, guid: a7c85b99288e3ca43841d6360a4d621c,
+        type: 3}
+      propertyPath: ContinuousFire
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3786824343350616861, guid: a7c85b99288e3ca43841d6360a4d621c,
         type: 3}
       propertyPath: m_LocalRotation.x

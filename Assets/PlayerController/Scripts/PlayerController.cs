@@ -45,17 +45,11 @@ public class PlayerController : MonoBehaviour
         Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.canceled += _ => StopMove();
-        Controls.InGame.Shoot.started += _ => UpdateShooting(_.ReadValueAsButton());
-        Controls.InGame.Shoot.canceled += _ => UpdateShooting(false);
+        Controls.InGame.Shoot.started += _ => SetShootingActive(_.ReadValueAsButton());
+        Controls.InGame.Shoot.canceled += _ => SetShootingActive(false);
         Controls.InGame.Shoot.performed += _ => Shoot();
         Controls.InGame.Boost.performed += _ => Boost(true);
         Controls.InGame.Boost.canceled += _ => Boost(false);
-        Controls.InGame.OpenMenu.performed += _ => ToggleMenu();
-    }
-
-    void ToggleMenu()
-    {
-        FindObjectOfType<MenuManager>()?.Toggle();
     }
 
     bool boostActivated = false;
@@ -63,10 +57,6 @@ public class PlayerController : MonoBehaviour
     private void Boost(bool enabled)
     {
         boostActivated = enabled;
-    }
-
-    void Start()
-    {
     }
 
     public bool Animation = true;
@@ -152,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
 
     bool shooting = false;
-    void UpdateShooting(bool _shooting)
+    void SetShootingActive(bool _shooting)
     {
         shooting = _shooting;
     }
@@ -181,6 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
+        GameManager.Instance.PlayerDeath(this);
         Debug.Log("Disable " + name, gameObject);
         Controls.Disable();
     }

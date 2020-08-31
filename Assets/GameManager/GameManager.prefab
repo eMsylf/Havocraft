@@ -43,3 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1c8460549483bd4ab8d192fbfc3a054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EndGameScreenPrefab: {fileID: 8301059031417362160, guid: 872fe406efc036545ad43ee55a5c1603,
+    type: 3}
+  Players: []
