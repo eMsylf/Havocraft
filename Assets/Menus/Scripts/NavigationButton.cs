@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BobJeltes
+namespace BobJeltes.Menu
 {
     [RequireComponent(typeof(Button))]
     public class NavigationButton : MonoBehaviour
     {
         private MenuManager MenuManager;
-        public MenuScreen Target;
+        public Transform TargetMenuScreen;
         public bool IsBackButton;
 
         private MenuManager GetMenuManager()
@@ -35,18 +35,18 @@ namespace BobJeltes
             }
             else
             {
-                if (Target == null)
+                if (TargetMenuScreen == null)
                     Debug.LogError("Target of button has not been set", gameObject);
                 else
-                    MenuManager.GoToScreen(Target);
+                    MenuManager.GoToScreen(TargetMenuScreen);
             }
         }
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            if (Target != null)
+            if (TargetMenuScreen != null)
             {
-                Gizmos.DrawLine(transform.position, Target.transform.position);
+                Gizmos.DrawLine(transform.position, TargetMenuScreen.transform.position);
             }
         }
 #endif
