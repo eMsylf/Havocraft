@@ -9,6 +9,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public PlayerController Owner;
+    public bool CanHitOwner = false;
+    [Tooltip("The arm delay allows a distance or time to be set, to prevent the projectile to collide with the ")]
     public bool ArmDelay = true;
     public ArmType ArmType;
     [Min(0f)]
@@ -28,7 +30,8 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Impact(collision);
+        if (collision.collider.attachedRigidbody.GetComponent<PlayerController>() != Owner)
+            Impact(collision);
     }
 
     private void Start()
