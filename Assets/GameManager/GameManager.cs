@@ -20,12 +20,17 @@ public class GameManager : Singleton<GameManager>
         Players = FindObjectsOfType<PlayerController>().ToList();
     }
 
-    public void LoadScene(string sceneName)
+    public void SceneLoad(string sceneName)
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 
-    public void NextScene()
+    public void SceneReload()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void SceneLoadNext()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
     }
