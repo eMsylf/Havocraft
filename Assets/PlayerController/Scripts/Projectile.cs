@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.attachedRigidbody.GetComponent<PlayerController>() != Owner)
+        if (collision.collider.attachedRigidbody != null && collision.collider.attachedRigidbody.GetComponent<PlayerController>() != Owner)
             Impact(collision);
     }
 

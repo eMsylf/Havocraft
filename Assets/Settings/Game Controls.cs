@@ -121,6 +121,17 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": """",
+                    ""id"": ""e65cc2c6-5723-4b13-92bd-7626d0d2a8a3"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard & Mouse"",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": ""Arrows"",
                     ""id"": ""0bc1770c-a1da-458a-a1e3-8cc06ae781b3"",
                     ""path"": ""2DVector"",

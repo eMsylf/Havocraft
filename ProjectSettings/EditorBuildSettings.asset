@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Stage0.unity
     guid: a42b79e5ee6040e449a00d0a4cd8ba01
   - enabled: 1
-    path: Assets/PlayerController/Scenes/Movement Experimentation.unity
+    path: Assets/PlayerController/Scenes/MovementExperimentation.unity
     guid: f277aa0c2c746b744815b9f724a15dc4
   - enabled: 1
     path: Assets/OneHourGame/OneHourGame.unity

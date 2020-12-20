@@ -35,7 +35,7 @@ public class SlideShow : MonoBehaviour
         Controls.ToContinue.Enable();
         Controls.ToContinue.SkipOne.performed += _ => Skip();
         Controls.ToContinue.SkipAll.performed += _ => SkipAll();
-        Debug.Log("Added");
+        Debug.Log("Added slidewhow controls");
     }
 
     private void OnDisable()

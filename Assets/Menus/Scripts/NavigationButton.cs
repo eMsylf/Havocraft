@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace BobJeltes.Menu
@@ -27,6 +29,19 @@ namespace BobJeltes.Menu
 
         public void GoToTarget()
         {
+            //switch (target)
+            //{
+            //    case Target.MenuScreen:
+            //        break;
+            //    case Target.Scene:
+            //        break;
+            //}
+            GoToTargetMenuScreen();
+            //GoToTargetScene();
+        }
+
+        private void GoToTargetMenuScreen()
+        {
             MenuManager menu = GetMenuManager();
             if (menu == null) return;
             if (IsBackButton)
@@ -41,6 +56,12 @@ namespace BobJeltes.Menu
                     MenuManager.GoToScreen(TargetMenuScreen);
             }
         }
+
+        //private void GoToTargetScene()
+        //{
+        //    GameManager.Instance.SceneLoad(TargetScene.name);
+        //}
+
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {

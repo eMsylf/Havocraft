@@ -315,6 +315,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4772672321140026671}
     m_Modifications:
+    - target: {fileID: 1443505049989799828, guid: a7c85b99288e3ca43841d6360a4d621c,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 3296611897236352914, guid: a7c85b99288e3ca43841d6360a4d621c,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
     - target: {fileID: 5535514076556297112, guid: a7c85b99288e3ca43841d6360a4d621c,
         type: 3}
       propertyPath: m_Name
@@ -390,6 +400,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4772672321140026671}
     m_Modifications:
+    - target: {fileID: 2243176858446425093, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 2780667431164959747, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name
@@ -894,6 +914,11 @@ PrefabInstance:
       propertyPath: m_ReceiveGI
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -6838204867453474734, guid: d254991fcb28ae84aa77892ca5c7adde,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 12c5ac5e241d57a448cb157df96d6ead, type: 2}
     - target: {fileID: -4216859302048453862, guid: d254991fcb28ae84aa77892ca5c7adde,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -974,10 +999,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4772672321140026671}
     m_Modifications:
+    - target: {fileID: 2243176858446425093, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 2780667431164959747, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name
-      value: Forward-facing Turret
+      value: Forward-facing Turret Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8187614661656068634, guid: ac21a501d610df04fa578afd39210833,
         type: 3}

@@ -7,6 +7,7 @@ using UnityEditor;
 [RequireComponent(typeof(MeshRenderer))]
 public class BigCubeThingCreator : MonoBehaviour
 {
+#if UNITY_EDITOR
     [MenuItem("GameObject/TEEEEEEEST", false, 10)]
     public static void CreateMulticubeObject()
     {
@@ -15,6 +16,7 @@ public class BigCubeThingCreator : MonoBehaviour
         Selection.activeObject = addedObject;
         creator.FillAllBlocks();
     }
+#endif
 
 
     public GameObject CubePrefab;

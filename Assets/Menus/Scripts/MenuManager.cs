@@ -157,9 +157,11 @@ namespace BobJeltes.Menu
         }
 
         public bool IsOpen { get { return GetComponent<Canvas>().enabled; } }
-
+        public bool CanBeClosed = true;
         public void Toggle()
         {
+            if (!CanBeClosed)
+                return;
             GetComponent<Canvas>().enabled = !GetComponent<Canvas>().enabled;
         }
 
@@ -170,6 +172,8 @@ namespace BobJeltes.Menu
 
         public void Close()
         {
+            if (!CanBeClosed)
+                return;
             GetComponent<Canvas>().enabled = false;
         }
 
@@ -208,6 +212,12 @@ namespace BobJeltes.Menu
             Controls.InGame.OpenMenu.performed += _ => Toggle();
             Controls.InGame.Enable();
             FindActiveEventSystem();
+        }
+
+        private void OnDisable()
+        {
+            Controls.InGame.OpenMenu.performed -= _ => Toggle();
+            Controls.InGame.Enable();
         }
 
         public void Quit()

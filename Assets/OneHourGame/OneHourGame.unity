@@ -1084,7 +1084,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434358211}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07d87349d5dba47429e3f53e5b7ed1d5, type: 3}
   m_Name: 
@@ -1442,7 +1442,7 @@ MonoBehaviour:
   positionTransform: {fileID: 876395792}
   lookTransform: {fileID: 1497180718}
   PositionOffset: {x: 0, y: 1.36, z: 0}
-  PositionSmoothing: 0.926
+  PositionSmoothing: 0.333
   PlaceBeforeObstacles: 0
   ObstacleMask:
     serializedVersion: 2
