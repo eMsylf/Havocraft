@@ -176,14 +176,20 @@ public class PlayerController : MonoBehaviour
         Controls.Disable();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Projectile projectile = collision.collider.GetComponent<Projectile>();
+    //    if (projectile != null)
+    //    {
+    //        ExplodeViolently();
+    //        TurnOffHoverjets();
+    //    }
+    //}
+
+    public void Die()
     {
-        Projectile projectile = collision.collider.GetComponent<Projectile>();
-        if (projectile != null)
-        {
-            ExplodeViolently();
-            TurnOffHoverjets();
-        }
+        ExplodeViolently();
+        TurnOffHoverjets();
     }
 
     public List<GameObject> HoverJets;

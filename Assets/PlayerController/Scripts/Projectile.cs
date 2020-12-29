@@ -30,8 +30,7 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.attachedRigidbody != null && collision.collider.attachedRigidbody.GetComponent<PlayerController>() != Owner)
-            Impact(collision);
+        Impact(collision);
     }
 
     private void Start()
@@ -91,10 +90,23 @@ public class Projectile : MonoBehaviour
             string output = "";
             if (Owner != null)
             {
+                if (!CanHitOwner)
+                {
+                    if (collisionData.gameObject == Owner.gameObject)
+                    {
+                        Debug.Log(name + " can't hit owner " + Owner.name);
+                        return;
+                    }
+                }
                 output += Owner.name + " with ";
             }
             output += name;
             Debug.Log(collisionData.gameObject.name + " was hit by " + output);
+            PlayerController player = collisionData.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.Die();
+            }
         }
 
         impact = transform.position;
@@ -106,6 +118,7 @@ public class Projectile : MonoBehaviour
         }
         if (DisappearUponImpact)
         {
+            Debug.Log("Disappear");
             gameObject.SetActive(false);
         }
     }

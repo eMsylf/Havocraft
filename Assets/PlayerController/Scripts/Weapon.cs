@@ -6,6 +6,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public GameObject Ammunition;
+    [Tooltip("The speed of the projectile")]
     public float Firepower = 10f;
     [Tooltip("The end of the barrel of the weapon")]
     public Transform Base;
@@ -35,7 +36,7 @@ public class Weapon : MonoBehaviour
     {
         if (Cooldown.Active)
         {
-            Debug.Log(name + " is on cooldown.", this);
+            //Debug.Log(name + " is on cooldown.", this);
             return;
         }
         Debug.Log("Fire " + name);
