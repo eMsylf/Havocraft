@@ -24,15 +24,15 @@ namespace BobJeltes.Menu
 
         private void OnEnable()
         {
-            Debug.Log("Onenable called. Is winner: " + IsWinner, this);
+            Debug.Log("Is winner: " + IsWinner, this);
             if (WinnerText == null)
             {
-                Debug.Log("Winner text missing", this);
+                Debug.LogError("Winner text missing", this);
                 return;
             }
             if (LoserText == null)
             {
-                Debug.Log("Loser text missing", this);
+                Debug.LogError("Loser text missing", this);
                 return;
             }
             WinnerText.SetActive(IsWinner);

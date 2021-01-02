@@ -15,9 +15,26 @@ public class GameManager : Singleton<GameManager>
 
     public List<PlayerController> Players = new List<PlayerController>();
 
-    private void Start()
+    private void OnEnable()
+    {
+        CollectPlayers();
+    }
+
+    public void CollectPlayers()
     {
         Players = FindObjectsOfType<PlayerController>().ToList();
+        PrintPlayers();
+    }
+
+    public string PrintPlayers()
+    {
+        string players = "";
+        foreach (PlayerController player in Players)
+        {
+            players += "\n" + player.name;
+        }
+        Debug.Log(Players.Count + " players: " + players, this);
+        return players;
     }
 
     public void SceneLoad(string sceneName)
@@ -48,6 +65,7 @@ public class GameManager : Singleton<GameManager>
     public void PlayerDeath(PlayerController player)
     {
         Players.Remove(player);
+        PrintPlayers();
         if (Players.Count == 1)
         {
             MatchComplete();
@@ -56,6 +74,7 @@ public class GameManager : Singleton<GameManager>
 
     public void MatchComplete()
     {
+        Debug.Log("Match complete");
         if (EndGameScreenInstance == null)
         {
             EndGameScreenInstance = Instantiate(EndGameScreenPrefab);
