@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using GD.MinMaxSlider;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -84,7 +85,6 @@ public class PlayerController : MonoBehaviour
     public bool GimbalWeapons = true;
     [Range(0f, 1f)]
     public float GimbalRigidity = 1f;
-
     Vector2 movementInput;
 
     void Move(Vector2 direction)
@@ -171,56 +171,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        GameManager.Instance.PlayerDeath(this);
         Debug.Log("Disable " + name, gameObject);
         Controls.Disable();
-    }
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Projectile projectile = collision.collider.GetComponent<Projectile>();
-    //    if (projectile != null)
-    //    {
-    //        ExplodeViolently();
-    //        TurnOffHoverjets();
-    //    }
-    //}
-
-    public void Die()
-    {
-        ExplodeViolently();
-        TurnOffHoverjets();
-    }
-
-    public List<GameObject> HoverJets;
-    public List<GameObject> DeathEffectObjects;
-
-    private void ExplodeViolently()
-    {
-        Rigidbody.constraints = RigidbodyConstraints.None;
-        Rigidbody.useGravity = true;
-        if (DeathEffectObjects != null)
-        {
-            foreach (GameObject obj in DeathEffectObjects)
-            {
-                obj.SetActive(true);
-                VisualEffect vfx = obj.GetComponent<VisualEffect>();
-                // Give the visual effect additional velocity
-                if (vfx != null)
-                {
-                    if (vfx.HasVector3("Additional Velocity"))
-                        vfx.SetVector3("Additional Velocity", Rigidbody.velocity);
-                }
-            }
-        }
-        enabled = false;
-    }
-
-    void TurnOffHoverjets()
-    {
-        foreach (GameObject hoverJet in HoverJets)
-        {
-            hoverJet.SetActive(false);
-        }
     }
 }

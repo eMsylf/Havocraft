@@ -222,7 +222,7 @@ namespace BobJeltes.Menu
 
         public void Quit()
         {
-            GameManager.Instance.Quit();
+            if (GameManager.Instance != null) GameManager.Instance.Quit();
         }
 
         public void MainMenu()

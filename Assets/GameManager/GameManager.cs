@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using BobJeltes.Menu;
-using UnityEngine;
 using BobJeltes.StandardUtilities;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -13,23 +12,28 @@ public class GameManager : Singleton<GameManager>
     public EndGameScreen EndGameScreenPrefab;
     private EndGameScreen EndGameScreenInstance;
 
-    public List<PlayerController> Players = new List<PlayerController>();
+    public List<Player> Players = new List<Player>();
 
     private void OnEnable()
     {
         CollectPlayers();
     }
 
+    private void OnSceneLoad()
+    {
+        CollectPlayers();
+    }
+
     public void CollectPlayers()
     {
-        Players = FindObjectsOfType<PlayerController>().ToList();
+        Players = FindObjectsOfType<Player>().ToList();
         PrintPlayers();
     }
 
     public string PrintPlayers()
     {
         string players = "";
-        foreach (PlayerController player in Players)
+        foreach (Player player in Players)
         {
             players += "\n" + player.name;
         }
@@ -39,17 +43,20 @@ public class GameManager : Singleton<GameManager>
 
     public void SceneLoad(string sceneName)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+        SceneManager.LoadScene(sceneName);
+        OnSceneLoad();
     }
 
     public void SceneReload()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        OnSceneLoad();
     }
 
     public void SceneLoadNext()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        OnSceneLoad();
     }
 
     public void Quit()
@@ -62,11 +69,17 @@ public class GameManager : Singleton<GameManager>
 #endif
     }
 
-    public void PlayerDeath(PlayerController player)
+    public void PlayerDeath(Player player)
     {
+        if (m_ShuttingDown)
+        {
+            Debug.Log("Shutting down, player death ignored");
+            return;
+        }
+
         Players.Remove(player);
         PrintPlayers();
-        if (Players.Count == 1)
+        if (Players.Count <= 1)
         {
             MatchComplete();
         }
@@ -74,13 +87,24 @@ public class GameManager : Singleton<GameManager>
 
     public void MatchComplete()
     {
-        Debug.Log("Match complete");
+        Debug.Log(Players.Count + " players remaining. Match complete");
         if (EndGameScreenInstance == null)
         {
-            EndGameScreenInstance = Instantiate(EndGameScreenPrefab);
-            EndGameScreenInstance.gameObject.SetActive(false);
+            if (EndGameScreenPrefab != null)
+                EndGameScreenInstance = Instantiate(EndGameScreenPrefab);
+            else
+            {
+                EndGameScreenInstance = FindObjectOfType<EndGameScreen>();
+                if (EndGameScreenInstance == null)
+                {
+                    Debug.LogError("No End Game Screen instance found.");
+                    return;
+                }
+            }
         }
-        EndGameScreenInstance.IsWinner = true;
-        EndGameScreenInstance.gameObject.SetActive(true);
+
+        Canvas canvas = EndGameScreenInstance.GetComponent<Canvas>();
+        if (canvas != null)
+            EndGameScreenInstance.GetComponent<Canvas>().enabled = true;
     }
 }

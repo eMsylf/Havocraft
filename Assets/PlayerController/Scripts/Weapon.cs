@@ -7,7 +7,7 @@ public class Weapon : MonoBehaviour
 {
     public GameObject Ammunition;
     [Tooltip("The speed of the projectile")]
-    public float Firepower = 10f;
+    public float ProjectileSpeed = 10f;
     [Tooltip("The end of the barrel of the weapon")]
     public Transform Base;
     public Transform Barrel;
@@ -39,14 +39,14 @@ public class Weapon : MonoBehaviour
             //Debug.Log(name + " is on cooldown.", this);
             return;
         }
-        Debug.Log("Fire " + name);
+        //Debug.Log("Fire " + name);
         if (Ammunition != null)
         {
             // Instantiate
             GameObject projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
 
             // Add force
-            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + Muzzle.forward * Firepower, ForceMode.Impulse);
+            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + Muzzle.forward * ProjectileSpeed, ForceMode.Impulse);
 
             // Add an owner to the projectile
             Projectile projectileComponent = projectile.GetComponent<Projectile>();
@@ -54,7 +54,7 @@ public class Weapon : MonoBehaviour
             {
                 projectileComponent = projectile.AddComponent<Projectile>();
             }
-            projectileComponent.Owner = GetComponentInParent<PlayerController>();
+            projectileComponent.Owner = GetComponentInParent<Player>();
 
             StartCoroutine(Cooldown.Start());
         }

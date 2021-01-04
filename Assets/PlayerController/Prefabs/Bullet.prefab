@@ -124,9 +124,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Owner: {fileID: 0}
+  CanHitOwner: 0
   ArmDelay: 1
   ArmType: 0
   ArmDelayTime: 0.1
   ArmDelayDistance: 0.1
   MaxLifetime: 5
   DisappearUponImpact: 1
+  Damage: 2

@@ -8,7 +8,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class Projectile : MonoBehaviour
 {
-    public PlayerController Owner;
+    public Player Owner;
     public bool CanHitOwner = false;
     [Tooltip("The arm delay allows a distance or time to be set, to prevent the projectile to collide with the ")]
     public bool ArmDelay = true;
@@ -78,10 +78,12 @@ public class Projectile : MonoBehaviour
 
     private void Arm(bool state)
     {
-        Debug.Log("Arm " + name);
+        //Debug.Log("Arm " + name);
         armed = state;
         GetComponent<Collider>().enabled = state;
     }
+
+    public float Damage = 1f;
 
     protected virtual void Impact(Collision collisionData)
     {
@@ -102,10 +104,11 @@ public class Projectile : MonoBehaviour
             }
             output += name;
             Debug.Log(collisionData.gameObject.name + " was hit by " + output);
-            PlayerController player = collisionData.gameObject.GetComponent<PlayerController>();
+            Player player = collisionData.gameObject.GetComponent<Player>();
             if (player != null)
             {
-                player.Die();
+                player.TakeDamage(Damage);
+                //player.Die();
             }
         }
 
@@ -118,7 +121,7 @@ public class Projectile : MonoBehaviour
         }
         if (DisappearUponImpact)
         {
-            Debug.Log("Disappear");
+            //Debug.Log("Disappear");
             gameObject.SetActive(false);
         }
     }

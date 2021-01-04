@@ -125,12 +125,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Owner: {fileID: 0}
+  CanHitOwner: 0
   ArmDelay: 1
   ArmType: 0
   ArmDelayTime: 0.1
   ArmDelayDistance: 0.1
   MaxLifetime: 5
   DisappearUponImpact: 1
+  Damage: 20
 --- !u!114 &9115798113629566958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,6 +146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Force: 10
+  Damage: 20
   UpwardsModifier: 1
   Radius: 2
   ExplodedRbList: []
+  EmptyListUponImpact: 0

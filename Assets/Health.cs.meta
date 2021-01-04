@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: e1c8460549483bd4ab8d192fbfc3a054
+guid: deebce8324e369d40ad68a4d32969e9c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - EndGameScreenPrefab: {fileID: 8301059031417362160, guid: 872fe406efc036545ad43ee55a5c1603,
-      type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
