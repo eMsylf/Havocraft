@@ -10,6 +10,8 @@ public class Explosive : MonoBehaviour
     public float UpwardsModifier = 1f;
     public float Radius = 2f;
 
+    public List<ParticleSystem> Particles = new List<ParticleSystem>();
+
     public List<Rigidbody> ExplodedRbList = new List<Rigidbody>();
     public bool EmptyListUponImpact = true;
 
@@ -17,6 +19,12 @@ public class Explosive : MonoBehaviour
     {
         if (EmptyListUponImpact)
             ExplodedRbList.Clear();
+
+        foreach (ParticleSystem particle in Particles)
+        {
+            ParticleSystem particleSystem1 = Instantiate(particle, transform.position, Quaternion.identity);
+            Debug.Log("Instantiate particle", particleSystem1);
+        }
         foreach (Collider col in Physics.OverlapSphere(transform.position, Radius))
         {
             if (col.attachedRigidbody != null)

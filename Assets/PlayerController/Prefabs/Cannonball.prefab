@@ -127,7 +127,7 @@ MonoBehaviour:
   Owner: {fileID: 0}
   CanHitOwner: 0
   ArmDelay: 1
-  ArmType: 0
+  ArmType: 1
   ArmDelayTime: 0.1
   ArmDelayDistance: 0.1
   MaxLifetime: 5
@@ -149,5 +149,7 @@ MonoBehaviour:
   Damage: 20
   UpwardsModifier: 1
   Radius: 2
+  Particles:
+  - {fileID: 6026389061184683534, guid: f2518bbff47ff494b9a311f3c483b3f1, type: 3}
   ExplodedRbList: []
   EmptyListUponImpact: 0

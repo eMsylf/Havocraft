@@ -32,13 +32,14 @@ public class GameManager : Singleton<GameManager>
 
     public string PrintPlayers()
     {
-        string players = "";
+        string playerNames = "";
         foreach (Player player in Players)
         {
-            players += "\n" + player.name;
+            if (player != null)
+                playerNames += "\n" + player.name;
         }
-        Debug.Log(Players.Count + " players: " + players, this);
-        return players;
+        Debug.Log(Players.Count + " players: " + playerNames, this);
+        return playerNames;
     }
 
     public void SceneLoad(string sceneName)
@@ -71,12 +72,6 @@ public class GameManager : Singleton<GameManager>
 
     public void PlayerDeath(Player player)
     {
-        if (m_ShuttingDown)
-        {
-            Debug.Log("Shutting down, player death ignored");
-            return;
-        }
-
         Players.Remove(player);
         PrintPlayers();
         if (Players.Count <= 1)

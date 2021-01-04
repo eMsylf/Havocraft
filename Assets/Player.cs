@@ -20,17 +20,17 @@ public class Player : MonoBehaviour
         }
     }
 
+    bool disabling = false;
+
     private void OnEnable()
     {
+        disabling = false;
         Debug.Log("Enable " + name, gameObject);
     }
 
     private void OnDisable()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.PlayerDeath(this);
-        }
+        disabling = true;
         Debug.Log("Disable " + name, gameObject);
     }
 
@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        Health.value = Health.value - damage;
+        Health.value -= damage;
         Debug.Log(name + " takes " + damage + " damage", this);
     }
 
@@ -52,6 +52,12 @@ public class Player : MonoBehaviour
     {
         ExplodeViolently();
         TurnOffHoverjets();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.PlayerDeath(this);
+        }
+        if (!disabling)
+            enabled = false;
     }
 
     public List<GameObject> HoverJets;
@@ -75,7 +81,6 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        enabled = false;
     }
 
     void TurnOffHoverjets()
