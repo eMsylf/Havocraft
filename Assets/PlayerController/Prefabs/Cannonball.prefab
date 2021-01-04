@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0476372980dddca44ba18628b6447e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Force: 10
+  Force: 150
   Damage: 20
   UpwardsModifier: 1
   Radius: 2
