@@ -233,13 +233,7 @@ namespace BobJeltes.Menu
         private void OnDisable()
         {
             Controls.InGame.OpenMenu.performed -= _ => Toggle();
-            Controls.InGame.Enable();
-        }
-
-        private void OnDestroy()
-        {
-            Controls.InGame.OpenMenu.performed -= _ => Toggle();
-            Controls.InGame.Enable();
+            Controls.InGame.Disable();
         }
 
         public void Quit()
