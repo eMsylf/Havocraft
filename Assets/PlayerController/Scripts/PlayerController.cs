@@ -78,8 +78,6 @@ public class PlayerController : MonoBehaviour
 
         ShootContinuous();
     }
-    [Min(0f)]
-    public float UpwardsThrust = 9.81f;
     public bool ContinuouslyResetAnimationY = true;
     [Tooltip("Makes sure the weapons are aimed at the same angle relative to the world, so that the player doesn't shoot into the ground when tilted forward")]
     public bool GimbalWeapons = true;
@@ -101,7 +99,6 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Rigidbody.AddForce(0f, UpwardsThrust, 0f);
         Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f));
         Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
         if (Animation)
