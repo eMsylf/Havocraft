@@ -150,6 +150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c15c53dfdb09a4995496c91d3b7f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutoConnect: 0
+  AutoDisconnect: 0
+  port: 9000
   Done: 0
   value: 1
 --- !u!4 &687583486
@@ -195,6 +198,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c15c53dfdb09a4995496c91d3b7f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutoConnect: 0
+  AutoDisconnect: 0
+  port: 9000
   Done: 0
   value: 1
 --- !u!4 &926002915
@@ -240,6 +246,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c15c53dfdb09a4995496c91d3b7f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutoConnect: 0
+  AutoDisconnect: 0
+  port: 9000
   Done: 0
   value: 1
 --- !u!4 &932484562
@@ -377,6 +386,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c15c53dfdb09a4995496c91d3b7f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutoConnect: 0
+  AutoDisconnect: 0
+  port: 9000
   Done: 0
   value: 1
 --- !u!4 &997912051
@@ -621,6 +633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb673596f48e38d489b91056e9b6af13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutoStart: 0
+  port: 9000
   value: 0
 --- !u!4 &1770029874
 Transform:

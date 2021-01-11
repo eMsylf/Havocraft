@@ -24,8 +24,8 @@ EditorBuildSettings:
     path: Assets/OneHourGame/OneHourGame.unity
     guid: 935df99e15fa94e449a2461efeb67edf
   - enabled: 1
-    path: Assets/Networking/Networking UNET.unity
-    guid: 80cbc008cc96ef8419e9107274b2433b
+    path: Assets/Networking/Networking com.unity.transport.unity
+    guid: a03d8f812cd496744bf55e73d987d1b0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a32bde428a031c04fb252981d0e9e7dd,
       type: 2}

@@ -6,6 +6,9 @@ using Unity.Networking.Transport;
 
 public class ServerBehaviour : MonoBehaviour
 {
+    public bool AutoStart = true;
+    [SerializeField]
+    private ushort port = 9000;
     public NetworkDriver m_Driver;
     private NativeList<NetworkConnection> m_Connections;
 
@@ -13,24 +16,19 @@ public class ServerBehaviour : MonoBehaviour
 
     private void Start()
     {
-        m_Driver = NetworkDriver.Create();
-        var endpoint = NetworkEndPoint.AnyIpv4;
-        endpoint.Port = 9000;
-        if (m_Driver.Bind(endpoint) != 0)
-            Debug.Log("Failed to bind to port 9000");
-        else m_Driver.Listen();
-
-        m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+        if (AutoStart)
+            StartServer();
     }
 
     private void OnDestroy()
     {
-        m_Driver.Dispose();
-        m_Connections.Dispose();
+        StopServer();
     }
 
     private void Update()
     {
+        if (!m_Driver.IsCreated)
+            return;
         m_Driver.ScheduleUpdate().Complete();
 
         for (int i = 0; i < m_Connections.Length; i++)
@@ -79,5 +77,33 @@ public class ServerBehaviour : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void StartServer()
+    {
+        if (m_Driver.IsCreated)
+        {
+            Debug.Log("Server already started");
+            return;
+        }
+
+        Debug.Log("Start server");
+        m_Driver = NetworkDriver.Create();
+        var endpoint = NetworkEndPoint.AnyIpv4;
+        endpoint.Port = port;
+        if (m_Driver.Bind(endpoint) != 0)
+            Debug.Log("Failed to bind to port 9000");
+        else m_Driver.Listen();
+
+        m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+    }
+
+    public void StopServer()
+    {
+        if (m_Driver.IsCreated)
+            m_Driver.Dispose();
+        if (m_Connections.IsCreated)
+            m_Connections.Dispose();
+        Debug.Log("Stopped server");
     }
 }
