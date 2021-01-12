@@ -7,7 +7,7 @@ using Unity.Networking.Transport;
 public class ServerBehaviour : MonoBehaviour
 {
     public bool AutoStart = true;
-    public string IPAddressInput = "";
+    //public string IPAddressInput = "";
     public string IPAddressOutput = "";
     [SerializeField]
     private ushort port = 9000;
@@ -104,7 +104,7 @@ public class ServerBehaviour : MonoBehaviour
         //var endpoint = NetworkEndPoint.AnyIpv4;
         
         //endpoint.Port = port;
-        if (m_Driver.Bind(NetworkEndPoint.Parse(IPAddressInput, port)) != 0)
+        if (m_Driver.Bind(NetworkEndPoint.Parse(IPManager.GetLocalIPAddress(), port)) != 0)
             Debug.Log("Failed to bind to port " + port);
         else m_Driver.Listen();
 
