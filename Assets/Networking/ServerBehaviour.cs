@@ -8,7 +8,7 @@ public class ServerBehaviour : MonoBehaviour
 {
     public bool AutoStart = true;
     //public string IPAddressInput = "";
-    public string IPAddressOutput = "";
+    public string IPAddress = "";
     [SerializeField]
     private ushort port = 9000;
     public NetworkDriver m_Driver;
@@ -99,7 +99,7 @@ public class ServerBehaviour : MonoBehaviour
             return;
         }
 
-        Debug.Log("Start server");
+        //Debug.Log("Start server");
         m_Driver = NetworkDriver.Create();
         //var endpoint = NetworkEndPoint.AnyIpv4;
         
@@ -110,7 +110,8 @@ public class ServerBehaviour : MonoBehaviour
 
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
         
-        IPAddressOutput = IPManager.GetLocalIPAddress();
+        IPAddress = IPManager.GetLocalIPAddress();
+        Debug.Log("Started server at " + IPAddress);
     }
 
     public void StopServer()

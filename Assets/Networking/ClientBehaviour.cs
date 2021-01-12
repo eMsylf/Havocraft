@@ -86,7 +86,7 @@ public class ClientBehaviour : MonoBehaviour
         //var endpoint = NetworkEndPoint.LoopbackIpv4;
         //endpoint.Port = port;
         m_Connection = m_Driver.Connect(NetworkEndPoint.Parse(IPAddress, port));
-
+        Debug.Log("Attempt connection to " + IPAddress);
         ReportConnectionState();
         StartCoroutine(ConnectStatus(connectionReportInterval));
     }

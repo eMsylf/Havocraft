@@ -155,7 +155,7 @@ MonoBehaviour:
   connectionTimeOut: 10
   AutoDisconnect: 0
   IPAddress: 192.168.178.35
-  port: 9000
+  port: 7777
   value: 1
   pingInterval: 1
 --- !u!4 &687583486
@@ -561,10 +561,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb673596f48e38d489b91056e9b6af13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AutoStart: 0
-  IPAddressInput: 0.0.0.0
-  IPAddressOutput: 
-  port: 9000
+  AutoStart: 1
+  IPAddress: 
+  port: 7777
   value: 0
 --- !u!4 &1770029874
 Transform:
