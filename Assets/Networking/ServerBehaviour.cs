@@ -7,6 +7,8 @@ using Unity.Networking.Transport;
 public class ServerBehaviour : MonoBehaviour
 {
     public bool AutoStart = true;
+    public string IPAddressInput = "";
+    public string IPAddressOutput = "";
     [SerializeField]
     private ushort port = 9000;
     public NetworkDriver m_Driver;
@@ -59,16 +61,26 @@ public class ServerBehaviour : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
-                    uint number = stream.ReadUInt();
-                    Debug.Log("Got " + number + " from the client. Adding it to the total of " + value);
 
-                    value += number;
+                    if (!stream.IsCreated)
+                    {
+                        Debug.Log("Received ping");
+                    }
+                    else
+                    {
+                        Debug.Log("Stream length: " + stream.Length);
+                        uint number = stream.ReadUInt();
+                        Debug.Log("Got " + number + " from the client. Adding it to the total of " + value);
 
-                    Debug.Log("Sending " + value);
+                        value += number;
 
-                    var writer = m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i]);
-                    writer.WriteUInt(value);
-                    m_Driver.EndSend(writer);
+                        Debug.Log("Sending " + value);
+
+                        var writer = m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i]);
+                        writer.WriteUInt(value);
+                        m_Driver.EndSend(writer);
+                    }
+                    
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -89,13 +101,16 @@ public class ServerBehaviour : MonoBehaviour
 
         Debug.Log("Start server");
         m_Driver = NetworkDriver.Create();
-        var endpoint = NetworkEndPoint.AnyIpv4;
-        endpoint.Port = port;
-        if (m_Driver.Bind(endpoint) != 0)
-            Debug.Log("Failed to bind to port 9000");
+        //var endpoint = NetworkEndPoint.AnyIpv4;
+        
+        //endpoint.Port = port;
+        if (m_Driver.Bind(NetworkEndPoint.Parse(IPAddressInput, port)) != 0)
+            Debug.Log("Failed to bind to port " + port);
         else m_Driver.Listen();
 
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+        
+        IPAddressOutput = IPManager.GetLocalIPAddress();
     }
 
     public void StopServer()

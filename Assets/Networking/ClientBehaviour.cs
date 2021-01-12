@@ -11,10 +11,15 @@ public class ClientBehaviour : MonoBehaviour
     public float connectionReportInterval = 1f;
     public float connectionTimeOut = 10f;
     public bool AutoDisconnect = true;
+    public string IPAddress = "";
     public ushort port = 9000;
     //public bool Done;
     [HideInInspector]
     public uint value = 1;
+
+    [Min(0)]
+    public float pingInterval = 1f;
+    private float timeSinceLastPing = 1f;
 
     private void Start()
     {
@@ -41,6 +46,7 @@ public class ClientBehaviour : MonoBehaviour
             return;
         }
 
+        PingServer();
         DataStreamReader stream;
         NetworkEvent.Type cmd = m_Connection.PopEvent(m_Driver, out stream); 
         
@@ -77,9 +83,9 @@ public class ClientBehaviour : MonoBehaviour
         if (!m_Driver.IsCreated) m_Driver = NetworkDriver.Create();
         m_Connection = default;
 
-        var endpoint = NetworkEndPoint.LoopbackIpv4;
-        endpoint.Port = port;
-        m_Connection = m_Driver.Connect(endpoint);
+        //var endpoint = NetworkEndPoint.LoopbackIpv4;
+        //endpoint.Port = port;
+        m_Connection = m_Driver.Connect(NetworkEndPoint.Parse(IPAddress, port));
 
         ReportConnectionState();
         StartCoroutine(ConnectStatus(connectionReportInterval));
@@ -112,6 +118,24 @@ public class ClientBehaviour : MonoBehaviour
         else Debug.LogError(name + "has no active connection");
     }
 
+    
+    public void PingServer()
+    {
+        if (!m_Connection.IsCreated)
+            return;
+        if (m_Connection.GetState(m_Driver) != NetworkConnection.State.Connected)
+            return;
+
+        if (timeSinceLastPing < pingInterval)
+        {
+            timeSinceLastPing += Time.deltaTime;
+            return;
+        }
+        Debug.Log("Ping");
+        var writer = m_Driver.BeginSend(m_Connection);
+        m_Driver.EndSend(writer);
+        timeSinceLastPing = 0f;
+    }
     public void SendValueToServer()
     {
         var writer = m_Driver.BeginSend(m_Connection);
