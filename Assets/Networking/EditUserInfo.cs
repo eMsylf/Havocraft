@@ -1,34 +1,41 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using TMPro;
-using System;
-using System.Net;
 using UnityEngine.Networking;
+using TMPro;
 
-public class UserInfoEdit : MonoBehaviour
+public class EditUserInfo : MonoBehaviour
 {
     public TMP_InputField UsernameInput;
     public TMP_InputField PasswordInput;
     public TMP_Dropdown GenderInput;
     public TMP_InputField DateOfBirthInput;
 
-    public bool NewUser()
+    public bool IsNewUser()
     {
-        throw new NotImplementedException();
+        if (PlayerPrefs.HasKey("session_id"))
+        {
+            return string.IsNullOrEmpty(PlayerPrefs.GetString("session_id"));
+        }
+        return true;
     }
 
     void Start()
     {
-        if (!NewUser())
+        if (!IsNewUser())
         {
             // Display user info in form
+            UsernameInput.text = PlayerPrefs.GetString("username");
+            UsernameInput.textComponent.text = UsernameInput.text;
+            GenderInput.value = PlayerPrefs.GetInt("gender");
+            DateOfBirthInput.text = PlayerPrefs.GetString("date_of_birth");
+            DateOfBirthInput.textComponent.text = DateOfBirthInput.text;
         }
     }
 
     public void Submit()
     {
         // Check if all fields are entered
+        string user_id = PlayerPrefs.HasKey("player_id") ? PlayerPrefs.GetInt("player_id").ToString() :"";
         string username = UsernameInput.text;
         string password = PasswordInput.text;
         int gender = GenderInput.value;
@@ -60,6 +67,7 @@ public class UserInfoEdit : MonoBehaviour
             return;
 
         string uri = "https://studenthome.hku.nl/~bob.jeltes/process-user-info?" +
+            (!string.IsNullOrWhiteSpace(user_id) ? "id=" + user_id + "&" : "") +
             "username=" + username +
             "&password=" + password +
             "&gender=" + gender.ToString() +
