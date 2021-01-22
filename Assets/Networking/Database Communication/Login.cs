@@ -43,7 +43,7 @@ public class Login : MonoBehaviour
         if (errors > 0)
             return;
 
-        string uri = "https://studenthome.hku.nl/~bob.jeltes/client-login.php?" +
+        string uri = "https://studenthome.hku.nl/~bob.jeltes/hovercraft-havoc/client-login.php?" +
             "username=" + username +
             "&password=" + password;
 

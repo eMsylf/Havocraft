@@ -66,7 +66,7 @@ public class EditUserInfo : MonoBehaviour
         if (errors > 0)
             return;
 
-        string uri = "https://studenthome.hku.nl/~bob.jeltes/process-user-info?" +
+        string uri = "https://studenthome.hku.nl/~bob.jeltes/hovercraft-havoc/process-user-info?" +
             (!string.IsNullOrWhiteSpace(user_id) ? "id=" + user_id + "&" : "") +
             "username=" + username +
             "&password=" + password +
