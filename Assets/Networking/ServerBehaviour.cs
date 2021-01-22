@@ -3,14 +3,37 @@ using UnityEngine.Assertions;
 
 using Unity.Collections;
 using Unity.Networking.Transport;
+using UnityEngine.Events;
 
 public class ServerBehaviour : MonoBehaviour
 {
     public bool AutoStart = true;
     //public string IPAddressInput = "";
-    public string IPAddress = "";
+    [SerializeField]
+    private string ipAddress = "";
+    public string IPAddress
+    {
+        get => ipAddress;
+        set
+        {
+            ipAddress = value;
+            OnIPSet.Invoke(value);
+        }
+    }
+    public UnityEventString OnIPSet;
+
     [SerializeField]
     private ushort port = 9000;
+    public ushort Port
+    {
+        get => port;
+        set
+        {
+            port = value;
+            OnPortSet.Invoke(value.ToString());
+        }
+    }
+    public UnityEventString OnPortSet;
     public NetworkDriver m_Driver;
     private NativeList<NetworkConnection> m_Connections;
 
@@ -102,10 +125,12 @@ public class ServerBehaviour : MonoBehaviour
         //Debug.Log("Start server");
         m_Driver = NetworkDriver.Create();
         //var endpoint = NetworkEndPoint.AnyIpv4;
-        
+
+        Port = port;
+
         //endpoint.Port = port;
-        if (m_Driver.Bind(NetworkEndPoint.Parse(IPManager.GetLocalIPAddress(), port)) != 0)
-            Debug.Log("Failed to bind to port " + port);
+        if (m_Driver.Bind(NetworkEndPoint.Parse(IPManager.GetLocalIPAddress(), Port)) != 0)
+            Debug.Log("Failed to bind to port " + Port);
         else m_Driver.Listen();
 
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);

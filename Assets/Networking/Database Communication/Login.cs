@@ -17,7 +17,6 @@ public class Login : MonoBehaviour
         {
             UsernameInput.text = PlayerPrefs.GetString("username");
             UsernameInput.textComponent.text = UsernameInput.text;
-            //UsernameInput.SetTextWithoutNotify(PlayerPrefs.GetString("username"));
         }
     }
 
