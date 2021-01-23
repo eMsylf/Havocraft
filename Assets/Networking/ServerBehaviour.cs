@@ -36,6 +36,7 @@ public class ServerBehaviour : MonoBehaviour
     public UnityEventString OnPortSet;
     public NetworkDriver m_Driver;
     private NativeList<NetworkConnection> m_Connections;
+    public UnityEventString OnConnectionCountChanged;
 
     public uint value;
 
@@ -61,6 +62,7 @@ public class ServerBehaviour : MonoBehaviour
             if (!m_Connections[i].IsCreated)
             {
                 m_Connections.RemoveAtSwapBack(i);
+                OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
                 i--;
             }
         }
@@ -69,6 +71,8 @@ public class ServerBehaviour : MonoBehaviour
         while ((c = m_Driver.Accept()) != default)
         {
             m_Connections.Add(c);
+
+            OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
             Debug.Log("Accepted a connection");
         }
 

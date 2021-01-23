@@ -23,15 +23,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/OneHourGame/OneHourGame.unity
     guid: 935df99e15fa94e449a2461efeb67edf
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Networking com.unity.transport.unity
     guid: a03d8f812cd496744bf55e73d987d1b0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Login.unity
     guid: f6869b66b6b50f3428149be137c0fa20
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Database Communication/Register-Edit.unity
     guid: e6924a7174b6b2d47873aa3dbb9ec5b7
+  - enabled: 1
+    path: Assets/Networking/Client.unity
+    guid: 3997e427e76c75a4e9f74a9aabb6de22
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a32bde428a031c04fb252981d0e9e7dd,
       type: 2}
