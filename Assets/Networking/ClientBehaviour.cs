@@ -46,7 +46,7 @@ public class ClientBehaviour : MonoBehaviour
             return;
         }
 
-        PingServer();
+        //PingServer();
         DataStreamReader stream;
         NetworkEvent.Type cmd = m_Connection.PopEvent(m_Driver, out stream); 
         

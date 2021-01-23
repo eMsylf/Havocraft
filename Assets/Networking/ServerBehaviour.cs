@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine.Events;
+//using UnityEngine.Networking;
 
 public class ServerBehaviour : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class ServerBehaviour : MonoBehaviour
             OnIPSet.Invoke(value);
         }
     }
+    public bool ClearIPOnStop = true;
     public UnityEventString OnIPSet;
 
     [SerializeField]
@@ -33,7 +35,9 @@ public class ServerBehaviour : MonoBehaviour
             OnPortSet.Invoke(value.ToString());
         }
     }
+    public bool ClearPortOnStop = true;
     public UnityEventString OnPortSet;
+
     public NetworkDriver m_Driver;
     private NativeList<NetworkConnection> m_Connections;
     public UnityEventString OnConnectionCountChanged;
@@ -41,7 +45,7 @@ public class ServerBehaviour : MonoBehaviour
     public UnityEvent OnServerStart;
     public UnityEvent OnServerStop;
 
-    public uint value;
+    public uint messageValue;
 
     private void Start()
     {
@@ -100,14 +104,14 @@ public class ServerBehaviour : MonoBehaviour
                     {
                         Debug.Log("Stream length: " + stream.Length);
                         uint number = stream.ReadUInt();
-                        Debug.Log("Got " + number + " from the client. Adding it to the total of " + value);
+                        Debug.Log("Got " + number + " from the client. Adding it to the total of " + messageValue);
 
-                        value += number;
+                        messageValue += number;
 
-                        Debug.Log("Sending " + value);
+                        Debug.Log("Sending " + messageValue);
 
                         var writer = m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i]);
-                        writer.WriteUInt(value);
+                        writer.WriteUInt(messageValue);
                         m_Driver.EndSend(writer);
                     }
                     
@@ -119,6 +123,32 @@ public class ServerBehaviour : MonoBehaviour
                 }
             }
         }
+    }
+
+    public float PingInterval = 1f;
+    private float timeSinceLastPing = 0f;
+
+    public void Ping()
+    {
+        // Check time
+        if (timeSinceLastPing < PingInterval)
+        {
+            timeSinceLastPing += Time.deltaTime;
+            return;
+        }
+        // Ping
+        for (int i = 0; i < m_Connections.Length; i++)
+        {
+            NetworkConnection connection = m_Connections[i];
+            if (!connection.IsCreated)
+                return;
+            if (connection.GetState(m_Driver) != NetworkConnection.State.Connected)
+                return;
+            Debug.Log("Ping");
+            var writer = m_Driver.BeginSend(connection);
+            m_Driver.EndSend(writer);
+        }
+        timeSinceLastPing = 0f;
     }
 
     public void StartServer()
@@ -151,12 +181,17 @@ public class ServerBehaviour : MonoBehaviour
     {
         for (int i = 0; i < m_Connections.Length; i++)
         {
+            var writer = m_Driver.BeginSend(m_Connections[i]);
+            //writer.
             m_Connections[i].Disconnect(m_Driver);
         }
         if (m_Driver.IsCreated)
             m_Driver.Dispose();
         if (m_Connections.IsCreated)
             m_Connections.Dispose();
+
+        if (ClearIPOnStop) IPAddress = "0.0.0.0";
+        if (ClearPortOnStop) Port = default;
         Debug.Log("Stopped server");
         OnServerStop.Invoke();
     }
