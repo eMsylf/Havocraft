@@ -38,6 +38,9 @@ public class ServerBehaviour : MonoBehaviour
     private NativeList<NetworkConnection> m_Connections;
     public UnityEventString OnConnectionCountChanged;
 
+    public UnityEvent OnServerStart;
+    public UnityEvent OnServerStop;
+
     public uint value;
 
     private void Start()
@@ -141,14 +144,20 @@ public class ServerBehaviour : MonoBehaviour
         
         IPAddress = IPManager.GetLocalIPAddress();
         Debug.Log("Started server at " + IPAddress);
+        OnServerStart.Invoke();
     }
 
     public void StopServer()
     {
+        for (int i = 0; i < m_Connections.Length; i++)
+        {
+            m_Connections[i].Disconnect(m_Driver);
+        }
         if (m_Driver.IsCreated)
             m_Driver.Dispose();
         if (m_Connections.IsCreated)
             m_Connections.Dispose();
         Debug.Log("Stopped server");
+        OnServerStop.Invoke();
     }
 }
