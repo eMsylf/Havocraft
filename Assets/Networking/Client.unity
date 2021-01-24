@@ -763,7 +763,7 @@ MonoBehaviour:
   AutoConnect: 0
   connectionReportInterval: 1
   connectionTimeOut: 10
-  AutoDisconnect: 0
+  DisconnectAfterPing: 0
   IPAddress: 
   port: 0
   value: 1
@@ -2967,17 +2967,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AutoStart: 1
   ipAddress: 
+  ClearIPOnStop: 1
   OnIPSet:
     m_PersistentCalls:
       m_Calls: []
   port: 7777
+  ClearPortOnStop: 1
   OnPortSet:
     m_PersistentCalls:
       m_Calls: []
   OnConnectionCountChanged:
     m_PersistentCalls:
       m_Calls: []
-  value: 0
+  OnServerStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnServerStop:
+    m_PersistentCalls:
+      m_Calls: []
+  messageValue: 0
+  PingInterval: 1
 --- !u!4 &1770029874
 Transform:
   m_ObjectHideFlags: 0

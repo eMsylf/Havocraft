@@ -11,6 +11,11 @@ public class SceneFunctions : Singleton<SceneFunctions>
         SceneManager.LoadScene(sceneName);
     }
 
+    public void LoadSceneAdditive(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+    }
+
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

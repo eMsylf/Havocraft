@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: cf1fa6aa19be6a34fa170af19c859b35
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Stage0.unity
     guid: a42b79e5ee6040e449a00d0a4cd8ba01
   - enabled: 0
@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Networking/Client.unity
     guid: 3997e427e76c75a4e9f74a9aabb6de22
+  - enabled: 0
+    path: Assets/Networking/Server.unity
+    guid: 86001b1479affc5408a8ffbbfd861cdc
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a32bde428a031c04fb252981d0e9e7dd,
       type: 2}

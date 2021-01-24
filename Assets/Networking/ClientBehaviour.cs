@@ -1,7 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Networking.Transport;
 using UnityEngine;
+using Unity.Networking.Transport;
+using BobJeltes;
+using System;
 
 public class ClientBehaviour : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class ClientBehaviour : MonoBehaviour
     public bool AutoConnect = true;
     public float connectionReportInterval = 1f;
     public float connectionTimeOut = 10f;
-    public bool AutoDisconnect = true;
     public string IPAddress = "";
     public ushort port = 9000;
     //public bool Done;
@@ -20,6 +20,7 @@ public class ClientBehaviour : MonoBehaviour
     [Min(0)]
     public float pingInterval = 1f;
     private float timeSinceLastPing = 1f;
+    internal Vector2 movementInput;
 
     private void Start()
     {
@@ -30,7 +31,7 @@ public class ClientBehaviour : MonoBehaviour
     private void OnDestroy()
     {
         if (m_Connection.IsCreated)
-            Disconnect();
+            Disconnect(DisconnectionReason.ClientDestroyed);
         if (m_Driver.IsCreated)
             m_Driver.Dispose();
     }
@@ -56,13 +57,7 @@ public class ClientBehaviour : MonoBehaviour
             case NetworkEvent.Type.Empty:
                 break;
             case NetworkEvent.Type.Data:
-                uint newValue = stream.ReadUInt();
-                Debug.Log(name + " got the value = " + newValue + " back from the server");
-                //Done = true;
-                if (AutoDisconnect)
-                {
-                    Disconnect();
-                }
+                NetworkMessage.Read(stream, this);
                 break;
             case NetworkEvent.Type.Connect:
                 Debug.Log(name + " is now connected to the server", gameObject);
@@ -79,7 +74,7 @@ public class ClientBehaviour : MonoBehaviour
 
     public void ConnectToServer(bool forceReconnection)
     {
-        if (forceReconnection && m_Connection.IsCreated) Disconnect();
+        if (forceReconnection && m_Connection.IsCreated) Disconnect(DisconnectionReason.Reconnection);
         if (!m_Driver.IsCreated) m_Driver = NetworkDriver.Create();
         m_Connection = default;
 
@@ -98,7 +93,7 @@ public class ClientBehaviour : MonoBehaviour
 
         float connectionTime = 0f;
 
-        while (m_Connection.GetState(m_Driver) == NetworkConnection.State.Connecting)
+        while (m_Driver.IsCreated && m_Connection.IsCreated && m_Connection.GetState(m_Driver) == NetworkConnection.State.Connecting)
         {
             Debug.Log("Connecting...");
             yield return new WaitForSeconds(interval);
@@ -106,10 +101,35 @@ public class ClientBehaviour : MonoBehaviour
             if (connectionTime >= connectionTimeOut)
             {
                 Debug.LogError("Connection timed out.", this);
-                Disconnect();
+                Disconnect(DisconnectionReason.Timeout);
                 break;
             }
         }
+    }
+
+    internal void TurnEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void TurnStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ScoreUpdate(int v)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void GameOver(byte isWinner)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void GameStart()
+    {
+        throw new NotImplementedException();
     }
 
     public void ReportConnectionState()
@@ -143,7 +163,7 @@ public class ClientBehaviour : MonoBehaviour
         m_Driver.EndSend(writer);
     }
 
-    public void Disconnect()
+    public void Disconnect(DisconnectionReason reason)
     {
         if (!m_Connection.IsCreated)
         {
@@ -153,6 +173,6 @@ public class ClientBehaviour : MonoBehaviour
         m_Connection.Disconnect(m_Driver);
         m_Connection = default;
         m_Driver.Dispose();
-        Debug.Log(name + " disconnected from the server", this);
+        Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
     }
 }

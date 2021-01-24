@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine.Events;
+using BobJeltes;
 //using UnityEngine.Networking;
 
 public class ServerBehaviour : MonoBehaviour
@@ -39,7 +40,7 @@ public class ServerBehaviour : MonoBehaviour
     public UnityEventString OnPortSet;
 
     public NetworkDriver m_Driver;
-    private NativeList<NetworkConnection> m_Connections;
+    public NativeList<NetworkConnection> m_Connections;
     public UnityEventString OnConnectionCountChanged;
 
     public UnityEvent OnServerStart;
@@ -83,6 +84,8 @@ public class ServerBehaviour : MonoBehaviour
             Debug.Log("Accepted a connection");
         }
 
+        Ping();
+
         DataStreamReader stream;
         for (int i = 0; i < m_Connections.Length; i++)
         {
@@ -95,26 +98,7 @@ public class ServerBehaviour : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
-
-                    if (!stream.IsCreated)
-                    {
-                        Debug.Log("Received ping");
-                    }
-                    else
-                    {
-                        Debug.Log("Stream length: " + stream.Length);
-                        uint number = stream.ReadUInt();
-                        Debug.Log("Got " + number + " from the client. Adding it to the total of " + messageValue);
-
-                        messageValue += number;
-
-                        Debug.Log("Sending " + messageValue);
-
-                        var writer = m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i]);
-                        writer.WriteUInt(messageValue);
-                        m_Driver.EndSend(writer);
-                    }
-                    
+                    NetworkMessage.Read(stream, i, this);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -137,6 +121,7 @@ public class ServerBehaviour : MonoBehaviour
             return;
         }
         // Ping
+        Debug.Log("Pinging " + m_Connections.Length + " clients");
         for (int i = 0; i < m_Connections.Length; i++)
         {
             NetworkConnection connection = m_Connections[i];
@@ -144,10 +129,11 @@ public class ServerBehaviour : MonoBehaviour
                 return;
             if (connection.GetState(m_Driver) != NetworkConnection.State.Connected)
                 return;
-            Debug.Log("Ping");
             var writer = m_Driver.BeginSend(connection);
+            writer.WriteByte(0);
             m_Driver.EndSend(writer);
         }
+        // Reset time
         timeSinceLastPing = 0f;
     }
 
@@ -179,6 +165,8 @@ public class ServerBehaviour : MonoBehaviour
 
     public void StopServer()
     {
+        if (!m_Connections.IsCreated)
+            return;
         for (int i = 0; i < m_Connections.Length; i++)
         {
             var writer = m_Driver.BeginSend(m_Connections[i]);
