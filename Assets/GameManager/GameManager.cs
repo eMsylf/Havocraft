@@ -65,6 +65,7 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("Quit game");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBGL
 #else
         Application.Quit();
 #endif

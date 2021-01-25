@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 public class Login : MonoBehaviour
@@ -68,10 +69,25 @@ public class Login : MonoBehaviour
         if (text.Length <= 2)
         {
             Debug.Log("Wrong username or password");
+            LoginFailure();
+            yield break;
         }
 
         info = JsonUtility.FromJson<UserInfo>(text);
 
         info.SaveToPlayerPrefs();
+        LoginSuccess();
+    }
+
+    public UnityEvent OnLoginFailure;
+    public void LoginFailure()
+    {
+        OnLoginFailure.Invoke();
+    }
+
+    public UnityEvent OnLoginSuccess;
+    public void LoginSuccess()
+    {
+        OnLoginSuccess.Invoke();
     }
 }

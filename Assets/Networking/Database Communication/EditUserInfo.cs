@@ -5,11 +5,12 @@ using TMPro;
 
 public class EditUserInfo : MonoBehaviour
 {
+    public TextMeshProUGUI pageTitle;
+    [Space]
     public TMP_InputField UsernameInput;
     public TMP_InputField PasswordInput;
     public TMP_Dropdown GenderInput;
     public TMP_InputField DateOfBirthInput;
-
     public bool IsNewUser()
     {
         if (PlayerPrefs.HasKey("session_id"))
@@ -23,6 +24,7 @@ public class EditUserInfo : MonoBehaviour
     {
         if (!IsNewUser())
         {
+            pageTitle.text = "Edit user info";
             // Display user info in form
             UsernameInput.text = PlayerPrefs.GetString("username");
             UsernameInput.textComponent.text = UsernameInput.text;
@@ -30,6 +32,8 @@ public class EditUserInfo : MonoBehaviour
             DateOfBirthInput.text = PlayerPrefs.GetString("date_of_birth");
             DateOfBirthInput.textComponent.text = DateOfBirthInput.text;
         }
+        else
+            pageTitle.text = "Register new user";
     }
 
     public void Submit()

@@ -48,6 +48,7 @@ namespace BobJeltes
 
     public static class NetworkMessage
     {
+        // Server
         public static void Send(ServerMessage serverMessageType, ServerBehaviour sender, NetworkConnection receiver)
         {
             var writer = sender.m_Driver.BeginSend(receiver);
@@ -102,6 +103,7 @@ namespace BobJeltes
             }
         }
 
+        // Client
         public static void Send(ClientMessage clientMessageType, ClientBehaviour sender)
         {
             DataStreamWriter writer = sender.m_Driver.BeginSend(sender.m_Connection);
