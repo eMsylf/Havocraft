@@ -25,9 +25,18 @@ namespace BobJeltes.StandardUtilities
             {
                 if (m_ShuttingDown)
                 {
-                    Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
-                        "' already destroyed. Returning null.");
-                    return null;
+                    T newInstance = FindObjectOfType<T>();
+                    if (newInstance == null) {
+                        Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
+                            "' already destroyed. Returning null.");
+                        return null;
+                    }
+                    else
+                    {
+                        Debug.Log("New instance of singleton found. Returning new: " + newInstance.name, newInstance);
+                        m_ShuttingDown = false;
+                        return newInstance;
+                    }
                 }
 
                 lock (m_Lock)

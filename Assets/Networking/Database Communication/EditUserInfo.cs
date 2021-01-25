@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.Events;
+using System.Collections;
 
 public class EditUserInfo : MonoBehaviour
 {
@@ -11,6 +13,10 @@ public class EditUserInfo : MonoBehaviour
     public TMP_InputField PasswordInput;
     public TMP_Dropdown GenderInput;
     public TMP_InputField DateOfBirthInput;
+
+    public UnityEvent OnUsernameBlank;
+    public UnityEvent OnPasswordBlank;
+    public UnityEvent OnInvalidDate;
     public bool IsNewUser()
     {
         if (PlayerPrefs.HasKey("session_id"))
@@ -45,17 +51,21 @@ public class EditUserInfo : MonoBehaviour
         int gender = GenderInput.value;
         string dateOfBirth = DateOfBirthInput.text;
         int errors = 0;
-
+        string errorMessage = "";
         if (string.IsNullOrWhiteSpace(username))
         {
-            Debug.LogError("Username left blank");
+            Debug.LogError("Username left blank.");
+            OnUsernameBlank.Invoke();
             errors++;
+            errorMessage += "Username left blank. \n";
         }
 
         if (string.IsNullOrWhiteSpace(password))
         {
             Debug.LogError("Password left blank.");
+            OnPasswordBlank.Invoke();
             errors++;
+            errorMessage += "Password left blank. \n";
         }
 
         // Check if valid date
@@ -63,12 +73,17 @@ public class EditUserInfo : MonoBehaviour
         if (!System.DateTime.TryParse(dateOfBirth, out dateValue))
         {
             //Invalid date
-            Debug.LogError("Invalid date of birth: " + dateOfBirth);
+            Debug.LogError("Invalid date of birth: " + dateOfBirth + ". ");
+            OnInvalidDate.Invoke();
             errors++;
+            errorMessage += "Invalid date of birth: " + dateOfBirth + " \n";
         }
 
         if (errors > 0)
+        {
+            Error.Invoke(errorMessage);
             return;
+        }
 
         string uri = "https://studenthome.hku.nl/~bob.jeltes/hovercraft-havoc/process-user-info?" +
             (!string.IsNullOrWhiteSpace(user_id) ? "id=" + user_id + "&" : "") +
@@ -79,6 +94,42 @@ public class EditUserInfo : MonoBehaviour
 
         Debug.Log("URI: " + uri);
 
-        UnityWebRequest.Get(uri).SendWebRequest();
+        StartCoroutine(ExtractJSON(uri));
     }
+
+    public UserInfo info;
+
+    public IEnumerator ExtractJSON(string uri)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.isNetworkError || webRequest.isHttpError)
+        {
+            Debug.LogError("Error sending request to server");
+            Error.Invoke("Error sending request to server");
+            yield break;
+        }
+
+        string text = webRequest.downloadHandler.text;
+        Debug.Log("Web request result: " + text);
+        if (text.Length <= 2)
+        {
+            if (IsNewUser())
+            {
+                Debug.Log("Registration successful");
+                Success.Invoke("Registration successful");
+            }
+            else
+            {
+                Debug.Log("Info edit successful");
+                Success.Invoke("Info edit successful");
+            }
+            yield break;
+        }
+        Error.Invoke("Unknown error occurred");
+    }
+
+    public UnityEventString Success;
+    public UnityEventString Error;
 }
