@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Networking.Transport;
 using BobJeltes;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ClientBehaviour : MonoBehaviour
 {
@@ -57,6 +58,7 @@ public class ClientBehaviour : MonoBehaviour
             case NetworkEvent.Type.Empty:
                 break;
             case NetworkEvent.Type.Data:
+                Debug.Log(name + " received data");
                 NetworkMessage.Read(stream, this);
                 break;
             case NetworkEvent.Type.Connect:
@@ -127,9 +129,17 @@ public class ClientBehaviour : MonoBehaviour
         throw new NotImplementedException();
     }
 
+    public string gameScene;
     internal void GameStart()
     {
-        throw new NotImplementedException();
+        DontDestroyOnLoad(gameObject);
+        SceneManager.LoadSceneAsync(gameScene).completed += _ => QueueLoadComplete();
+    }
+
+    void QueueLoadComplete()
+    {
+        NetworkMessage.Send(ClientMessage.SceneLoaded, this);
+        SceneManager.LoadSceneAsync(gameScene).completed -= _ => QueueLoadComplete();
     }
 
     public void ReportConnectionState()

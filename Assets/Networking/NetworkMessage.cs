@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Networking.Transport;
-using UnityEditor;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace BobJeltes
@@ -17,12 +13,13 @@ namespace BobJeltes
         Reconnection,
         Timeout,
         // Server-side
-        ServerStopped,
+        ServerStopped
     }
 
     public enum ClientMessage : byte
     {
         Pong,
+        SceneLoaded,
         MovementInput,      // vector2
         ShootInput,         // 
         QuitGame
@@ -53,7 +50,7 @@ namespace BobJeltes
         {
             var writer = sender.m_Driver.BeginSend(receiver);
             writer.WriteByte((byte)serverMessageType);
-
+            Debug.Log("Send: " + serverMessageType.ToString() + " to " + receiver.InternalId);
             switch (serverMessageType)
             {
                 case ServerMessage.Ping:
@@ -62,6 +59,7 @@ namespace BobJeltes
                 case ServerMessage.Disconnection:
                     break;
                 case ServerMessage.GameStart:
+                    sender.m_Driver.EndSend(writer);
                     break;
                 case ServerMessage.GameOver:
                     break;
@@ -87,10 +85,14 @@ namespace BobJeltes
         public static void Read(DataStreamReader stream, int playerID, ServerBehaviour reader)
         {
             ClientMessage clientMessageType = (ClientMessage)stream.ReadByte();
+            Debug.Log(reader.name + " got message of type " + clientMessageType.ToString());
 
             switch (clientMessageType)
             {
                 case ClientMessage.Pong:
+                    break;
+                case ClientMessage.SceneLoaded:
+                    reader.PlayerReady();
                     break;
                 case ClientMessage.MovementInput:
                     break;
@@ -114,6 +116,9 @@ namespace BobJeltes
                 case ClientMessage.Pong:
                     sender.m_Driver.EndSend(writer);
                     break;
+                case ClientMessage.SceneLoaded:
+                    sender.m_Driver.EndSend(writer);
+                    break;
                 case ClientMessage.MovementInput:
                     SendMovementInput(sender.m_Driver, sender.m_Connection, sender.movementInput);
                     break;
@@ -130,7 +135,7 @@ namespace BobJeltes
         public static void Read(DataStreamReader stream, ClientBehaviour reader)
         {
             ServerMessage serverMessageType = (ServerMessage)stream.ReadByte();
-
+            Debug.Log(reader.name + " got message of type " + serverMessageType.ToString());
             switch (serverMessageType)
             {
                 case ServerMessage.Ping:

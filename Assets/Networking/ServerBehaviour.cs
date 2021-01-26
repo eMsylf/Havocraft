@@ -5,6 +5,8 @@ using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine.Events;
 using BobJeltes;
+using System;
+using System.Collections;
 //using UnityEngine.Networking;
 
 public class ServerBehaviour : MonoBehaviour
@@ -41,12 +43,14 @@ public class ServerBehaviour : MonoBehaviour
 
     public NetworkDriver m_Driver;
     public NativeList<NetworkConnection> m_Connections;
+
+    public int playersRequiredForGameStart = 2;
+    public int playersReady = 0;
+
     public UnityEventString OnConnectionCountChanged;
 
     public UnityEvent OnServerStart;
     public UnityEvent OnServerStop;
-
-    public uint messageValue;
 
     private void Start()
     {
@@ -82,6 +86,10 @@ public class ServerBehaviour : MonoBehaviour
 
             OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
             Debug.Log("Accepted a connection");
+            if (m_Connections.Length == playersRequiredForGameStart)
+            {
+                StartGame();
+            }
         }
 
         Ping();
@@ -179,8 +187,33 @@ public class ServerBehaviour : MonoBehaviour
             m_Connections.Dispose();
 
         if (ClearIPOnStop) IPAddress = "0.0.0.0";
-        if (ClearPortOnStop) Port = default;
         Debug.Log("Stopped server");
         OnServerStop.Invoke();
+    }
+
+    // Initiate scene load for all clients
+    public void StartGame()
+    {
+        StartCoroutine(Kipje());
+    }
+
+    public IEnumerator Kipje()
+    {
+        yield return new WaitForSeconds(1f);
+        NetworkMessage.SendAll(ServerMessage.GameStart, this, m_Connections);
+    }
+
+    // Called when a scene load is done
+    internal void PlayerReady()
+    {
+        playersReady++;
+        if (playersReady >= m_Connections.Length)
+        {
+            Debug.Log("All players ready");
+        }
+        else
+        {
+            Debug.Log(playersReady + " of " + m_Connections.Length + " ready ", this);
+        }
     }
 }
