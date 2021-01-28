@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.VFX;
+﻿using UnityEngine;
+using UnityEngine.Events;
 using GD.MinMaxSlider;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -83,18 +78,23 @@ public class PlayerController : MonoBehaviour
     public bool GimbalWeapons = true;
     [Range(0f, 1f)]
     public float GimbalRigidity = 1f;
+    public bool PauseEditorUponFiring = false;
     Vector2 movementInput;
+
+    //public UnityEvent<Vector2> onMovementInputChanged;
+    public UnityEventVector2 onMovementInputChanged;
 
     void Move(Vector2 direction)
     {
         //Debug.Log("Move! " + direction);
         movementInput = direction;
+        onMovementInputChanged.Invoke(movementInput);
     }
 
     void StopMove()
     {
         //Debug.Log("Stop moving");
-        movementInput = Vector2.zero;
+        Move(Vector2.zero);
     }
 
     private void FixedUpdate()
@@ -124,7 +124,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool PauseEditorUponFiring = false;
     void Shoot()
     {
         //Debug.Log("Shoot");
@@ -142,7 +141,10 @@ public class PlayerController : MonoBehaviour
     void SetShootingActive(bool _shooting)
     {
         shooting = _shooting;
+        OnShootingChanged.Invoke(_shooting);
     }
+
+    public UnityEventBool OnShootingChanged;
 
     void ShootContinuous()
     {
@@ -170,5 +172,6 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Disable " + name, gameObject);
         Controls.Disable();
+
     }
 }

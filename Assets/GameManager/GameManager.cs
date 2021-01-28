@@ -98,9 +98,7 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
-
-        Canvas canvas = EndGameScreenInstance.GetComponent<Canvas>();
-        if (canvas != null)
-            EndGameScreenInstance.GetComponent<Canvas>().enabled = true;
+        EndGameScreenInstance.gameObject.SetActive(true);
+        EndGameScreenInstance.Activate(true);
     }
 }

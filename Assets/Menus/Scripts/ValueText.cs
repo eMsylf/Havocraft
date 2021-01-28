@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class ValueText : MonoBehaviour
 {
-    public TextMeshProUGUI TMPComponent;
+    public NumberFormat numberFormat = NumberFormat.Percentage;
+    public string CustomFormat = "";
+    public string output;
+    public TextMeshProUGUI OutputTextComponent;
     TextMeshProUGUI GetTMPComponent()
     {
-        if (TMPComponent == null)
+        if (OutputTextComponent == null)
         {
-            TMPComponent = GetComponent<TextMeshProUGUI>();
+            OutputTextComponent = GetComponent<TextMeshProUGUI>();
         }
-        return TMPComponent;
+        return OutputTextComponent;
     }
-
-    public float value;
 
     public enum NumberFormat
     {
@@ -25,7 +26,6 @@ public class ValueText : MonoBehaviour
         ZeroToOne,
         Custom
     }
-    public NumberFormat numberFormat = NumberFormat.Percentage;
 
     public string GetNumberFormat() => GetNumberFormat(numberFormat);
 
@@ -47,15 +47,12 @@ public class ValueText : MonoBehaviour
                 return string.Empty;
         }
     }
-    public string CustomFormat = "";
 
     public void UpdateValue(float value)
     {
-        string formattedSliderValue = value.ToString(GetNumberFormat());
-        GetTMPComponent().text = formattedSliderValue; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
+        output = value.ToString(GetNumberFormat());
+        GetTMPComponent().text = output; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
                                                        //Debug.Log("Update value to " + formattedSliderValue, this);
-        output = formattedSliderValue;
     }
 
-    public string output;
 }

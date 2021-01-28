@@ -145,6 +145,21 @@ public class ServerBehaviour : MonoBehaviour
         timeSinceLastPing = 0f;
     }
 
+    internal void ShootInput(int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ClientQuit(int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ReadMovementInput(float x, float y, int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
     public void StartServer()
     {
         if (m_Driver.IsCreated)
@@ -204,8 +219,9 @@ public class ServerBehaviour : MonoBehaviour
     }
 
     // Called when a scene load is done
-    internal void PlayerReady()
+    internal void PlayerReady(int playerID)
     {
+        Debug.Log("Player " + playerID + " ready");
         playersReady++;
         if (playersReady >= m_Connections.Length)
         {

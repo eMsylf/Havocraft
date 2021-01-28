@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -85.87}
+  m_AnchoredPosition: {x: 0, y: -144.1}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8579964155033599980
@@ -701,6 +701,12 @@ MonoBehaviour:
   GimbalWeapons: 1
   GimbalRigidity: 0.25
   PauseEditorUponFiring: 0
+  onMovementInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShootingChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &883134679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,8 +735,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: {fileID: 8579964155033599980}
+  ScoreValue: {fileID: 0}
+  PlayerController: {fileID: 0}
   HoverJets: []
   DeathEffectObjects: []
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4772672320969898287
 GameObject:
   m_ObjectHideFlags: 0
@@ -944,7 +955,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 142.93
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1244,6 +1255,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 3578247220351703180, guid: a7c85b99288e3ca43841d6360a4d621c,
+        type: 3}
+      propertyPath: ParentVelocityInfluence
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5535514076556297112, guid: a7c85b99288e3ca43841d6360a4d621c,
         type: 3}
       propertyPath: m_Name
@@ -1329,6 +1345,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 4215788875288357661, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: ParentVelocityInfluence
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name
@@ -1473,6 +1494,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.58172
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293751227551594199, guid: 42825a39f32765a4c8b6e42a3352002b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293751227551594199, guid: 42825a39f32765a4c8b6e42a3352002b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5479794449562381335, guid: 42825a39f32765a4c8b6e42a3352002b,
         type: 3}
@@ -1904,6 +1935,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 81c1860e7800e5340bf8a54c565ba9ea, type: 2}
+    - target: {fileID: 4215788875288357661, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: ParentVelocityInfluence
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name

@@ -1,11 +1,13 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using System;
+using System.Collections;
 using Unity.Networking.Transport;
-using BobJeltes;
-using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using BobJeltes;
+using BobJeltes.StandardUtilities;
+using Unity.Collections;
 
-public class ClientBehaviour : MonoBehaviour
+public class ClientBehaviour : Singleton<ClientBehaviour>
 {
     public NetworkDriver m_Driver;
     public NetworkConnection m_Connection;
@@ -21,7 +23,16 @@ public class ClientBehaviour : MonoBehaviour
     [Min(0)]
     public float pingInterval = 1f;
     private float timeSinceLastPing = 1f;
-    internal Vector2 movementInput;
+    private Vector2 movementInput;
+    public Vector2 MovementInput
+    {
+        get => movementInput;
+        set
+        {
+            movementInput = value;
+            MovementInputChanged();
+        }
+    }
 
     private void Start()
     {
@@ -109,24 +120,54 @@ public class ClientBehaviour : MonoBehaviour
         }
     }
 
-    internal void TurnEnd()
+    PlayerClientInterface playerClientInterface;
+
+    public PlayerClientInterface GetPlayerClientInterface()
+    {
+        if (playerClientInterface == null)
+        {
+            playerClientInterface = FindObjectOfType<PlayerClientInterface>();
+            if (playerClientInterface == null)
+                Debug.LogError("No player-client interface found in scene");
+        }
+        return playerClientInterface;
+    }
+
+    // Send
+    public void MovementInputChanged()
+    {
+        NetworkMessage.Send(ClientMessage.MovementInput, this);
+    }
+
+    public void ShootingChanged(bool isShooting)
+    {
+        byte[] bytes = { Convert.ToByte(isShooting) };
+        NetworkMessage.Send(ClientMessage.ShootInput, this, bytes);
+    }
+
+    internal void QuitGame()
     {
         throw new NotImplementedException();
+    }
+
+
+    // Receive
+    internal void TurnEnd()
+    {
+        PlayerClientInterface pci = GetPlayerClientInterface();
+        pci.TurnEnd();
     }
 
     internal void TurnStart()
     {
-        throw new NotImplementedException();
+        PlayerClientInterface pci = GetPlayerClientInterface();
+        pci.TurnStart();
     }
 
-    internal void ScoreUpdate(int v)
+    internal void ScoreUpdate(int score)
     {
-        throw new NotImplementedException();
-    }
-
-    internal void GameOver(byte isWinner)
-    {
-        throw new NotImplementedException();
+        PlayerClientInterface pci = GetPlayerClientInterface();
+        pci.UpdateScore(score);
     }
 
     public string gameScene;
@@ -140,6 +181,12 @@ public class ClientBehaviour : MonoBehaviour
     {
         NetworkMessage.Send(ClientMessage.SceneLoaded, this);
         SceneManager.LoadSceneAsync(gameScene).completed -= _ => QueueLoadComplete();
+    }
+
+    internal void GameOver(bool isWinner)
+    {
+        PlayerClientInterface pci = GetPlayerClientInterface();
+        pci.GameOver(isWinner);
     }
 
     public void ReportConnectionState()

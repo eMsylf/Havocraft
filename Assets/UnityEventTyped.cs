@@ -18,6 +18,9 @@ namespace UnityEngine.Events
     public class UnityEventBool : UnityEvent<bool> { }
 
     [Serializable]
+    public class UnityEventVector2 : UnityEvent<Vector2> { }
+
+    [Serializable]
     public class UnityEventCustomType<T> : UnityEvent<T> { }
 
     [Serializable]

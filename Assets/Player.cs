@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using BobJeltes.Menu;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.VFX;
 
@@ -20,6 +22,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    public Slider Health;
+    public ValueText ScoreValue;
+    public PlayerController PlayerController;
+    public List<GameObject> HoverJets;
+    public List<GameObject> DeathEffectObjects;
+    public EndGameScreen endGameScreen;
+
     bool disabling = false;
 
     private void OnEnable()
@@ -34,7 +43,6 @@ public class Player : MonoBehaviour
         Debug.Log("Disable " + name, gameObject);
     }
 
-    public Slider Health;
 
     public void TakeDamage(float damage)
     {
@@ -48,6 +56,7 @@ public class Player : MonoBehaviour
         TakeDamage(damage);
     }
 
+    public UnityEvent OnDeath;
     public void Die()
     {
         ExplodeViolently();
@@ -56,12 +65,11 @@ public class Player : MonoBehaviour
         {
             GameManager.Instance.PlayerDeath(this);
         }
+        OnDeath.Invoke();
         if (!disabling)
             enabled = false;
-    }
 
-    public List<GameObject> HoverJets;
-    public List<GameObject> DeathEffectObjects;
+    }
 
     private void ExplodeViolently()
     {

@@ -1,30 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BobJeltes.Menu
 {
     public class EndGameScreen : MonoBehaviour
     {
-        private bool isWinner;
-        public bool IsWinner
-        {
-            get
-            {
-                return isWinner;
-            }
-            set
-            {
-                Debug.Log("Is Winner set to " + value);
-                isWinner = value;
-            }
-        }
+        public Graphic Background;
         public GameObject WinnerText;
         public GameObject LoserText;
+        public ValueText ScoreText;
 
-        private void OnEnable()
+        public void ShowWinner(float score = 0)
         {
-            Debug.Log("Is winner: " + IsWinner, this);
+            Activate(true, score);
+        }
+
+        public void ShowLoser(float score = 0)
+        {
+            Activate(false, score);
+        }
+
+        public void Activate(bool winner, float score = 0)
+        {
+            if (Background != null) Background.enabled = true;
+            Debug.Log("Is winner: " + winner, this);
             if (WinnerText == null)
             {
                 Debug.LogError("Winner text missing", this);
@@ -35,8 +37,10 @@ namespace BobJeltes.Menu
                 Debug.LogError("Loser text missing", this);
                 return;
             }
-            WinnerText.SetActive(IsWinner);
-            LoserText.SetActive(!IsWinner);
+            WinnerText.SetActive(winner);
+            LoserText.SetActive(!winner);
+            if (ScoreText != null) ScoreText.UpdateValue(score);
         }
+
     }
 }

@@ -31,18 +31,18 @@ namespace BobJeltes
     public enum ServerMessage : byte
     {
         Ping,
-        Disconnection,      // byte=reason
-        GameStart,
-        GameOver,           // byte=winner
-        TurnStart,
-        TurnEnd,
-        ScoreUpdate,        // int=score
-        //PlayerPositions,
-        //PlayerRotation,
-        //ProjectilePositions,
-        //ProjectileImpacts,
-        //Explosion,
-        //HitConfirmation
+        Disconnection,          // byte=reason
+        GameStart,              //
+        GameOver,               // byte=winner
+        TurnStart,              //
+        TurnEnd,                //
+        ScoreUpdate,            // int=score
+        //PlayerPositions,      // Vector3 array?
+        //PlayerRotation,       // Vector3 array?
+        //ProjectilePositions,  // Vector3 array?
+        //ProjectileImpacts,    // Vector3 array?
+        //Explosion,            // Vector3?
+        //HitConfirmation       //
     }
 
     public static class NetworkMessage
@@ -103,13 +103,18 @@ namespace BobJeltes
                 case ClientMessage.Pong:
                     break;
                 case ClientMessage.SceneLoaded:
-                    reader.PlayerReady();
+                    reader.PlayerReady(playerID);
                     break;
                 case ClientMessage.MovementInput:
+                    float x = stream.ReadFloat();
+                    float y = stream.ReadFloat();
+                    reader.ReadMovementInput(x, y, playerID);
                     break;
                 case ClientMessage.ShootInput:
+                    reader.ShootInput(playerID);
                     break;
                 case ClientMessage.QuitGame:
+                    reader.ClientQuit(playerID);
                     break;
                 default:
                     break;
@@ -117,7 +122,7 @@ namespace BobJeltes
         }
 
         // Client
-        public static void Send(ClientMessage clientMessageType, ClientBehaviour sender)
+        public static void Send(ClientMessage clientMessageType, ClientBehaviour sender, byte[] AdditionalData = null)
         {
             DataStreamWriter writer = sender.m_Driver.BeginSend(sender.m_Connection);
             writer.WriteByte((byte)clientMessageType);
@@ -131,12 +136,17 @@ namespace BobJeltes
                     sender.m_Driver.EndSend(writer);
                     break;
                 case ClientMessage.MovementInput:
-                    SendMovementInput(sender.m_Driver, sender.m_Connection, sender.movementInput);
+                    SendMovementInput(sender.m_Driver, sender.m_Connection, sender.MovementInput);
                     break;
                 case ClientMessage.ShootInput:
                     // If the isShooting variable is set, send this
+                    NativeArray<byte> bytes = new NativeArray<byte>();
+                    bytes.CopyFrom(AdditionalData);
+                    writer.WriteBytes(bytes);
+                    sender.m_Driver.EndSend(writer);
                     break;
                 case ClientMessage.QuitGame:
+                    sender.m_Driver.EndSend(writer);
                     break;
                 default:
                     break;
@@ -159,7 +169,7 @@ namespace BobJeltes
                     reader.GameStart();
                     break;
                 case ServerMessage.GameOver:
-                    reader.GameOver(stream.ReadByte());
+                    reader.GameOver(Convert.ToBoolean(stream.ReadByte()));
                     break;
                 case ServerMessage.TurnStart:
                     reader.TurnStart();
@@ -172,7 +182,7 @@ namespace BobJeltes
                     stream.ReadBytes(bytes);
                     byte[] byteArray = new byte[4];
                     bytes.CopyTo(byteArray);
-
+                    
                     int score = BitConverter.ToInt32(byteArray, 0);
                     reader.ScoreUpdate(score);
                     break;
