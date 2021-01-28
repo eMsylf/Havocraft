@@ -194,13 +194,13 @@ public class ServerBehaviour : MonoBehaviour
     // Initiate scene load for all clients
     public void StartGame()
     {
-        StartCoroutine(Kipje());
+        StartCoroutine(AnnounceGameStart());
     }
 
-    public IEnumerator Kipje()
+    public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(1f);
-        NetworkMessage.SendAll(ServerMessage.GameStart, this, m_Connections);
+        NetworkMessage.SendAll(ServerMessage.GameStart, null, this, m_Connections);
     }
 
     // Called when a scene load is done

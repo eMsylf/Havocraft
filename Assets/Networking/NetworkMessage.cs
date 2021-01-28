@@ -1,5 +1,7 @@
-﻿using Unity.Collections;
+﻿using System;
+using Unity.Collections;
 using Unity.Networking.Transport;
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 namespace BobJeltes
@@ -46,7 +48,7 @@ namespace BobJeltes
     public static class NetworkMessage
     {
         // Server
-        public static void Send(ServerMessage serverMessageType, ServerBehaviour sender, NetworkConnection receiver)
+        public static void Send(ServerMessage serverMessageType, byte[] additionalData, ServerBehaviour sender, NetworkConnection receiver)
         {
             var writer = sender.m_Driver.BeginSend(receiver);
             writer.WriteByte((byte)serverMessageType);
@@ -68,17 +70,26 @@ namespace BobJeltes
                 case ServerMessage.TurnEnd:
                     break;
                 case ServerMessage.ScoreUpdate:
+                    NativeArray<byte> bytes = new NativeArray<byte>();
+                    bytes.CopyFrom(additionalData);
+                    writer.WriteBytes(bytes);
+                    sender.m_Driver.EndSend(writer);
                     break;
                 default:
                     break;
             }
         }
 
-        public static void SendAll(ServerMessage serverMessageType, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
+        public static void SendScore(int score, ServerBehaviour sender, NetworkConnection receiver)
+        {
+            Send(ServerMessage.ScoreUpdate, BitConverter.GetBytes(score), sender, receiver);
+        }
+
+        public static void SendAll(ServerMessage serverMessageType, byte[] additionalData, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
         {
             for (int i = 0; i < receivers.Length; i++)
             {
-                Send(serverMessageType, sender, receivers[i]);
+                Send(serverMessageType, additionalData, sender, receivers[i]);
             }
         }
 
@@ -157,7 +168,13 @@ namespace BobJeltes
                     reader.TurnEnd();
                     break;
                 case ServerMessage.ScoreUpdate:
-                    reader.ScoreUpdate(stream.ReadInt());
+                    NativeArray<byte> bytes = new NativeArray<byte>();
+                    stream.ReadBytes(bytes);
+                    byte[] byteArray = new byte[4];
+                    bytes.CopyTo(byteArray);
+
+                    int score = BitConverter.ToInt32(byteArray, 0);
+                    reader.ScoreUpdate(score);
                     break;
                 default:
                     break;
