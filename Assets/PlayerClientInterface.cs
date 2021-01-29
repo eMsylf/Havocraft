@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.PackageManager;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerClientInterface : MonoBehaviour
 {
@@ -37,7 +33,7 @@ public class PlayerClientInterface : MonoBehaviour
         return clientBehaviour;
     }
 
-    // Send
+    // Send (to client)
     public void MovementChanged(Vector2 input)
     {
         ClientBehaviour clientBehaviour = GetClientBehaviour();
@@ -65,15 +61,17 @@ public class PlayerClientInterface : MonoBehaviour
         clientBehaviour.QuitGame();
     }
 
-    // Read
+    // Read (to player)
     internal void TurnStart()
     {
         Player.PlayerController.enabled = true;
+        Debug.LogError("Turn start");
     }
 
     internal void TurnEnd()
     {
         Player.PlayerController.enabled = false;
+        Debug.LogError("Turn end");
     }
 
     internal void UpdateScore(int score)

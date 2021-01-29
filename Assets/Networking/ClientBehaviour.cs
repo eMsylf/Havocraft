@@ -110,6 +110,12 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         {
             Debug.Log("Connecting...");
             yield return new WaitForSeconds(interval);
+
+            if (m_Connection.GetState(m_Driver) == NetworkConnection.State.Connected)
+            {
+                
+                break;
+            }
             connectionTime += interval;
             if (connectionTime >= connectionTimeOut)
             {
@@ -118,6 +124,13 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
                 break;
             }
         }
+    }
+
+    public void SendPlayerID(int playerID)
+    {
+        NativeArray<byte> playerIDBytes = new NativeArray<byte>();
+        playerIDBytes.CopyFrom(BitConverter.GetBytes(playerID));
+        NetworkMessage.Send(ClientMessage.PlayerID, this, playerIDBytes);
     }
 
     PlayerClientInterface playerClientInterface;
@@ -137,13 +150,16 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     public void MovementInputChanged()
     {
-        NetworkMessage.Send(ClientMessage.MovementInput, this);
+        NetworkMessage.Send(ClientMessage.MovementInput, this, default);
     }
 
     public void ShootingChanged(bool isShooting)
     {
-        byte[] bytes = { Convert.ToByte(isShooting) };
-        NetworkMessage.Send(ClientMessage.ShootInput, this, bytes);
+        NativeArray<byte> isShootingBytes = new NativeArray<byte>();
+        
+        isShootingBytes.CopyFrom(BitConverter.GetBytes(isShooting));
+        
+        NetworkMessage.Send(ClientMessage.ShootInput, this, isShootingBytes);
     }
 
     internal void QuitGame()
@@ -173,23 +189,27 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         pci.UpdateScore(score);
     }
 
-    public string gameScene;
+    public string playerScene;
+    public string stageScene;
     internal void GameStart()
     {
         DontDestroyOnLoad(gameObject);
-        SceneManager.LoadSceneAsync(gameScene).completed += _ => QueueLoadComplete();
+        AsyncOperation async = SceneManager.LoadSceneAsync(playerScene);
+        async.completed += _ => QueueLoadComplete(async);
     }
 
-    void QueueLoadComplete()
+    void QueueLoadComplete(AsyncOperation async)
     {
-        NetworkMessage.Send(ClientMessage.PlayerReady, this);
-        SceneManager.LoadSceneAsync(gameScene).completed -= _ => QueueLoadComplete();
+        SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
+        NetworkMessage.Send(ClientMessage.PlayerReady, this, default);
+        async.completed -= _ => QueueLoadComplete(async);
     }
 
-    internal void GameOver(bool isWinner)
+    internal void GameOver(int playerIDWinner)
     {
         PlayerClientInterface pci = GetPlayerClientInterface();
-        pci.GameOver(isWinner);
+        clientInfo.UpdateInfo();
+        pci.GameOver(playerIDWinner == clientInfo.id);
     }
 
     public void ReportConnectionState()
@@ -240,4 +260,18 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     }
 
     #endregion
+
+    [System.Serializable]
+    public class ClientInfo
+    {
+        public int id;
+        public string name;
+
+        public void UpdateInfo()
+        {
+            id = PlayerPrefs.GetInt("player_id");
+            name = PlayerPrefs.GetString("username");
+        }
+    }
+    public ClientInfo clientInfo = new ClientInfo();
 }

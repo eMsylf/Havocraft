@@ -898,7 +898,11 @@ MonoBehaviour:
   port: 0
   value: 1
   pingInterval: 1
-  gameScene: stage0
+  playerScene: PlayerClientScene
+  stageScene: stage0
+  clientInfo:
+    id: 0
+    name: 
 --- !u!4 &687583486
 Transform:
   m_ObjectHideFlags: 0
@@ -2333,6 +2337,7 @@ MonoBehaviour:
   EndGameScreenPrefab: {fileID: 8301059031417362160, guid: 872fe406efc036545ad43ee55a5c1603,
     type: 3}
   Players: []
+  serverBehaviour: {fileID: 0}
 --- !u!4 &1526864439
 Transform:
   m_ObjectHideFlags: 0

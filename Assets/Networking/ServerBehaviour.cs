@@ -7,11 +7,11 @@ using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine.Events;
 using BobJeltes;
+using System.Collections.Generic;
 
 public class ServerBehaviour : MonoBehaviour
 {
     public bool AutoStart = true;
-    //public string IPAddressInput = "";
     [SerializeField]
     private string ipAddress = "";
     public string IPAddress
@@ -42,9 +42,12 @@ public class ServerBehaviour : MonoBehaviour
 
     public NetworkDriver m_Driver;
     public NativeList<NetworkConnection> m_Connections;
+    public List<int> connectionsToPlayerID;
 
     public int playersRequiredForGameStart = 2;
     public int playersReady = 0;
+
+    public bool GameIsOngoing;
 
     public UnityEventString OnConnectionCountChanged;
 
@@ -82,6 +85,8 @@ public class ServerBehaviour : MonoBehaviour
         while ((c = m_Driver.Accept()) != default)
         {
             m_Connections.Add(c);
+
+            connectionsToPlayerID.Add(0);
 
             OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
             Debug.Log("Accepted a connection");
@@ -196,18 +201,54 @@ public class ServerBehaviour : MonoBehaviour
         OnServerStop.Invoke();
     }
 
+    [Min(0)]
+    public float turnDuration = 5f;
+    public int currentTurnHolder = 0;
+
+    public IEnumerator ManageTurns()
+    {
+        while (GameIsOngoing)
+        {
+            yield return new WaitForSeconds(turnDuration);
+            SwitchTurns();
+        }
+    }
+
+    public void SwitchTurns()
+    {
+        // Switch turn to other player
+        NetworkMessage.Send(ServerMessage.TurnEnd, new NativeArray<byte>(), this, m_Connections[currentTurnHolder]);
+
+        // If currentTurnHolder reaches m_Connections.Length, currentTurnHolder is set back to 0
+        currentTurnHolder = ((currentTurnHolder + 1) % m_Connections.Length);
+        NetworkMessage.Send(ServerMessage.TurnStart, new NativeArray<byte>(), this, m_Connections[currentTurnHolder]);
+    }
+
     #region Send
 
     // Initiate scene load for all clients
     public void StartGame()
     {
         StartCoroutine(AnnounceGameStart());
+        GameIsOngoing = true;
+        StartCoroutine(ManageTurns());
     }
 
     public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(1f);
         NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(), this, m_Connections);
+    }
+
+
+    public void TurnStart()
+    {
+
+    }
+
+    public void TurnSend()
+    {
+
     }
 
     internal void PlayerTakesDamage(Player receiver, float damage, Player dealer)
@@ -225,13 +266,45 @@ public class ServerBehaviour : MonoBehaviour
         NetworkMessage.Send(ServerMessage.ScoreUpdate, scoreData, this, m_Connections[dealer.ID]);
     }
 
-    public void GameOver(int playerIDWinner, int playerIDLoser, float score)
+    public void GameOver(int playerIDWinner, int playerIDSecond, float score)
     {
+        GameIsOngoing = false;
 
+        // Send game over
+        NativeArray<byte> winnerIDBytes = new NativeArray<byte>();
+        winnerIDBytes.CopyFrom(BitConverter.GetBytes(playerIDWinner));
+        NetworkMessage.SendAll(ServerMessage.GameOver, winnerIDBytes, this, m_Connections);
+
+        // Send game result to database
+        StartCoroutine(
+            SendScore(
+            DatabaseCommunication.GetScoreSendURI((int)score, playerIDWinner, playerIDSecond)
+            )
+            );
+    }
+
+    public IEnumerator SendScore(string uri)
+    {
+        UnityEngine.Networking.UnityWebRequest webRequest = UnityEngine.Networking.UnityWebRequest.Get(uri);
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.isNetworkError || webRequest.isHttpError)
+        {
+            Debug.LogError("Error sending send-score request to server");
+            yield break;
+        }
+
+        string text = webRequest.downloadHandler.text;
+        Debug.Log("Score send result: " + text);
     }
 
     #endregion
     #region Receive
+
+    internal void AssignPlayerIDToConnection(int connectionID, int playerID)
+    {
+        connectionsToPlayerID[connectionID] = playerID;
+    }
 
     // Called when a scene load is done
     internal void PlayerReady(int playerID)

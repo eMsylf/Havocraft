@@ -6,6 +6,7 @@ using UnityEngine;
 public class ValueText : MonoBehaviour
 {
     public NumberFormat numberFormat = NumberFormat.Percentage;
+    public float Value;
     public string CustomFormat = "";
     public string output;
     public TextMeshProUGUI OutputTextComponent;
@@ -50,6 +51,7 @@ public class ValueText : MonoBehaviour
 
     public void UpdateValue(float value)
     {
+        Value = value;
         output = value.ToString(GetNumberFormat());
         GetTMPComponent().text = output; //TODO https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings
                                                        //Debug.Log("Update value to " + formattedSliderValue, this);

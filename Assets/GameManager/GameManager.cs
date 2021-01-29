@@ -93,21 +93,31 @@ public class GameManager : Singleton<GameManager>
             // Report damage to server
             Server.PlayerTakesDamage(receiver, damage, dealer);
         }
-        receiver.TakeDamage(damage);
+        else
+        {
+            // Deal damage directly
+            receiver.TakeDamage(damage);
+        } 
     }
 
     public void PlayerDeath(Player player)
     {
         Players.Remove(player);
         PrintPlayers();
-        if (Players.Count <= 1)
+        if (Players.Count == 1)
         {
-            MatchComplete();
+            MatchComplete(Players[0], player);
         }
     }
 
-    public void MatchComplete()
+    public void MatchComplete(Player winner, Player second)
     {
+        if (Server != null)
+        {
+            Server.GameOver(winner.ID, second.ID, winner.ScoreValue.Value);
+            return;
+        }
+
         Debug.Log(Players.Count + " players remaining. Match complete");
         if (EndGameScreenInstance == null)
         {
@@ -123,6 +133,7 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
+
         EndGameScreenInstance.gameObject.SetActive(true);
         EndGameScreenInstance.Activate(true);
     }

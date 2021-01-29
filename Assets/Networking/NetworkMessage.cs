@@ -1,7 +1,6 @@
 ﻿using System;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 namespace BobJeltes
@@ -20,8 +19,9 @@ namespace BobJeltes
 
     public enum ClientMessage : byte
     {
+        PlayerID,
         Pong,
-        PlayerReady,
+        PlayerReady,        // int=playerID
         MovementInput,      // vector2
         ShootInput,         // 
         QuitGame
@@ -34,7 +34,7 @@ namespace BobJeltes
         Disconnection,          // byte=reason
         GameStart,              //
         GameOver,               // byte=winner
-        TurnStart,              // int=PlayerID
+        TurnStart,              //
         TurnEnd,                //
         ScoreUpdate,            // float=score
         PlayerPositions,      // Vector3 array?
@@ -56,36 +56,24 @@ namespace BobJeltes
             switch (serverMessageType)
             {
                 case ServerMessage.Ping:
-                    sender.m_Driver.EndSend(writer);
-                    break;
-                case ServerMessage.Disconnection:
-                    break;
                 case ServerMessage.GameStart:
-                    sender.m_Driver.EndSend(writer);
-                    break;
-                case ServerMessage.GameOver:
-                    break;
                 case ServerMessage.TurnStart:
-                    break;
                 case ServerMessage.TurnEnd:
-                    break;
-                case ServerMessage.ScoreUpdate:
-                    writer.WriteBytes(additionalData);
-                    sender.m_Driver.EndSend(writer);
-                    break;
-                case ServerMessage.PlayerPositions:
-                    break;
-                case ServerMessage.PlayerRotation:
-                    break;
-                case ServerMessage.ProjectilePositions:
-                    break;
-                case ServerMessage.ProjectileImpacts:
-                    break;
-                case ServerMessage.PlayerTakesDamage:
-                    break;
                 default:
                     break;
+                case ServerMessage.Disconnection:
+                case ServerMessage.GameOver:
+                case ServerMessage.ScoreUpdate:
+                case ServerMessage.PlayerPositions:
+                case ServerMessage.PlayerRotation:
+                case ServerMessage.ProjectilePositions:
+                case ServerMessage.ProjectileImpacts:
+                case ServerMessage.PlayerTakesDamage:
+                    writer.WriteBytes(additionalData);
+                    break;
             }
+
+            sender.m_Driver.EndSend(writer);
         }
 
         public static void SendAll(ServerMessage serverMessageType, NativeArray<byte> additionalData, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
@@ -96,7 +84,7 @@ namespace BobJeltes
             }
         }
 
-        public static void Read(DataStreamReader stream, int playerID, ServerBehaviour reader)
+        public static void Read(DataStreamReader stream, int connectionID, ServerBehaviour reader)
         {
             ClientMessage clientMessageType = (ClientMessage)stream.ReadByte();
             Debug.Log(reader.name + " got message of type " + clientMessageType.ToString());
@@ -104,21 +92,24 @@ namespace BobJeltes
             switch (clientMessageType)
             {
                 case ClientMessage.Pong:
-                    reader.ReadPong(playerID);
+                    reader.ReadPong(connectionID);
                     break;
                 case ClientMessage.PlayerReady:
-                    reader.PlayerReady(playerID);
+                    reader.PlayerReady(connectionID);
                     break;
                 case ClientMessage.MovementInput:
                     float x = stream.ReadFloat();
                     float y = stream.ReadFloat();
-                    reader.ReadMovementInput(x, y, playerID);
+                    reader.ReadMovementInput(x, y, connectionID);
                     break;
                 case ClientMessage.ShootInput:
-                    reader.ShootInput(playerID);
+                    reader.ShootInput(connectionID);
                     break;
                 case ClientMessage.QuitGame:
-                    reader.ClientQuit(playerID);
+                    reader.ClientQuit(connectionID);
+                    break;
+                case ClientMessage.PlayerID:
+                    reader.AssignPlayerIDToConnection(connectionID, stream.ReadInt());
                     break;
                 default:
                     break;
@@ -134,7 +125,7 @@ namespace BobJeltes
         }
 
         // Client
-        public static void Send(ClientMessage clientMessageType, ClientBehaviour sender, byte[] AdditionalData = null)
+        public static void Send(ClientMessage clientMessageType, ClientBehaviour sender, NativeArray<byte> AdditionalData)
         {
             DataStreamWriter writer = sender.m_Driver.BeginSend(sender.m_Connection);
             writer.WriteByte((byte)clientMessageType);
@@ -142,27 +133,21 @@ namespace BobJeltes
             switch (clientMessageType)
             {
                 case ClientMessage.Pong:
-                    sender.m_Driver.EndSend(writer);
-                    break;
-                case ClientMessage.PlayerReady:
-                    sender.m_Driver.EndSend(writer);
+                case ClientMessage.QuitGame:
+                default:
                     break;
                 case ClientMessage.MovementInput:
                     SendMovementInput(sender.m_Driver, sender.m_Connection, sender.MovementInput);
                     break;
+                case ClientMessage.PlayerReady:
                 case ClientMessage.ShootInput:
-                    // If the isShooting variable is set, send this
-                    NativeArray<byte> bytes = new NativeArray<byte>();
-                    bytes.CopyFrom(AdditionalData);
-                    writer.WriteBytes(bytes);
-                    sender.m_Driver.EndSend(writer);
+                    writer.WriteBytes(AdditionalData);
                     break;
-                case ClientMessage.QuitGame:
-                    sender.m_Driver.EndSend(writer);
-                    break;
-                default:
+                case ClientMessage.PlayerID:
+                    writer.WriteInt(sender.clientInfo.id);
                     break;
             }
+            sender.m_Driver.EndSend(writer);
         }
 
         public static void Read(DataStreamReader stream, ClientBehaviour reader)
@@ -181,7 +166,7 @@ namespace BobJeltes
                     reader.GameStart();
                     break;
                 case ServerMessage.GameOver:
-                    reader.GameOver(Convert.ToBoolean(stream.ReadByte()));
+                    reader.GameOver(Convert.ToInt32(stream.ReadByte()));
                     break;
                 case ServerMessage.TurnStart:
                     reader.TurnStart();
@@ -216,7 +201,6 @@ namespace BobJeltes
             writer.WriteByte((byte)ClientMessage.MovementInput);
             writer.WriteFloat(input.x);
             writer.WriteFloat(input.y);
-            driver.EndSend(writer);
         }
 
         public static void ReadMovementInput(Vector2 input)

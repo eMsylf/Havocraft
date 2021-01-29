@@ -24,7 +24,21 @@ public class Player : MonoBehaviour
     public int ID;
     public Slider Health;
     public ValueText ScoreValue;
-    public PlayerController PlayerController;
+    [SerializeField]
+    private PlayerController playerController;
+    public PlayerController PlayerController
+    {
+        get
+        {
+            if (playerController == null)
+            {
+                playerController = GetComponent<PlayerController>();
+                if (playerController == null)
+                    Debug.LogError("Player controller not assigned, and not found on same object as Player");
+            }
+            return playerController;
+        }
+    }
     public List<GameObject> HoverJets;
     public List<GameObject> DeathEffectObjects;
     public EndGameScreen endGameScreen;
