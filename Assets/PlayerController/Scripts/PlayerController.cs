@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
 
     public float Speed = 3f;
     public float RotationSpeed = 1f;
+    public ForceMode movementMethod = ForceMode.Acceleration;
 
     private void Awake()
     {
@@ -99,8 +100,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f));
-        Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f);
+
+        if (!Rigidbody.isKinematic)
+        {
+            Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f), movementMethod);
+            Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f, movementMethod);
+        }
+        
         if (Animation)
         {
             Vector3 animRotation = Body.localRotation.eulerAngles;

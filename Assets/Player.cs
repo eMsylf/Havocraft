@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
             return rigidbody;
         }
     }
-
+    public int ID;
     public Slider Health;
     public ValueText ScoreValue;
     public PlayerController PlayerController;

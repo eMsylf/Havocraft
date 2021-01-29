@@ -21,8 +21,10 @@ public class Projectile : MonoBehaviour
     public float MaxLifetime = 5f;
 
     public bool DisappearUponImpact = true;
-    
-    protected Vector3 impact;
+
+    public float Damage = 1f;
+
+    protected Vector3 impactPosition;
     private float startTime = 0f;
     private Vector3 startPos;
     private bool armed = false;
@@ -30,7 +32,8 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Impact(collision);
+        if (armed)
+            Impact(collision);
     }
 
     private void Start()
@@ -83,8 +86,6 @@ public class Projectile : MonoBehaviour
         GetComponent<Collider>().enabled = state;
     }
 
-    public float Damage = 1f;
-
     protected virtual void Impact(Collision collisionData)
     {
         if (collisionData != null)
@@ -107,18 +108,25 @@ public class Projectile : MonoBehaviour
             Player player = collisionData.gameObject.GetComponent<Player>();
             if (player != null)
             {
-                player.TakeDamage(Damage);
+                //player.TakeDamage(Damage);
+                if (Owner != null)
+                {
+                    GameManager.Instance.PlayerTakesDamage(player, Damage, Owner);
+
+                }
+                GameManager.Instance.PlayerTakesDamage(player, Damage);
                 //player.Die();
             }
         }
 
-        impact = transform.position;
+        impactPosition = transform.position;
         hasImpacted = true;
         Explosive explosive = GetComponent<Explosive>();
         if (explosive != null)
         {
             explosive.Explode();
         }
+
         if (DisappearUponImpact)
         {
             //Debug.Log("Disappear");

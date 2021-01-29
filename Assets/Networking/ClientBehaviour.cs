@@ -133,7 +133,8 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         return playerClientInterface;
     }
 
-    // Send
+    #region Send
+
     public void MovementInputChanged()
     {
         NetworkMessage.Send(ClientMessage.MovementInput, this);
@@ -150,8 +151,10 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         throw new NotImplementedException();
     }
 
+    #endregion
 
-    // Receive
+    #region Receive
+
     internal void TurnEnd()
     {
         PlayerClientInterface pci = GetPlayerClientInterface();
@@ -179,7 +182,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     void QueueLoadComplete()
     {
-        NetworkMessage.Send(ClientMessage.SceneLoaded, this);
+        NetworkMessage.Send(ClientMessage.PlayerReady, this);
         SceneManager.LoadSceneAsync(gameScene).completed -= _ => QueueLoadComplete();
     }
 
@@ -195,7 +198,23 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         else Debug.LogError(name + "has no active connection");
     }
 
-    
+    public void Disconnect(DisconnectionReason reason)
+    {
+        if (!m_Connection.IsCreated)
+        {
+            Debug.LogError("No active connection");
+            return;
+        }
+        m_Connection.Disconnect(m_Driver);
+        m_Connection = default;
+        m_Driver.Dispose();
+        Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
+    }
+
+    #endregion 
+
+    #region Transport tutorial
+
     public void PingServer()
     {
         if (!m_Connection.IsCreated)
@@ -220,16 +239,5 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         m_Driver.EndSend(writer);
     }
 
-    public void Disconnect(DisconnectionReason reason)
-    {
-        if (!m_Connection.IsCreated)
-        {
-            Debug.LogError("No active connection");
-            return;
-        }
-        m_Connection.Disconnect(m_Driver);
-        m_Connection = default;
-        m_Driver.Dispose();
-        Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
-    }
+    #endregion
 }

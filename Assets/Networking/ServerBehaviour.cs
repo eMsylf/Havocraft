@@ -1,13 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine.Events;
 using BobJeltes;
-using System;
-using System.Collections;
-//using UnityEngine.Networking;
 
 public class ServerBehaviour : MonoBehaviour
 {
@@ -134,30 +133,18 @@ public class ServerBehaviour : MonoBehaviour
         {
             NetworkConnection connection = m_Connections[i];
             if (!connection.IsCreated)
-                return;
+                continue;
             if (connection.GetState(m_Driver) != NetworkConnection.State.Connected)
-                return;
-            var writer = m_Driver.BeginSend(connection);
-            writer.WriteByte(0);
-            m_Driver.EndSend(writer);
+                continue;
+            NetworkMessage.Send(ServerMessage.Ping, new NativeArray<byte>(), this, connection);
         }
         // Reset time
         timeSinceLastPing = 0f;
     }
 
-    internal void ShootInput(int playerID)
+    internal void ReadPong(int playerID)
     {
-        throw new NotImplementedException();
-    }
-
-    internal void ClientQuit(int playerID)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void ReadMovementInput(float x, float y, int playerID)
-    {
-        throw new NotImplementedException();
+        Debug.Log("Received pong from " + playerID);
     }
 
     public void StartServer()
@@ -190,10 +177,13 @@ public class ServerBehaviour : MonoBehaviour
     {
         if (!m_Connections.IsCreated)
             return;
+
+        NativeArray<byte> data = new NativeArray<byte>();
+        byte[] bytes = { (byte)DisconnectionReason.ServerStopped };
+        data.CopyFrom(bytes);
+        NetworkMessage.SendAll(ServerMessage.Disconnection, data, this, m_Connections);
         for (int i = 0; i < m_Connections.Length; i++)
         {
-            var writer = m_Driver.BeginSend(m_Connections[i]);
-            //writer.
             m_Connections[i].Disconnect(m_Driver);
         }
         if (m_Driver.IsCreated)
@@ -206,6 +196,8 @@ public class ServerBehaviour : MonoBehaviour
         OnServerStop.Invoke();
     }
 
+    #region Send
+
     // Initiate scene load for all clients
     public void StartGame()
     {
@@ -215,8 +207,31 @@ public class ServerBehaviour : MonoBehaviour
     public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(1f);
-        NetworkMessage.SendAll(ServerMessage.GameStart, null, this, m_Connections);
+        NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(), this, m_Connections);
     }
+
+    internal void PlayerTakesDamage(Player receiver, float damage, Player dealer)
+    {
+        // Damage
+        NativeArray<byte> damageData = new NativeArray<byte>();
+        damageData.CopyFrom(BitConverter.GetBytes(receiver.ID));
+        damageData.CopyFrom(BitConverter.GetBytes(damage));
+        damageData.CopyFrom(BitConverter.GetBytes(dealer.ID));
+        NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, damageData, this, m_Connections);
+
+        // Score update
+        NativeArray<byte> scoreData = new NativeArray<byte>();
+        scoreData.CopyFrom(BitConverter.GetBytes(damage));
+        NetworkMessage.Send(ServerMessage.ScoreUpdate, scoreData, this, m_Connections[dealer.ID]);
+    }
+
+    public void GameOver(int playerIDWinner, int playerIDLoser, float score)
+    {
+
+    }
+
+    #endregion
+    #region Receive
 
     // Called when a scene load is done
     internal void PlayerReady(int playerID)
@@ -232,4 +247,23 @@ public class ServerBehaviour : MonoBehaviour
             Debug.Log(playersReady + " of " + m_Connections.Length + " ready ", this);
         }
     }
+
+    internal void ShootInput(int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ClientQuit(int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ReadMovementInput(float x, float y, int playerID)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    
 }

@@ -21,7 +21,7 @@ namespace BobJeltes
     public enum ClientMessage : byte
     {
         Pong,
-        SceneLoaded,
+        PlayerReady,
         MovementInput,      // vector2
         ShootInput,         // 
         QuitGame
@@ -34,21 +34,21 @@ namespace BobJeltes
         Disconnection,          // byte=reason
         GameStart,              //
         GameOver,               // byte=winner
-        TurnStart,              //
+        TurnStart,              // int=PlayerID
         TurnEnd,                //
-        ScoreUpdate,            // int=score
-        //PlayerPositions,      // Vector3 array?
-        //PlayerRotation,       // Vector3 array?
-        //ProjectilePositions,  // Vector3 array?
-        //ProjectileImpacts,    // Vector3 array?
+        ScoreUpdate,            // float=score
+        PlayerPositions,      // Vector3 array?
+        PlayerRotation,       // Vector3 array?
+        ProjectilePositions,  // Vector3 array?
+        ProjectileImpacts,    // Vector3 array?
+        PlayerTakesDamage     // int=ReceiverPlayerID, float=damage, int=DealerPlayerID
         //Explosion,            // Vector3?
-        //HitConfirmation       //
     }
 
     public static class NetworkMessage
     {
         // Server
-        public static void Send(ServerMessage serverMessageType, byte[] additionalData, ServerBehaviour sender, NetworkConnection receiver)
+        public static void Send(ServerMessage serverMessageType, NativeArray<byte> additionalData, ServerBehaviour sender, NetworkConnection receiver)
         {
             var writer = sender.m_Driver.BeginSend(receiver);
             writer.WriteByte((byte)serverMessageType);
@@ -70,22 +70,25 @@ namespace BobJeltes
                 case ServerMessage.TurnEnd:
                     break;
                 case ServerMessage.ScoreUpdate:
-                    NativeArray<byte> bytes = new NativeArray<byte>();
-                    bytes.CopyFrom(additionalData);
-                    writer.WriteBytes(bytes);
+                    writer.WriteBytes(additionalData);
                     sender.m_Driver.EndSend(writer);
+                    break;
+                case ServerMessage.PlayerPositions:
+                    break;
+                case ServerMessage.PlayerRotation:
+                    break;
+                case ServerMessage.ProjectilePositions:
+                    break;
+                case ServerMessage.ProjectileImpacts:
+                    break;
+                case ServerMessage.PlayerTakesDamage:
                     break;
                 default:
                     break;
             }
         }
 
-        public static void SendScore(int score, ServerBehaviour sender, NetworkConnection receiver)
-        {
-            Send(ServerMessage.ScoreUpdate, BitConverter.GetBytes(score), sender, receiver);
-        }
-
-        public static void SendAll(ServerMessage serverMessageType, byte[] additionalData, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
+        public static void SendAll(ServerMessage serverMessageType, NativeArray<byte> additionalData, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
         {
             for (int i = 0; i < receivers.Length; i++)
             {
@@ -101,8 +104,9 @@ namespace BobJeltes
             switch (clientMessageType)
             {
                 case ClientMessage.Pong:
+                    reader.ReadPong(playerID);
                     break;
-                case ClientMessage.SceneLoaded:
+                case ClientMessage.PlayerReady:
                     reader.PlayerReady(playerID);
                     break;
                 case ClientMessage.MovementInput:
@@ -121,6 +125,14 @@ namespace BobJeltes
             }
         }
 
+        // Server: specialized functions
+        public static void SendScore(int score, ServerBehaviour sender, NetworkConnection receiver)
+        {
+            NativeArray<byte> scoreBytes = new NativeArray<byte>();
+            scoreBytes.CopyFrom(BitConverter.GetBytes(score));
+            Send(ServerMessage.ScoreUpdate, scoreBytes, sender, receiver);
+        }
+
         // Client
         public static void Send(ClientMessage clientMessageType, ClientBehaviour sender, byte[] AdditionalData = null)
         {
@@ -132,7 +144,7 @@ namespace BobJeltes
                 case ClientMessage.Pong:
                     sender.m_Driver.EndSend(writer);
                     break;
-                case ClientMessage.SceneLoaded:
+                case ClientMessage.PlayerReady:
                     sender.m_Driver.EndSend(writer);
                     break;
                 case ClientMessage.MovementInput:

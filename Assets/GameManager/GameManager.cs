@@ -14,6 +14,21 @@ public class GameManager : Singleton<GameManager>
 
     public List<Player> Players = new List<Player>();
 
+    public ServerBehaviour serverBehaviour;
+    public ServerBehaviour Server
+    {
+        get
+        {
+            if (serverBehaviour == null)
+            {
+                serverBehaviour = FindObjectOfType<ServerBehaviour>();
+                if (serverBehaviour == null)
+                    Debug.LogError("No server behaviour found in scene");
+            }
+            return serverBehaviour;
+        }
+    }
+
     private void OnEnable()
     {
         CollectPlayers();
@@ -69,6 +84,16 @@ public class GameManager : Singleton<GameManager>
 #else
         Application.Quit();
 #endif
+    }
+
+    public void PlayerTakesDamage(Player receiver, float damage, Player dealer = null)
+    {
+        if (Server != null)
+        {
+            // Report damage to server
+            Server.PlayerTakesDamage(receiver, damage, dealer);
+        }
+        receiver.TakeDamage(damage);
     }
 
     public void PlayerDeath(Player player)
