@@ -43,7 +43,8 @@ public class ServerBehaviour : MonoBehaviour
 
     public NetworkDriver m_Driver;
     public NativeList<NetworkConnection> m_Connections;
-    public List<int> connectionsToPlayerID;
+    public List<NetworkPlayerInfo> serverNetworkPlayers = new List<NetworkPlayerInfo>();
+    public PlayerController playerPrefab;
 
     public int playersRequiredForGameStart = 2;
     public int playersReady = 0;
@@ -87,7 +88,7 @@ public class ServerBehaviour : MonoBehaviour
         {
             m_Connections.Add(c);
 
-            connectionsToPlayerID.Add(0);
+            serverNetworkPlayers.Add(new NetworkPlayerInfo(0, Instantiate(playerPrefab).GetComponent<PlayerController>()));
 
             OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
             Debug.Log("Accepted a connection");
@@ -238,6 +239,7 @@ public class ServerBehaviour : MonoBehaviour
     public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(1f);
+        NetworkMessage.SendConnectionIDs(this);
         NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(), this, m_Connections);
     }
 
@@ -304,7 +306,7 @@ public class ServerBehaviour : MonoBehaviour
 
     internal void AssignPlayerIDToConnection(int connectionID, int playerID)
     {
-        connectionsToPlayerID[connectionID] = playerID;
+        serverNetworkPlayers[connectionID].playerID = playerID;
     }
 
     // Called when a scene load is done
@@ -322,21 +324,31 @@ public class ServerBehaviour : MonoBehaviour
         }
     }
 
-    internal void ShootInput(int playerID)
+    internal void ShootInput(int connectionID, bool isShooting)
     {
-        throw new NotImplementedException();
+        serverNetworkPlayers[connectionID].controller.SetShootingActive(isShooting);
     }
 
-    internal void ClientQuit(int playerID)
+    //internal void ClientQuit(int playerID)
+    //{
+    //    NetworkMessage.SendAll(ServerMessage.Disconnection, DisconnectionReason.)
+    //}
+
+    internal void ReadMovementInput(Vector2 input, int connectionID)
     {
-        throw new NotImplementedException();
+        serverNetworkPlayers[connectionID].input = input;
     }
 
-    internal void ReadMovementInput(Vector2 input, int playerID)
+    private void FixedUpdate()
     {
-        throw new NotImplementedException();
+        List<Vector3> rotations = new List<Vector3>();
+        foreach (NetworkPlayerInfo player in serverNetworkPlayers)
+        {
+            player.controller.ApplyForces(player.input);
+            rotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
+        }
+        NetworkMessage.SendAll(ServerMessage.PlayerRotations, NetworkMessageUtilities.Vector3ListToByteNativeArray(rotations), this, m_Connections);
     }
-
     #endregion
 
     

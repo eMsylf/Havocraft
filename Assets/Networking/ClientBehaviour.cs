@@ -21,6 +21,10 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     [HideInInspector]
     public uint value = 1;
 
+    public List<NetworkPlayerInfo> clientNetworkPlayers;
+    public PlayerController playerPrefab;
+    public PlayerController opponentPreab;
+
     [Min(0)]
     public float pingInterval = 1f;
     private float timeSinceLastPing = 1f;
@@ -157,20 +161,23 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     public void ShootingChanged(bool isShooting)
     {
         NativeArray<byte> isShootingBytes = new NativeArray<byte>();
-        
         isShootingBytes.CopyFrom(BitConverter.GetBytes(isShooting));
-        
         NetworkMessage.Send(ClientMessage.ShootInput, this, isShootingBytes);
     }
 
-    internal void QuitGame()
-    {
-        throw new NotImplementedException();
-    }
+    //internal void QuitGame()
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     #endregion
 
     #region Receive
+
+    internal void SaveConnectionID(int connectionID)
+    {
+        clientInfo.connectionID = connectionID;
+    }
 
     internal void TurnEnd()
     {
@@ -232,12 +239,20 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
     }
 
-    
-
-    internal void UpdatePlayerPositions(List<Vector3> list)
+    internal void UpdatePlayerPositions(List<Vector3> positions)
     {
+        foreach (NetworkPlayerInfo player in clientNetworkPlayers)
+        {
+            // Deze lijst moet nog ergens worden aangemaakt
+        }
+    }
 
-        
+    internal void UpdatePlayerRotations(List<Vector3> positions)
+    {
+        foreach (NetworkPlayerInfo player in clientNetworkPlayers)
+        {
+            // Deze lijst moet nog ergens worden aangemaakt
+        }
     }
 
     #endregion 
@@ -273,6 +288,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     [System.Serializable]
     public class ClientInfo
     {
+        public int connectionID;
         public int id;
         public string name;
 

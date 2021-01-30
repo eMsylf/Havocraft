@@ -58,7 +58,7 @@ public class PlayerClientInterface : MonoBehaviour
         if (clientBehaviour == null)
             return;
 
-        clientBehaviour.QuitGame();
+        //clientBehaviour.QuitGame();
     }
 
     // Read (to player)

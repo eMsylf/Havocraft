@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     }
 
     new Rigidbody rigidbody;
-    Rigidbody Rigidbody
+    public Rigidbody Rigidbody
     {
         get
         {
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     public float Speed = 3f;
     public float RotationSpeed = 1f;
-    public ForceMode movementMethod = ForceMode.Acceleration;
+    public ForceMode forceAddMethod = ForceMode.Acceleration;
 
     private void Awake()
     {
@@ -80,7 +80,14 @@ public class PlayerController : MonoBehaviour
     [Range(0f, 1f)]
     public float GimbalRigidity = 1f;
     public bool PauseEditorUponFiring = false;
-    Vector2 movementInput;
+    Vector2 movementInput = new Vector2();
+    Vector2 calculatedMovementInput
+    {
+        get
+        {
+            return new Vector2(movementInput.x * RotationSpeed, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f));
+        }
+    }
 
     //public UnityEvent<Vector2> onMovementInputChanged;
     public UnityEventVector2 onMovementInputChanged;
@@ -89,7 +96,7 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("Move! " + direction);
         movementInput = direction;
-        onMovementInputChanged.Invoke(movementInput);
+        onMovementInputChanged.Invoke(calculatedMovementInput);
     }
 
     void StopMove()
@@ -100,11 +107,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         if (!Rigidbody.isKinematic)
         {
-            Rigidbody.AddRelativeForce(0f, 0f, movementInput.y * Speed * (boostActivated ? boostSpeedMultiplier : 1f), movementMethod);
-            Rigidbody.AddTorque(0f, movementInput.x * RotationSpeed, 0f, movementMethod);
+            ApplyForces(calculatedMovementInput);
         }
         
         if (Animation)
@@ -130,6 +135,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ApplyForces(Vector2 input)
+    {
+        Rigidbody.AddRelativeForce(0f, 0f, input.y, forceAddMethod);
+        Rigidbody.AddTorque(0f, input.x, 0f, forceAddMethod);
+    }
+
     void Shoot()
     {
         //Debug.Log("Shoot");
@@ -144,7 +155,7 @@ public class PlayerController : MonoBehaviour
 
 
     bool shooting = false;
-    void SetShootingActive(bool _shooting)
+    public void SetShootingActive(bool _shooting)
     {
         shooting = _shooting;
         OnShootingChanged.Invoke(_shooting);
