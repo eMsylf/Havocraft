@@ -8,6 +8,7 @@ using Unity.Networking.Transport;
 using UnityEngine.Events;
 using BobJeltes;
 using System.Collections.Generic;
+using BobJeltes.Networking;
 
 public class ServerBehaviour : MonoBehaviour
 {
@@ -110,7 +111,7 @@ public class ServerBehaviour : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
-                    NetworkMessage.Read(stream, i, this);
+                    NetworkMessage.Read(this, i, stream);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -331,7 +332,7 @@ public class ServerBehaviour : MonoBehaviour
         throw new NotImplementedException();
     }
 
-    internal void ReadMovementInput(float x, float y, int playerID)
+    internal void ReadMovementInput(Vector2 input, int playerID)
     {
         throw new NotImplementedException();
     }

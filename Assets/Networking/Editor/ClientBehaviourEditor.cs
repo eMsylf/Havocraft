@@ -43,7 +43,7 @@ public class ClientBehaviourEditor : Editor
 
         if (GUILayout.Button("Disconnect from server"))
         {
-            targetScript.Disconnect(BobJeltes.DisconnectionReason.ManualClientDisconnection);
+            targetScript.Disconnect(BobJeltes.Networking.DisconnectionReason.ManualClientDisconnection);
         }
     }
 }

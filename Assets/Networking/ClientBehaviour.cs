@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using BobJeltes;
 using BobJeltes.StandardUtilities;
-using Unity.Collections;
+using BobJeltes.Networking;
+using System.Collections.Generic;
 
 public class ClientBehaviour : Singleton<ClientBehaviour>
 {
@@ -229,6 +230,14 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         m_Connection = default;
         m_Driver.Dispose();
         Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
+    }
+
+    
+
+    internal void UpdatePlayerPositions(List<Vector3> list)
+    {
+
+        
     }
 
     #endregion 
