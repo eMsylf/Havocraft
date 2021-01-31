@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3196635992073277307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3196635992073277305}
+  - component: {fileID: 3196635992073277306}
+  m_Layer: 0
+  m_Name: Client
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3196635992073277305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196635992073277307}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.08047548, y: 0.5072633, z: -39.982185}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3196635992073277306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196635992073277307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70c15c53dfdb09a4995496c91d3b7f26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AutoConnect: 0
+  connectionReportInterval: 1
+  connectionTimeOut: 10
+  IPAddress: 
+  port: 9000
+  value: 1
+  clientInfo:
+    connectionID: 0
+    id: 0
+    name: 
+  players:
+  - playerID: 0
+    input: {x: 0, y: 0}
+    controller: {fileID: 0}
+  - playerID: 0
+    input: {x: 0, y: 0}
+    controller: {fileID: 0}
+  - playerID: 0
+    input: {x: 0, y: 0}
+    controller: {fileID: 0}
+  playerPrefab: {fileID: 3706602393687493962, guid: 2ac8b8508e13d474bbb1847f5b652654,
+    type: 3}
+  opponentPrefab: {fileID: 7151156330828827079, guid: 70c3a760d33a549479d0da1bc16574ff,
+    type: 3}
+  spawnPoints: []
+  projectileImpactPrefab: {fileID: 0}
+  projectilePrefab: {fileID: 6548899645079843253, guid: 720463018d0238a4bb7bf57662c492af,
+    type: 3}
+  projectiles: []
+  pingInterval: 1
+  playerScene: playerclientscene
+  stageScene: stage0

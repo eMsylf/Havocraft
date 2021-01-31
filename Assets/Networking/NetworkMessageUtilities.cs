@@ -34,7 +34,7 @@ namespace BobJeltes.Networking
 
             Vector3 newestVector3 = new Vector3();
 
-            for (int i = 0; i < byteArray.Length; i += 4)
+            for (int i = 0; i < 12; i += 4)
             {
                 int currentPositionInVector3 = i % 12;
 

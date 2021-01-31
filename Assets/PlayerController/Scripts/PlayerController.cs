@@ -5,6 +5,7 @@ using GD.MinMaxSlider;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    public bool ServerControlled = false;
     private GameControls controls;
     private GameControls Controls
     {
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        if (ServerControlled)
+            return;
         Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.canceled += _ => StopMove();
@@ -89,7 +92,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //public UnityEvent<Vector2> onMovementInputChanged;
     public UnityEventVector2 onMovementInputChanged;
 
     void Move(Vector2 direction)
@@ -158,6 +160,8 @@ public class PlayerController : MonoBehaviour
     public void SetShootingActive(bool _shooting)
     {
         shooting = _shooting;
+        if (shooting)
+            Shoot();
         OnShootingChanged.Invoke(_shooting);
     }
 

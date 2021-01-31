@@ -331,6 +331,11 @@ PrefabInstance:
       propertyPath: OnShootingChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: ServerControlled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4772672320393863259, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: m_Name
@@ -356,6 +361,11 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 3706602393687493962}
+    - target: {fileID: 9142216969944243105, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5644d316173a75342a6676f0b22638ef, type: 3}
 --- !u!1 &3706602393687493963 stripped

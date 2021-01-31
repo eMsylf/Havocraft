@@ -29,6 +29,8 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public List<Transform> SpawnPoints = new List<Transform>();
+
     private void OnEnable()
     {
         CollectPlayers();

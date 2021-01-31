@@ -30,6 +30,19 @@ public class Projectile : MonoBehaviour
     private bool armed = false;
     private bool hasImpacted = false;
 
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+    Rigidbody rigidbody;
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
+    public Rigidbody Rigidbody
+    {
+        get
+        {
+            if (rigidbody == null)
+                rigidbody = GetComponent<Rigidbody>();
+            return rigidbody;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (armed)
@@ -105,16 +118,16 @@ public class Projectile : MonoBehaviour
             }
             output += name;
             Debug.Log(collisionData.gameObject.name + " was hit by " + output);
-            Player player = collisionData.gameObject.GetComponent<Player>();
-            if (player != null)
+            Player playerHit = collisionData.gameObject.GetComponent<Player>();
+            if (playerHit != null)
             {
                 //player.TakeDamage(Damage);
                 if (Owner != null)
                 {
-                    GameManager.Instance.PlayerTakesDamage(player, Damage, Owner);
+                    GameManager.Instance.PlayerTakesDamage(playerHit, Damage, Owner);
 
                 }
-                GameManager.Instance.PlayerTakesDamage(player, Damage);
+                GameManager.Instance.PlayerTakesDamage(playerHit, Damage);
                 //player.Die();
             }
         }
@@ -129,6 +142,10 @@ public class Projectile : MonoBehaviour
 
         if (DisappearUponImpact)
         {
+            if (ServerBehaviour.HasActiveInstance())
+            {
+                ServerBehaviour.Instance.SendProjectileImpact(this);
+            }
             //Debug.Log("Disappear");
             gameObject.SetActive(false);
         }

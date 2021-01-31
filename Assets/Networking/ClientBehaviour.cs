@@ -21,9 +21,51 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     [HideInInspector]
     public uint value = 1;
 
-    public List<NetworkPlayerInfo> clientNetworkPlayers;
+    [System.Serializable]
+    public class ClientInfo
+    {
+        public int connectionID;
+        public int id;
+        public string name;
+
+        public void UpdateInfo()
+        {
+            id = PlayerPrefs.GetInt("player_id");
+            name = PlayerPrefs.GetString("username");
+        }
+    }
+    public ClientInfo clientInfo = new ClientInfo();
+    public List<NetworkPlayerInfo> players;
     public PlayerController playerPrefab;
-    public PlayerController opponentPreab;
+    public PlayerController opponentPrefab;
+    public List<Transform> spawnPoints = new List<Transform>();
+
+    PlayerClientInterface playerClientInterface;
+    public PlayerClientInterface GetPlayerClientInterface()
+    {
+        if (playerClientInterface == null)
+        {
+            playerClientInterface = FindObjectOfType<PlayerClientInterface>();
+            if (playerClientInterface == null)
+                Debug.LogError("No player-client interface found in scene");
+        }
+        return playerClientInterface;
+    }
+
+    public GameObject projectileImpactPrefab;
+    public Projectile projectilePrefab;
+    public List<Projectile> projectiles = new List<Projectile>();
+    public void UpdateProjectileListLength(int newCount)
+    {
+        while (projectiles.Count < newCount)
+        {
+            projectiles.Add(Instantiate(projectilePrefab));
+        }
+        if (projectiles.Count > newCount)
+        {
+            projectiles.RemoveRange(0, projectiles.Count - newCount);
+        }
+    }
 
     [Min(0)]
     public float pingInterval = 1f;
@@ -138,19 +180,6 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         NetworkMessage.Send(ClientMessage.PlayerID, this, playerIDBytes);
     }
 
-    PlayerClientInterface playerClientInterface;
-
-    public PlayerClientInterface GetPlayerClientInterface()
-    {
-        if (playerClientInterface == null)
-        {
-            playerClientInterface = FindObjectOfType<PlayerClientInterface>();
-            if (playerClientInterface == null)
-                Debug.LogError("No player-client interface found in scene");
-        }
-        return playerClientInterface;
-    }
-
     #region Send
 
     public void MovementInputChanged()
@@ -181,41 +210,63 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     internal void TurnEnd()
     {
-        PlayerClientInterface pci = GetPlayerClientInterface();
+        PlayerClientInterface pci = PlayerClientInterface.Instance;
         pci.TurnEnd();
     }
 
     internal void TurnStart()
     {
-        PlayerClientInterface pci = GetPlayerClientInterface();
+        PlayerClientInterface pci = PlayerClientInterface.Instance;
         pci.TurnStart();
     }
 
     internal void ScoreUpdate(int score)
     {
-        PlayerClientInterface pci = GetPlayerClientInterface();
+        PlayerClientInterface pci = PlayerClientInterface.Instance;
         pci.UpdateScore(score);
     }
 
     public string playerScene;
     public string stageScene;
-    internal void GameStart()
+    internal void GameStart(int playerCount)
     {
         DontDestroyOnLoad(gameObject);
         AsyncOperation async = SceneManager.LoadSceneAsync(playerScene);
-        async.completed += _ => QueueLoadComplete(async);
+        async.completed += _ => PlayerReady(async);
+        for (int i = 0; i < playerCount-1; i++)
+        {
+            if (clientInfo.connectionID == i)
+            {
+                PlayerController controlledPlayer = Instantiate(playerPrefab);
+                PlayerClientInterface.Instance.Player = controlledPlayer.GetComponent<Player>();
+                players.Add(new NetworkPlayerInfo(clientInfo.id, controlledPlayer, true));
+            }
+            else
+                players.Add(new NetworkPlayerInfo(-1, Instantiate(opponentPrefab), true));
+        }
+        SetPlayerSpawns();
     }
 
-    void QueueLoadComplete(AsyncOperation async)
+    public void SetPlayerSpawns()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            NetworkPlayerInfo player = players[i];
+            player.controller.Rigidbody.position = GameManager.Instance.SpawnPoints[i].position;
+            player.controller.Rigidbody.rotation = GameManager.Instance.SpawnPoints[i].rotation;
+        }
+    }
+
+    void PlayerReady(AsyncOperation async)
     {
         SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
         NetworkMessage.Send(ClientMessage.PlayerReady, this, default);
-        async.completed -= _ => QueueLoadComplete(async);
+        async.completed -= _ => PlayerReady(async);
     }
 
     internal void GameOver(int playerIDWinner)
     {
-        PlayerClientInterface pci = GetPlayerClientInterface();
+        PlayerClientInterface pci = PlayerClientInterface.Instance;
         clientInfo.UpdateInfo();
         pci.GameOver(playerIDWinner == clientInfo.id);
     }
@@ -241,18 +292,81 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     internal void UpdatePlayerPositions(List<Vector3> positions)
     {
-        foreach (NetworkPlayerInfo player in clientNetworkPlayers)
+        for (int i = 0; i < players.Count; i++)
         {
-            // Deze lijst moet nog ergens worden aangemaakt
+            if (i == clientInfo.connectionID)
+            {
+                PlayerClientInterface.Instance.Player.PlayerController.Rigidbody.MovePosition(positions[i]);
+                continue;
+            }
+            else
+            {
+                players[i].controller.Rigidbody.MovePosition(positions[i]);
+            }
         }
     }
 
-    internal void UpdatePlayerRotations(List<Vector3> positions)
+    internal void UpdatePlayerRotations(List<Vector3> rotations)
     {
-        foreach (NetworkPlayerInfo player in clientNetworkPlayers)
+        for (int i = 0; i < players.Count; i++)
         {
-            // Deze lijst moet nog ergens worden aangemaakt
+            if (i == clientInfo.connectionID)
+            {
+                PlayerClientInterface.Instance.Player.PlayerController.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
+            }
+            else
+            {
+                players[i].controller.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
+            }
         }
+    }
+
+    internal void UpdateProjectilePositions(List<Vector3> newPositions)
+    {
+        UpdateProjectileListLength(newPositions.Count);
+        for (int i = 0; i < projectiles.Count; i++)
+        {
+            projectiles[i].Rigidbody.MovePosition(newPositions[i]);
+        }
+    }
+
+    internal void SpawnProjectileImpacts(List<Vector3> impactPositions)
+    {
+        if (projectileImpactPrefab == null)
+        {
+            Debug.LogWarning("No projectile impact prefab assigned");
+            return;
+        }
+
+        foreach (Vector3 position in impactPositions)
+        {
+            Instantiate(projectileImpactPrefab, position, Quaternion.identity);
+        }
+    }
+
+    internal void PlayerTakesDamage(NativeArray<byte> playerDamageData)
+    {
+        byte[] dataBytes = new byte[playerDamageData.Length];
+        playerDamageData.CopyTo(dataBytes);
+        int receiverPlayerID = BitConverter.ToInt32(dataBytes, 0);
+        int dealerPlayerID = BitConverter.ToInt32(dataBytes, 4);
+        float damage = BitConverter.ToSingle(dataBytes, 8);
+
+        Player receivingPlayer = null;
+        Player dealingPlayer = null;
+        foreach (NetworkPlayerInfo playerInfo in players)
+        {
+            if (playerInfo.playerID == receiverPlayerID)
+            {
+                receivingPlayer = playerInfo.controller.GetComponent<Player>();
+            }
+            if (playerInfo.playerID == dealerPlayerID)
+            {
+                dealingPlayer = playerInfo.controller.GetComponent<Player>();
+            }
+        }
+        if (receivingPlayer != null)
+            GameManager.Instance.PlayerTakesDamage(receivingPlayer, damage, dealingPlayer);
     }
 
     #endregion 
@@ -282,21 +396,5 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         writer.WriteUInt(value);
         m_Driver.EndSend(writer);
     }
-
     #endregion
-
-    [System.Serializable]
-    public class ClientInfo
-    {
-        public int connectionID;
-        public int id;
-        public string name;
-
-        public void UpdateInfo()
-        {
-            id = PlayerPrefs.GetInt("player_id");
-            name = PlayerPrefs.GetString("username");
-        }
-    }
-    public ClientInfo clientInfo = new ClientInfo();
 }

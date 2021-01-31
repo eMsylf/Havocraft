@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using BobJeltes.StandardUtilities;
+using UnityEngine;
 
-public class PlayerClientInterface : MonoBehaviour
+public class PlayerClientInterface : Singleton<PlayerClientInterface>
 {
     private Player player;
     public Player Player
@@ -18,25 +19,10 @@ public class PlayerClientInterface : MonoBehaviour
         set => player = value;
     }
 
-    [SerializeField]
-    private ClientBehaviour clientBehaviour;
-    public ClientBehaviour GetClientBehaviour()
-    {
-        if (clientBehaviour == null)
-        {
-            clientBehaviour = FindObjectOfType<ClientBehaviour>();
-            if (clientBehaviour == null)
-            {
-                Debug.LogError("No client behaviour fount in scene", this);
-            }
-        }
-        return clientBehaviour;
-    }
-
     // Send (to client)
     public void MovementChanged(Vector2 input)
     {
-        ClientBehaviour clientBehaviour = GetClientBehaviour();
+        ClientBehaviour clientBehaviour = ClientBehaviour.Instance;
         if (clientBehaviour == null)
             return;
 
@@ -45,7 +31,7 @@ public class PlayerClientInterface : MonoBehaviour
 
     public void ShootingChanged(bool val)
     {
-        ClientBehaviour clientBehaviour = GetClientBehaviour();
+        ClientBehaviour clientBehaviour = ClientBehaviour.Instance;
         if (clientBehaviour == null)
             return;
 
@@ -54,7 +40,7 @@ public class PlayerClientInterface : MonoBehaviour
 
     public void QuitGame()
     {
-        ClientBehaviour clientBehaviour = GetClientBehaviour();
+        ClientBehaviour clientBehaviour = ClientBehaviour.Instance;
         if (clientBehaviour == null)
             return;
 

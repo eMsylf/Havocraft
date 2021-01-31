@@ -55,6 +55,10 @@ public class Weapon : MonoBehaviour
                 projectileComponent = projectile.AddComponent<Projectile>();
             }
             projectileComponent.Owner = GetComponentInParent<Player>();
+            if (ServerBehaviour.HasActiveInstance())
+            {
+                ServerBehaviour.Instance.projectiles.Add(projectileComponent);
+            }
 
             StartCoroutine(Cooldown.Start());
         }

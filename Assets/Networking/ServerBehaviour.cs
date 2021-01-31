@@ -1,16 +1,15 @@
-﻿using System;
+﻿using BobJeltes.Networking;
+using BobJeltes.StandardUtilities;
+using System;
 using System.Collections;
-using UnityEngine;
-using UnityEngine.Assertions;
-
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Networking.Transport;
+using UnityEngine;
 using UnityEngine.Events;
-using BobJeltes;
-using System.Collections.Generic;
-using BobJeltes.Networking;
+using UnityEngine.SceneManagement;
 
-public class ServerBehaviour : MonoBehaviour
+public class ServerBehaviour : Singleton<ServerBehaviour>
 {
     public bool AutoStart = true;
     [SerializeField]
@@ -43,13 +42,13 @@ public class ServerBehaviour : MonoBehaviour
 
     public NetworkDriver m_Driver;
     public NativeList<NetworkConnection> m_Connections;
-    public List<NetworkPlayerInfo> serverNetworkPlayers = new List<NetworkPlayerInfo>();
+    public List<NetworkPlayerInfo> players = new List<NetworkPlayerInfo>();
     public PlayerController playerPrefab;
-
+    public List<Projectile> projectiles = new List<Projectile>();
     public int playersRequiredForGameStart = 2;
     public int playersReady = 0;
 
-    public bool GameIsOngoing;
+    public bool GameIsOngoing = false;
 
     public UnityEventString OnConnectionCountChanged;
 
@@ -88,7 +87,7 @@ public class ServerBehaviour : MonoBehaviour
         {
             m_Connections.Add(c);
 
-            serverNetworkPlayers.Add(new NetworkPlayerInfo(0, Instantiate(playerPrefab).GetComponent<PlayerController>()));
+            players.Add(new NetworkPlayerInfo(0, Instantiate(playerPrefab).GetComponent<PlayerController>(), true));
 
             OnConnectionCountChanged.Invoke(m_Connections.Length.ToString());
             Debug.Log("Accepted a connection");
@@ -234,24 +233,32 @@ public class ServerBehaviour : MonoBehaviour
         StartCoroutine(AnnounceGameStart());
         GameIsOngoing = true;
         StartCoroutine(ManageTurns());
+        SceneManager.LoadScene("stage0", LoadSceneMode.Additive);
+        SceneManager.LoadScene("servercamera", LoadSceneMode.Additive);
+        SetPlayerSpawns();
+    }
+
+    public void SetPlayerSpawns()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            NetworkPlayerInfo player = players[i];
+            player.controller.Rigidbody.position = GameManager.Instance.SpawnPoints[i].position;
+            player.controller.Rigidbody.rotation = GameManager.Instance.SpawnPoints[i].rotation;
+        }
     }
 
     public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(1f);
         NetworkMessage.SendConnectionIDs(this);
-        NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(), this, m_Connections);
+        NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(m_Connections.Length, Allocator.None), this, m_Connections);
     }
 
-
-    public void TurnStart()
+    public void SendProjectileImpact(Projectile projectile)
     {
-
-    }
-
-    public void TurnSend()
-    {
-
+        projectiles.Remove(projectile);
+        NetworkMessage.SendAll(ServerMessage.ProjectileImpact, NetworkMessageUtilities.Vector3ToByteNativeArray(projectile.transform.position), this, m_Connections);
     }
 
     internal void PlayerTakesDamage(Player receiver, float damage, Player dealer)
@@ -259,8 +266,8 @@ public class ServerBehaviour : MonoBehaviour
         // Damage
         NativeArray<byte> damageData = new NativeArray<byte>();
         damageData.CopyFrom(BitConverter.GetBytes(receiver.ID));
-        damageData.CopyFrom(BitConverter.GetBytes(damage));
         damageData.CopyFrom(BitConverter.GetBytes(dealer.ID));
+        damageData.CopyFrom(BitConverter.GetBytes(damage));
         NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, damageData, this, m_Connections);
 
         // Score update
@@ -306,7 +313,7 @@ public class ServerBehaviour : MonoBehaviour
 
     internal void AssignPlayerIDToConnection(int connectionID, int playerID)
     {
-        serverNetworkPlayers[connectionID].playerID = playerID;
+        players[connectionID].playerID = playerID;
     }
 
     // Called when a scene load is done
@@ -326,7 +333,7 @@ public class ServerBehaviour : MonoBehaviour
 
     internal void ShootInput(int connectionID, bool isShooting)
     {
-        serverNetworkPlayers[connectionID].controller.SetShootingActive(isShooting);
+        players[connectionID].controller.SetShootingActive(isShooting);
     }
 
     //internal void ClientQuit(int playerID)
@@ -336,20 +343,38 @@ public class ServerBehaviour : MonoBehaviour
 
     internal void ReadMovementInput(Vector2 input, int connectionID)
     {
-        serverNetworkPlayers[connectionID].input = input;
+        players[connectionID].input = input;
     }
+
+    #endregion
 
     private void FixedUpdate()
     {
+        if (GameIsOngoing)
+        {
+            UpdatePlayerPositions();
+            UpdateProjectilePositions();
+        }
+    }
+
+    public void UpdatePlayerPositions()
+    {
         List<Vector3> rotations = new List<Vector3>();
-        foreach (NetworkPlayerInfo player in serverNetworkPlayers)
+        foreach (NetworkPlayerInfo player in players)
         {
             player.controller.ApplyForces(player.input);
             rotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
         }
         NetworkMessage.SendAll(ServerMessage.PlayerRotations, NetworkMessageUtilities.Vector3ListToByteNativeArray(rotations), this, m_Connections);
     }
-    #endregion
 
-    
+    public void UpdateProjectilePositions()
+    {
+        List<Vector3> positions = new List<Vector3>();
+        foreach (Projectile projectile in projectiles)
+        {
+            positions.Add(projectile.transform.position);
+        }
+        NetworkMessage.SendAll(ServerMessage.ProjectilePositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
+    }
 }
