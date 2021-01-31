@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3196635992073277305}
   - component: {fileID: 3196635992073277306}
+  - component: {fileID: -3187256470872638130}
   m_Layer: 0
   m_Name: Client
   m_TagString: Untagged
@@ -75,3 +76,15 @@ MonoBehaviour:
   pingInterval: 1
   playerScene: playerclientscene
   stageScene: stage0
+--- !u!114 &-3187256470872638130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3196635992073277307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 214e351e4d60f334ea52163e5303ad16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

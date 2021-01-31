@@ -91,9 +91,9 @@ namespace BobJeltes.Networking
         // Server: specialized Send functions
         public static void SendConnectionIDs(ServerBehaviour sender)
         {
-            for (int i = 0; i < sender.m_Connections.Length; i++)
+            for (byte i = 0; i < sender.m_Connections.Length; i++)
             {
-                NativeArray<byte> idByte = new NativeArray<byte>(BitConverter.GetBytes(i), Allocator.None);
+                NativeArray<byte> idByte = new NativeArray<byte>(new byte[] { i }, Allocator.Temp);
                 Send(ServerMessage.ConnectionID, idByte, sender, sender.m_Connections[i]);
             }
         }
@@ -147,18 +147,18 @@ namespace BobJeltes.Networking
         //        receivers);
         //}
 
-        public static void SendPlayerTakesDamage(int ReceiverPlayerID, int DealerPlayerID, float damage, ServerBehaviour sender)
-        {
-            NativeArray<byte> data = new NativeArray<byte>(BitConverter.GetBytes(ReceiverPlayerID), Allocator.None);
-            data.CopyFrom(BitConverter.GetBytes(ReceiverPlayerID));
-            data.CopyFrom(BitConverter.GetBytes(DealerPlayerID));
-            data.CopyFrom(BitConverter.GetBytes(damage));
-            SendAll(ServerMessage.PlayerTakesDamage,
-                data,
-                sender,
-                sender.m_Connections
-                );
-        }
+        //public static void SendPlayerTakesDamage(int ReceiverPlayerID, int DealerPlayerID, float damage, ServerBehaviour sender)
+        //{
+        //    NativeArray<byte> data = new NativeArray<byte>();
+        //    data.CopyFrom(BitConverter.GetBytes(ReceiverPlayerID));
+        //    data.CopyFrom(BitConverter.GetBytes(DealerPlayerID));
+        //    data.CopyFrom(BitConverter.GetBytes(damage));
+        //    SendAll(ServerMessage.PlayerTakesDamage,
+        //        data,
+        //        sender,
+        //        sender.m_Connections
+        //        );
+        //}
 
         public static void Read(ServerBehaviour reader, int connectionID, DataStreamReader stream)
         {
@@ -180,7 +180,8 @@ namespace BobJeltes.Networking
                     reader.ShootInput(connectionID, Convert.ToBoolean(stream.ReadByte()));
                     break;
                 case ClientMessage.PlayerID:
-                    reader.AssignPlayerIDToConnection(connectionID, stream.ReadInt());
+                    int val = stream.ReadInt();
+                    reader.AssignPlayerIDToConnection(connectionID, val);
                     break;
                 default:
                     break;
@@ -213,6 +214,7 @@ namespace BobJeltes.Networking
                     break;
             }
             sender.m_Driver.EndSend(writer);
+            //AdditionalData.Dispose()
         }
 
         public static void Read(DataStreamReader stream, ClientBehaviour reader)
@@ -222,10 +224,10 @@ namespace BobJeltes.Networking
             switch (serverMessageType)
             {
                 case ServerMessage.ConnectionID:
-                    reader.SaveConnectionID(stream.ReadInt());
+                    reader.SaveConnectionID(Convert.ToInt32(stream.ReadByte()));
                     break;
                 case ServerMessage.Ping:
-                    SendPing(reader.m_Driver, reader.m_Connection);
+                    //SendPing(reader.m_Driver, reader.m_Connection);
                     break;
                 case ServerMessage.Disconnection:
                     reader.Disconnect((DisconnectionReason)stream.ReadByte());
@@ -243,36 +245,31 @@ namespace BobJeltes.Networking
                     reader.TurnEnd();
                     break;
                 case ServerMessage.ScoreUpdate:
-                    NativeArray<byte> bytes = new NativeArray<byte>();
-                    stream.ReadBytes(bytes);
-                    byte[] byteArray = new byte[4];
-                    bytes.CopyTo(byteArray);
-
-                    int score = BitConverter.ToInt32(byteArray, 0);
+                    int score = (int)stream.ReadFloat();
                     reader.ScoreUpdate(score);
                     break;
                 case ServerMessage.PlayerPositions:
-                    NativeArray<byte> positionData = new NativeArray<byte>();
+                    NativeArray<byte> positionData = new NativeArray<byte>(stream.Length, Allocator.Temp);
                     stream.ReadBytes(positionData);
                     reader.UpdatePlayerPositions(NetworkMessageUtilities.ByteNativeArrayToVector3List(positionData));
                     break;
                 case ServerMessage.PlayerRotations:
-                    NativeArray<byte> rotationdata = new NativeArray<byte>();
+                    NativeArray<byte> rotationdata = new NativeArray<byte>(stream.Length, Allocator.Temp);
                     stream.ReadBytes(rotationdata);
                     reader.UpdatePlayerRotations(NetworkMessageUtilities.ByteNativeArrayToVector3List(rotationdata));
                     break;
                 case ServerMessage.ProjectilePositions:
-                    NativeArray<byte> projectilePositions = new NativeArray<byte>();
+                    NativeArray<byte> projectilePositions = new NativeArray<byte>(stream.Length, Allocator.Temp);
                     stream.ReadBytes(projectilePositions);
                     reader.UpdateProjectilePositions(NetworkMessageUtilities.ByteNativeArrayToVector3List(projectilePositions));
                     break;
                 case ServerMessage.ProjectileImpact:
-                    NativeArray<byte> projectileRotations = new NativeArray<byte>();
+                    NativeArray<byte> projectileRotations = new NativeArray<byte>(stream.Length, Allocator.Temp);
                     stream.ReadBytes(projectileRotations);
                     reader.SpawnProjectileImpacts(NetworkMessageUtilities.ByteNativeArrayToVector3List(projectileRotations));
                     break;
                 case ServerMessage.PlayerTakesDamage:
-                    NativeArray<byte> playerDamageData = new NativeArray<byte>();
+                    NativeArray<byte> playerDamageData = new NativeArray<byte>(stream.Length, Allocator.Temp);
                     stream.ReadBytes(playerDamageData);
                     reader.PlayerTakesDamage(playerDamageData);
                     break;
@@ -280,18 +277,18 @@ namespace BobJeltes.Networking
                     break;
             }
         }
-        public static void ReadPlayerTakesDamage(int ReceiverPlayerID, int DealerPlayerID, float damage, ServerBehaviour sender)
-        {
-            NativeArray<byte> data = new NativeArray<byte>();
-            data.CopyFrom(BitConverter.GetBytes(ReceiverPlayerID));
-            data.CopyFrom(BitConverter.GetBytes(DealerPlayerID));
-            data.CopyFrom(BitConverter.GetBytes(damage));
-            SendAll(ServerMessage.PlayerTakesDamage,
-                data,
-                sender,
-                sender.m_Connections
-                );
-        }
+        //public static void ReadPlayerTakesDamage(int ReceiverPlayerID, int DealerPlayerID, float damage, ServerBehaviour sender)
+        //{
+        //    NativeArray<byte> data = new NativeArray<byte>();
+        //    data.CopyFrom(BitConverter.GetBytes(ReceiverPlayerID));
+        //    data.CopyFrom(BitConverter.GetBytes(DealerPlayerID));
+        //    data.CopyFrom(BitConverter.GetBytes(damage));
+        //    SendAll(ServerMessage.PlayerTakesDamage,
+        //        data,
+        //        sender,
+        //        sender.m_Connections
+        //        );
+        //}
 
         public static void SendPing(NetworkDriver driver, NetworkConnection connection)
         {

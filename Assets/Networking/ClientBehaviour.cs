@@ -83,6 +83,8 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     private void Start()
     {
+        clientInfo.UpdateInfo();
+
         if (AutoConnect)
             ConnectToServer(false);
     }
@@ -175,8 +177,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     public void SendPlayerID(int playerID)
     {
-        NativeArray<byte> playerIDBytes = new NativeArray<byte>();
-        playerIDBytes.CopyFrom(BitConverter.GetBytes(playerID));
+        NativeArray<byte> playerIDBytes = new NativeArray<byte>(BitConverter.GetBytes(playerID), Allocator.Temp);
         NetworkMessage.Send(ClientMessage.PlayerID, this, playerIDBytes);
     }
 
@@ -189,8 +190,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     public void ShootingChanged(bool isShooting)
     {
-        NativeArray<byte> isShootingBytes = new NativeArray<byte>();
-        isShootingBytes.CopyFrom(BitConverter.GetBytes(isShooting));
+        NativeArray<byte> isShootingBytes = new NativeArray<byte>(BitConverter.GetBytes(isShooting), Allocator.Temp);
         NetworkMessage.Send(ClientMessage.ShootInput, this, isShootingBytes);
     }
 
@@ -231,7 +231,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     internal void GameStart(int playerCount)
     {
         DontDestroyOnLoad(gameObject);
-        AsyncOperation async = SceneManager.LoadSceneAsync(playerScene);
+        AsyncOperation async = SceneManager.LoadSceneAsync(stageScene);
         async.completed += _ => PlayerReady(async);
         for (int i = 0; i < playerCount-1; i++)
         {
@@ -247,19 +247,20 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         SetPlayerSpawns();
     }
 
+    public GameManager gameManager;
     public void SetPlayerSpawns()
     {
         for (int i = 0; i < players.Count; i++)
         {
             NetworkPlayerInfo player = players[i];
-            player.controller.Rigidbody.position = GameManager.Instance.SpawnPoints[i].position;
-            player.controller.Rigidbody.rotation = GameManager.Instance.SpawnPoints[i].rotation;
+            player.controller.Rigidbody.position = gameManager.SpawnPoints[i].position;
+            player.controller.Rigidbody.rotation = gameManager.SpawnPoints[i].rotation;
         }
     }
 
     void PlayerReady(AsyncOperation async)
     {
-        SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
+        //SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
         NetworkMessage.Send(ClientMessage.PlayerReady, this, default);
         async.completed -= _ => PlayerReady(async);
     }

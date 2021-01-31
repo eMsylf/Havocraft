@@ -141,7 +141,11 @@ MonoBehaviour:
     type: 3}
   Players: []
   serverBehaviour: {fileID: 0}
-  SpawnPoints: []
+  SpawnPoints:
+  - {fileID: 6630532668210689315}
+  - {fileID: 449250854000581004}
+  - {fileID: 5231772706715811752}
+  - {fileID: 2763848775793368781}
 --- !u!1 &8727809972906920235
 GameObject:
   m_ObjectHideFlags: 0

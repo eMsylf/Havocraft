@@ -47,7 +47,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public List<Projectile> projectiles = new List<Projectile>();
     public int playersRequiredForGameStart = 2;
     public int playersReady = 0;
-
+    public GameManager gameManager;
     public bool GameIsOngoing = false;
 
     public UnityEventString OnConnectionCountChanged;
@@ -142,7 +142,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
                 continue;
             if (connection.GetState(m_Driver) != NetworkConnection.State.Connected)
                 continue;
-            NetworkMessage.Send(ServerMessage.Ping, new NativeArray<byte>(), this, connection);
+            NetworkMessage.Send(ServerMessage.Ping, default, this, connection);
         }
         // Reset time
         timeSinceLastPing = 0f;
@@ -184,9 +184,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         if (!m_Connections.IsCreated)
             return;
 
-        NativeArray<byte> data = new NativeArray<byte>();
         byte[] bytes = { (byte)DisconnectionReason.ServerStopped };
-        data.CopyFrom(bytes);
+        NativeArray<byte> data = new NativeArray<byte>(bytes, Allocator.Temp);
         NetworkMessage.SendAll(ServerMessage.Disconnection, data, this, m_Connections);
         for (int i = 0; i < m_Connections.Length; i++)
         {
@@ -218,11 +217,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public void SwitchTurns()
     {
         // Switch turn to other player
-        NetworkMessage.Send(ServerMessage.TurnEnd, new NativeArray<byte>(), this, m_Connections[currentTurnHolder]);
+        NetworkMessage.Send(ServerMessage.TurnEnd, default, this, m_Connections[currentTurnHolder]);
 
         // If currentTurnHolder reaches m_Connections.Length, currentTurnHolder is set back to 0
         currentTurnHolder = ((currentTurnHolder + 1) % m_Connections.Length);
-        NetworkMessage.Send(ServerMessage.TurnStart, new NativeArray<byte>(), this, m_Connections[currentTurnHolder]);
+        NetworkMessage.Send(ServerMessage.TurnStart, default, this, m_Connections[currentTurnHolder]);
     }
 
     #region Send
@@ -231,11 +230,6 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public void StartGame()
     {
         StartCoroutine(AnnounceGameStart());
-        GameIsOngoing = true;
-        StartCoroutine(ManageTurns());
-        SceneManager.LoadScene("stage0", LoadSceneMode.Additive);
-        SceneManager.LoadScene("servercamera", LoadSceneMode.Additive);
-        SetPlayerSpawns();
     }
 
     public void SetPlayerSpawns()
@@ -243,8 +237,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         for (int i = 0; i < players.Count; i++)
         {
             NetworkPlayerInfo player = players[i];
-            player.controller.Rigidbody.position = GameManager.Instance.SpawnPoints[i].position;
-            player.controller.Rigidbody.rotation = GameManager.Instance.SpawnPoints[i].rotation;
+            player.controller.Rigidbody.position = gameManager.SpawnPoints[i].position;
+            player.controller.Rigidbody.rotation = gameManager.SpawnPoints[i].rotation;
         }
     }
 
@@ -252,7 +246,13 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     {
         yield return new WaitForSeconds(1f);
         NetworkMessage.SendConnectionIDs(this);
-        NetworkMessage.SendAll(ServerMessage.GameStart, new NativeArray<byte>(m_Connections.Length, Allocator.None), this, m_Connections);
+        NativeArray<byte> playerNumberInBytes = new NativeArray<byte>(BitConverter.GetBytes(m_Connections.Length), Allocator.Temp);
+        NetworkMessage.SendAll(ServerMessage.GameStart, playerNumberInBytes, this, m_Connections);
+        SceneManager.LoadScene("stage0", LoadSceneMode.Additive);
+        SceneManager.LoadScene("servercamera", LoadSceneMode.Additive);
+        SetPlayerSpawns();
+        StartCoroutine(ManageTurns());
+        GameIsOngoing = true;
     }
 
     public void SendProjectileImpact(Projectile projectile)
@@ -264,15 +264,14 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     internal void PlayerTakesDamage(Player receiver, float damage, Player dealer)
     {
         // Damage
-        NativeArray<byte> damageData = new NativeArray<byte>();
+        NativeArray<byte> damageData = new NativeArray<byte>(sizeof(int)*2 + sizeof(float), Allocator.Temp);
         damageData.CopyFrom(BitConverter.GetBytes(receiver.ID));
         damageData.CopyFrom(BitConverter.GetBytes(dealer.ID));
         damageData.CopyFrom(BitConverter.GetBytes(damage));
         NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, damageData, this, m_Connections);
 
         // Score update
-        NativeArray<byte> scoreData = new NativeArray<byte>();
-        scoreData.CopyFrom(BitConverter.GetBytes(damage));
+        NativeArray<byte> scoreData = new NativeArray<byte>(BitConverter.GetBytes(damage), Allocator.Temp);
         NetworkMessage.Send(ServerMessage.ScoreUpdate, scoreData, this, m_Connections[dealer.ID]);
     }
 
@@ -281,8 +280,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         GameIsOngoing = false;
 
         // Send game over
-        NativeArray<byte> winnerIDBytes = new NativeArray<byte>();
-        winnerIDBytes.CopyFrom(BitConverter.GetBytes(playerIDWinner));
+        NativeArray<byte> winnerIDBytes = new NativeArray<byte>(BitConverter.GetBytes(playerIDWinner), Allocator.Temp);
         NetworkMessage.SendAll(ServerMessage.GameOver, winnerIDBytes, this, m_Connections);
 
         // Send game result to database

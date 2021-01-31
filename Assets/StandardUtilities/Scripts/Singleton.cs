@@ -19,6 +19,7 @@ namespace BobJeltes.StandardUtilities
         {
             return m_Instance != null;
         }
+
         /// <summary>
         /// Access singleton instance through this propriety.
         /// </summary>
