@@ -5,25 +5,25 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Login.unity
     guid: f6869b66b6b50f3428149be137c0fa20
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Database Communication/Register-Edit.unity
     guid: e6924a7174b6b2d47873aa3dbb9ec5b7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: cf1fa6aa19be6a34fa170af19c859b35
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/Client.unity
     guid: 3997e427e76c75a4e9f74a9aabb6de22
-  - enabled: 1
+  - enabled: 0
     path: Assets/Networking/PlayerClientScene.unity
     guid: 9e52910b8541a2348a6a90310ed5c14d
-  - enabled: 0
+  - enabled: 1
     path: Assets/Networking/Server.unity
     guid: 86001b1479affc5408a8ffbbfd861cdc
-  - enabled: 0
+  - enabled: 1
     path: Assets/Networking/ServerCamera.unity
     guid: 2cc6b2d110e0fb54aaed47e5ebd9377b
   - enabled: 1

@@ -73,6 +73,11 @@ namespace BobJeltes.Networking
                 case ServerMessage.ProjectilePositions:
                 case ServerMessage.ProjectileImpact:
                 case ServerMessage.PlayerTakesDamage:
+                    if (!additionalData.IsCreated || additionalData.Length == 0)
+                    {
+                        Debug.LogError("Required sent additional data was null or empty.");
+                        return;
+                    }
                     writer.WriteBytes(additionalData);
                     break;
             }
@@ -82,6 +87,8 @@ namespace BobJeltes.Networking
 
         public static void SendAll(ServerMessage serverMessageType, NativeArray<byte> additionalData, ServerBehaviour sender, NativeList<NetworkConnection> receivers)
         {
+            if (!receivers.IsCreated)
+                return;
             for (int i = 0; i < receivers.Length; i++)
             {
                 Send(serverMessageType, additionalData, sender, receivers[i]);
@@ -250,6 +257,7 @@ namespace BobJeltes.Networking
                     break;
                 case ServerMessage.PlayerPositions:
                     NativeArray<byte> positionData = new NativeArray<byte>(stream.Length, Allocator.Temp);
+                    Debug.Log("Stream length: " + stream.Length);
                     stream.ReadBytes(positionData);
                     reader.UpdatePlayerPositions(NetworkMessageUtilities.ByteNativeArrayToVector3List(positionData));
                     break;

@@ -66,7 +66,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         StopServer();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!m_Driver.IsCreated)
             return;
@@ -119,6 +119,12 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
                     m_Connections[i] = default;
                 }
             }
+        }
+
+        if (GameIsOngoing)
+        {
+            UpdatePlayerPositionsRotations();
+            UpdateProjectilePositions();
         }
     }
 
@@ -181,8 +187,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     public void StopServer()
     {
+        if (GameIsOngoing)
+            CancelGame();
         if (!m_Connections.IsCreated)
             return;
+
 
         byte[] bytes = { (byte)DisconnectionReason.ServerStopped };
         NativeArray<byte> data = new NativeArray<byte>(bytes, Allocator.Temp);
@@ -291,6 +300,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
             );
     }
 
+    public void CancelGame()
+    {
+        GameIsOngoing = false;
+    }
+
     public IEnumerator SendScore(string uri)
     {
         UnityEngine.Networking.UnityWebRequest webRequest = UnityEngine.Networking.UnityWebRequest.Get(uri);
@@ -346,33 +360,35 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     #endregion
 
-    private void FixedUpdate()
+    public void UpdatePlayerPositionsRotations()
     {
-        if (GameIsOngoing)
-        {
-            UpdatePlayerPositions();
-            UpdateProjectilePositions();
-        }
-    }
-
-    public void UpdatePlayerPositions()
-    {
+        List<Vector3> positions = new List<Vector3>();
         List<Vector3> rotations = new List<Vector3>();
+        Debug.Log("Updating positions and rotations of " + players.Count + " players.");
         foreach (NetworkPlayerInfo player in players)
         {
             player.controller.ApplyForces(player.input);
+            positions.Add(player.controller.Rigidbody.position);
             rotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
         }
-        NetworkMessage.SendAll(ServerMessage.PlayerRotations, NetworkMessageUtilities.Vector3ListToByteNativeArray(rotations), this, m_Connections);
+        if (positions.Count != 0)
+            NetworkMessage.SendAll(ServerMessage.PlayerPositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
+        if (rotations.Count != 0)
+            NetworkMessage.SendAll(ServerMessage.PlayerRotations, NetworkMessageUtilities.Vector3ListToByteNativeArray(rotations), this, m_Connections);
+
     }
 
     public void UpdateProjectilePositions()
     {
         List<Vector3> positions = new List<Vector3>();
+        Debug.Log("Updating positions of " + projectiles.Count + " projectiles.");
         foreach (Projectile projectile in projectiles)
         {
             positions.Add(projectile.transform.position);
         }
-        NetworkMessage.SendAll(ServerMessage.ProjectilePositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
+        if (positions.Count == 0)
+            Debug.Log("Projectile positions count is 0");
+        else
+            NetworkMessage.SendAll(ServerMessage.ProjectilePositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
     }
 }

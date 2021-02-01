@@ -97,7 +97,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             m_Driver.Dispose();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!m_Driver.IsCreated)
             return;
@@ -123,7 +123,6 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
                 break;
             case NetworkEvent.Type.Connect:
                 Debug.Log(name + " is now connected to the server", gameObject);
-                
                 break;
             case NetworkEvent.Type.Disconnect:
                 Debug.Log("Client got disconnected from server", this);

@@ -24,6 +24,7 @@ namespace BobJeltes.Networking
                 bytes.Add(digitByte);
             }
             NativeArray<byte> vector3Bytes = new NativeArray<byte>(bytes.ToArray(), Allocator.Temp);
+            Debug.Log("Native array size: " + vector3Bytes.Length);
             return vector3Bytes;
         }
 
@@ -46,6 +47,7 @@ namespace BobJeltes.Networking
                 }
             }
             NativeArray<byte> vector3Bytes = new NativeArray<byte>(bytes.ToArray(), Allocator.Temp);
+            Debug.Log("Native array size: " + vector3Bytes.Length);
             return vector3Bytes;
         }
 
@@ -98,8 +100,10 @@ namespace BobJeltes.Networking
 
                 // Pak bytes van huidige positie, tot en met huidige positie + sizeof(float)
                 byte[] subArray = new byte[sizeof(float)];
+                Debug.Log("Sub array size: " + subArray);
                 for (int j = 0; j < sizeof(float); j++)
                 {
+                    Debug.Log("Value of iterator j: " + j);
                     subArray[j] = byteArray[i + j];
                 }
 
