@@ -93,7 +93,7 @@ public class GameManager : Singleton<GameManager>
         if (Server != null)
         {
             // Report damage to server
-            Server.PlayerTakesDamage(receiver, damage, dealer);
+            Server.PlayerTakesDamage(receiver, dealer, damage);
         }
         else
         {

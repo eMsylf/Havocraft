@@ -120,6 +120,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             case NetworkEvent.Type.Data:
                 Debug.Log(name + " received data");
                 NetworkMessage.Read(stream, this);
+                Debug.Log("Stream length remaining: " + stream.Length);
                 break;
             case NetworkEvent.Type.Connect:
                 Debug.Log(name + " is now connected to the server", gameObject);
@@ -161,7 +162,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
             if (m_Connection.GetState(m_Driver) == NetworkConnection.State.Connected)
             {
-                
+                SendPlayerID();
                 break;
             }
             connectionTime += interval;
@@ -174,23 +175,22 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         }
     }
 
-    public void SendPlayerID(int playerID)
+    public void SendPlayerID()
     {
-        NativeArray<byte> playerIDBytes = new NativeArray<byte>(BitConverter.GetBytes(playerID), Allocator.Temp);
-        NetworkMessage.Send(ClientMessage.PlayerID, this, playerIDBytes);
+        NetworkMessage.Send(ClientMessage.PlayerID, this);
     }
 
     #region Send
 
     public void MovementInputChanged()
     {
-        NetworkMessage.Send(ClientMessage.MovementInput, this, default);
+        NetworkMessage.Send(ClientMessage.MovementInput, this);
     }
-
+    public bool IsShooting = false;
     public void ShootingChanged(bool isShooting)
     {
-        NativeArray<byte> isShootingBytes = new NativeArray<byte>(BitConverter.GetBytes(isShooting), Allocator.Temp);
-        NetworkMessage.Send(ClientMessage.ShootInput, this, isShootingBytes);
+        IsShooting = isShooting;
+        NetworkMessage.Send(ClientMessage.ShootInput, this);
     }
 
     //internal void QuitGame()
@@ -204,24 +204,25 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     internal void SaveConnectionID(int connectionID)
     {
+        Debug.Log("Saved connection ID: " + connectionID);
         clientInfo.connectionID = connectionID;
     }
 
     internal void TurnEnd()
     {
-        PlayerClientInterface pci = PlayerClientInterface.Instance;
+        PlayerClientInterface pci = GetPlayerClientInterface();
         pci.TurnEnd();
     }
 
     internal void TurnStart()
     {
-        PlayerClientInterface pci = PlayerClientInterface.Instance;
+        PlayerClientInterface pci = GetPlayerClientInterface();
         pci.TurnStart();
     }
 
     internal void ScoreUpdate(int score)
     {
-        PlayerClientInterface pci = PlayerClientInterface.Instance;
+        PlayerClientInterface pci = GetPlayerClientInterface();
         pci.UpdateScore(score);
     }
 
@@ -230,45 +231,59 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     internal void GameStart(int playerCount)
     {
         DontDestroyOnLoad(gameObject);
-        AsyncOperation async = SceneManager.LoadSceneAsync(stageScene);
-        async.completed += _ => PlayerReady(async);
-        for (int i = 0; i < playerCount-1; i++)
+        AsyncOperation async = SceneManager.LoadSceneAsync(playerScene);
+        async.completed += _ => PlayerReady(async, playerCount);
+    }
+
+    public GameManager gmInstance;
+    public GameManager gmPrefab;
+    public void SetPlayerSpawns()
+    {
+        if (gmInstance == null)
+            gmInstance = Instantiate(gmPrefab);
+        for (int i = 0; i < players.Count; i++)
+        {
+            NetworkPlayerInfo player = players[i];
+            if (player == null) Debug.LogError("Player is null");
+            if (player.controller == null) Debug.LogError("Controller of player is null");
+            if (player.controller.Rigidbody == null) Debug.LogError("Player is null");
+            player.controller.Rigidbody.position = gmInstance.SpawnPoints[i].position;
+            player.controller.Rigidbody.rotation = gmInstance.SpawnPoints[i].rotation;
+        }
+    }
+
+    void PlayerReady(AsyncOperation async, int playerCount)
+    {
+        //SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
+        for (int i = 0; i < playerCount; i++)
         {
             if (clientInfo.connectionID == i)
             {
                 PlayerController controlledPlayer = Instantiate(playerPrefab);
-                PlayerClientInterface.Instance.Player = controlledPlayer.GetComponent<Player>();
+                GetPlayerClientInterface().Player = controlledPlayer.GetComponent<Player>();
                 players.Add(new NetworkPlayerInfo(clientInfo.id, controlledPlayer, true));
+                Debug.Log("Spawned the player prefab");
             }
             else
+            {
                 players.Add(new NetworkPlayerInfo(-1, Instantiate(opponentPrefab), true));
+                Debug.Log("Spawned an opponent prefab");
+            }
         }
+        Debug.Log("Spawned " + playerCount + " players");
         SetPlayerSpawns();
+        NetworkMessage.Send(ClientMessage.PlayerReady, this);
+        async.completed -= _ => PlayerReady(async, playerCount);
     }
 
-    public GameManager gameManager;
-    public void SetPlayerSpawns()
+    internal void GameOver(ref DataStreamReader stream)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            NetworkPlayerInfo player = players[i];
-            player.controller.Rigidbody.position = gameManager.SpawnPoints[i].position;
-            player.controller.Rigidbody.rotation = gameManager.SpawnPoints[i].rotation;
-        }
-    }
-
-    void PlayerReady(AsyncOperation async)
-    {
-        //SceneManager.LoadScene(stageScene, LoadSceneMode.Additive);
-        NetworkMessage.Send(ClientMessage.PlayerReady, this, default);
-        async.completed -= _ => PlayerReady(async);
-    }
-
-    internal void GameOver(int playerIDWinner)
-    {
-        PlayerClientInterface pci = PlayerClientInterface.Instance;
+        PlayerClientInterface pci = GetPlayerClientInterface();
         clientInfo.UpdateInfo();
-        pci.GameOver(playerIDWinner == clientInfo.id);
+        int winnerID = stream.ReadInt();
+        int secondID = stream.ReadInt();
+        int winnerScore = stream.ReadInt();
+        pci.GameOver(winnerID == clientInfo.id);
     }
 
     public void ReportConnectionState()
@@ -296,7 +311,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         {
             if (i == clientInfo.connectionID)
             {
-                PlayerClientInterface.Instance.Player.PlayerController.Rigidbody.MovePosition(positions[i]);
+                GetPlayerClientInterface().Player.PlayerController.Rigidbody.MovePosition(positions[i]);
                 continue;
             }
             else
@@ -312,7 +327,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         {
             if (i == clientInfo.connectionID)
             {
-                PlayerClientInterface.Instance.Player.PlayerController.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
+                GetPlayerClientInterface().Player.PlayerController.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
             }
             else
             {
@@ -344,13 +359,11 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         }
     }
 
-    internal void PlayerTakesDamage(NativeArray<byte> playerDamageData)
+    internal void PlayerTakesDamage(ref DataStreamReader stream)
     {
-        byte[] dataBytes = new byte[playerDamageData.Length];
-        playerDamageData.CopyTo(dataBytes);
-        int receiverPlayerID = BitConverter.ToInt32(dataBytes, 0);
-        int dealerPlayerID = BitConverter.ToInt32(dataBytes, 4);
-        float damage = BitConverter.ToSingle(dataBytes, 8);
+        int receiverPlayerID = stream.ReadInt();
+        int dealerPlayerID = stream.ReadInt();
+        float damage = stream.ReadInt();
 
         Player receivingPlayer = null;
         Player dealingPlayer = null;

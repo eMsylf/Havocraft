@@ -1,7 +1,7 @@
 ﻿using BobJeltes.StandardUtilities;
 using UnityEngine;
 
-public class PlayerClientInterface : Singleton<PlayerClientInterface>
+public class PlayerClientInterface : MonoBehaviour
 {
     private Player player;
     public Player Player

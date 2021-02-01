@@ -43,8 +43,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public NetworkDriver m_Driver;
     public NativeList<NetworkConnection> m_Connections;
     public List<NetworkPlayerInfo> players = new List<NetworkPlayerInfo>();
+    public List<Vector3> playerPositions = new List<Vector3>();
+    public List<Vector3> playerRotations = new List<Vector3>();
     public PlayerController playerPrefab;
     public List<Projectile> projectiles = new List<Projectile>();
+    public List<Vector3> projectilePositions = new List<Vector3>();
     public int playersRequiredForGameStart = 2;
     public int playersReady = 0;
     public GameManager gameManager;
@@ -148,7 +151,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
                 continue;
             if (connection.GetState(m_Driver) != NetworkConnection.State.Connected)
                 continue;
-            NetworkMessage.Send(ServerMessage.Ping, default, this, connection);
+            NetworkMessage.Send(ServerMessage.Ping, this, connection);
         }
         // Reset time
         timeSinceLastPing = 0f;
@@ -193,9 +196,9 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
             return;
 
 
-        byte[] bytes = { (byte)DisconnectionReason.ServerStopped };
-        NativeArray<byte> data = new NativeArray<byte>(bytes, Allocator.Temp);
-        NetworkMessage.SendAll(ServerMessage.Disconnection, data, this, m_Connections);
+        //byte[] bytes = { (byte)DisconnectionReason.ServerStopped };
+        //NativeArray<byte> data = new NativeArray<byte>(bytes, Allocator.Temp);
+        //NetworkMessage.SendAll(ServerMessage.Disconnection, this);
         for (int i = 0; i < m_Connections.Length; i++)
         {
             m_Connections[i].Disconnect(m_Driver);
@@ -226,11 +229,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public void SwitchTurns()
     {
         // Switch turn to other player
-        NetworkMessage.Send(ServerMessage.TurnEnd, default, this, m_Connections[currentTurnHolder]);
+        NetworkMessage.Send(ServerMessage.TurnEnd, this, m_Connections[currentTurnHolder]);
 
         // If currentTurnHolder reaches m_Connections.Length, currentTurnHolder is set back to 0
         currentTurnHolder = ((currentTurnHolder + 1) % m_Connections.Length);
-        NetworkMessage.Send(ServerMessage.TurnStart, default, this, m_Connections[currentTurnHolder]);
+        NetworkMessage.Send(ServerMessage.TurnStart, this, m_Connections[currentTurnHolder]);
     }
 
     #region Send
@@ -243,6 +246,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     public void SetPlayerSpawns()
     {
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameManager>();
         for (int i = 0; i < players.Count; i++)
         {
             NetworkPlayerInfo player = players[i];
@@ -253,10 +258,10 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     public IEnumerator AnnounceGameStart()
     {
-        yield return new WaitForSeconds(1f);
-        NetworkMessage.SendConnectionIDs(this);
-        NativeArray<byte> playerNumberInBytes = new NativeArray<byte>(BitConverter.GetBytes(m_Connections.Length), Allocator.Temp);
-        NetworkMessage.SendAll(ServerMessage.GameStart, playerNumberInBytes, this, m_Connections);
+        yield return new WaitForSeconds(.5f);
+        NetworkMessage.SendAll(ServerMessage.ConnectionID, this);
+        yield return new WaitForSeconds(.5f);
+        NetworkMessage.SendAll(ServerMessage.GameStart, this);
         SceneManager.LoadScene("stage0", LoadSceneMode.Additive);
         SceneManager.LoadScene("servercamera", LoadSceneMode.Additive);
         SetPlayerSpawns();
@@ -267,30 +272,46 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public void SendProjectileImpact(Projectile projectile)
     {
         projectiles.Remove(projectile);
-        NetworkMessage.SendAll(ServerMessage.ProjectileImpact, NetworkMessageUtilities.Vector3ToByteNativeArray(projectile.transform.position), this, m_Connections);
     }
 
-    internal void PlayerTakesDamage(Player receiver, float damage, Player dealer)
+
+    internal class LatestDamageData
     {
+        internal Player m_receiver;
+        internal Player m_dealer;
+        internal float m_damage;
+
+        internal void Update(Player receiver, Player dealer, float damage)
+        {
+            m_receiver = receiver;
+            m_dealer = dealer;
+            m_damage = damage;
+        }
+    }
+    internal LatestDamageData latestDamageData = new LatestDamageData();
+    internal void PlayerTakesDamage(Player receiver, Player dealer, float damage)
+    {
+        latestDamageData.Update(receiver, dealer, damage);
+        
         // Damage
-        NativeArray<byte> damageData = new NativeArray<byte>(sizeof(int)*2 + sizeof(float), Allocator.Temp);
-        damageData.CopyFrom(BitConverter.GetBytes(receiver.ID));
-        damageData.CopyFrom(BitConverter.GetBytes(dealer.ID));
-        damageData.CopyFrom(BitConverter.GetBytes(damage));
-        NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, damageData, this, m_Connections);
+        NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, this);
 
         // Score update
-        NativeArray<byte> scoreData = new NativeArray<byte>(BitConverter.GetBytes(damage), Allocator.Temp);
-        NetworkMessage.Send(ServerMessage.ScoreUpdate, scoreData, this, m_Connections[dealer.ID]);
+        NetworkMessage.Send(ServerMessage.ScoreUpdate, this, m_Connections[dealer.ID]);
     }
 
+    internal int PlayerIDWinner = 0;
+    internal int PlayerIDSecond = 0;
+    internal int WinnerScore = 0;
     public void GameOver(int playerIDWinner, int playerIDSecond, float score)
     {
         GameIsOngoing = false;
 
         // Send game over
-        NativeArray<byte> winnerIDBytes = new NativeArray<byte>(BitConverter.GetBytes(playerIDWinner), Allocator.Temp);
-        NetworkMessage.SendAll(ServerMessage.GameOver, winnerIDBytes, this, m_Connections);
+        PlayerIDWinner = playerIDWinner;
+        PlayerIDSecond = playerIDSecond;
+        WinnerScore = (int)score;
+        NetworkMessage.SendAll(ServerMessage.GameOver, this);
 
         // Send game result to database
         StartCoroutine(
@@ -362,33 +383,32 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     public void UpdatePlayerPositionsRotations()
     {
-        List<Vector3> positions = new List<Vector3>();
-        List<Vector3> rotations = new List<Vector3>();
+        if (players.Count == 0)
+            return;
+
+        playerPositions = new List<Vector3>();
+        playerRotations = new List<Vector3>();
         Debug.Log("Updating positions and rotations of " + players.Count + " players.");
         foreach (NetworkPlayerInfo player in players)
         {
             player.controller.ApplyForces(player.input);
-            positions.Add(player.controller.Rigidbody.position);
-            rotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
+            playerPositions.Add(player.controller.Rigidbody.position);
+            playerRotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
         }
-        if (positions.Count != 0)
-            NetworkMessage.SendAll(ServerMessage.PlayerPositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
-        if (rotations.Count != 0)
-            NetworkMessage.SendAll(ServerMessage.PlayerRotations, NetworkMessageUtilities.Vector3ListToByteNativeArray(rotations), this, m_Connections);
-
     }
 
     public void UpdateProjectilePositions()
     {
-        List<Vector3> positions = new List<Vector3>();
+        if (projectiles.Count == 0)
+            return;
+
+        projectilePositions = new List<Vector3>();
         Debug.Log("Updating positions of " + projectiles.Count + " projectiles.");
         foreach (Projectile projectile in projectiles)
         {
-            positions.Add(projectile.transform.position);
+            projectilePositions.Add(projectile.transform.position);
         }
-        if (positions.Count == 0)
+        if (projectilePositions.Count == 0)
             Debug.Log("Projectile positions count is 0");
-        else
-            NetworkMessage.SendAll(ServerMessage.ProjectilePositions, NetworkMessageUtilities.Vector3ListToByteNativeArray(positions), this, m_Connections);
     }
 }

@@ -51,41 +51,6 @@ namespace BobJeltes.Networking
             return vector3Bytes;
         }
 
-        //public static Vector3 ByteNativeArrayToVector3(NativeArray<byte> byteNativeArray)
-        //{
-        //    byte[] byteArray = byteNativeArray.ToArray();
-
-        //    Vector3 newestVector3 = new Vector3();
-
-        //    for (int i = 0; i < 12; i += 4)
-        //    {
-        //        int currentPositionInVector3 = i % 12;
-
-        //        // Pak bytes van huidige positie, tot en met huidige positie + 4
-        //        byte[] singleDigit = new byte[4];
-        //        Array.Copy(byteArray, i, singleDigit, 0, 4);
-
-        //        if (currentPositionInVector3 == 0)
-        //        {
-        //            // Maak nieuwe vector aan
-        //            newestVector3 = new Vector3();
-        //            // x
-        //            newestVector3.x = BitConverter.ToSingle(singleDigit, 0);
-        //        }
-        //        else if (currentPositionInVector3 == 4)
-        //        {
-        //            // y
-        //            newestVector3.y = BitConverter.ToSingle(singleDigit, 0);
-        //        }
-        //        else if (currentPositionInVector3 == 8)
-        //        {
-        //            // z
-        //            newestVector3.z = BitConverter.ToSingle(singleDigit, 0);
-        //        }
-        //    }
-        //    return newestVector3;
-        //}
-
         public static List<Vector3> ByteNativeArrayToVector3List(NativeArray<byte> byteNativeArray)
         {
             byte[] byteArray = byteNativeArray.ToArray();
