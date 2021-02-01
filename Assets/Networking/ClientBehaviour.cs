@@ -328,6 +328,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             if (i == clientInfo.connectionID)
             {
                 GetPlayerClientInterface().Player.PlayerController.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
+                Debug.LogError("Set player rotation to " + rotations[i]);
             }
             else
             {

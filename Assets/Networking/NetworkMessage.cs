@@ -138,7 +138,6 @@ namespace BobJeltes.Networking
                 writer.WriteFloat(vector3.y);
                 writer.WriteFloat(vector3.z);
             }
-            Debug.Log("Vector3 List length in DataStreamWriter: " + writer.Length);
         }
 
         public static void Read(ServerBehaviour reader, int connectionID, DataStreamReader stream)
