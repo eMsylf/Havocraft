@@ -37,7 +37,7 @@ namespace BobJeltes.StandardUtilities
                     }
                     else
                     {
-                        Debug.Log("New instance of singleton found. Returning new: " + newInstance.name, newInstance);
+                        Debug.Log("New instance of singleton found in active scene. Returning new: " + newInstance.name, newInstance);
                         m_ShuttingDown = false;
                         return newInstance;
                     }
@@ -66,6 +66,7 @@ namespace BobJeltes.StandardUtilities
                     return m_Instance;
                 }
             }
+            set => m_Instance = value;
         }
 
         private void OnApplicationQuit()

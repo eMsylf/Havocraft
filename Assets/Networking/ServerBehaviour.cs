@@ -228,11 +228,12 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     public void SwitchTurns()
     {
+        Debug.Log("Switch turns");
         // Switch turn to other player
         NetworkMessage.Send(ServerMessage.TurnEnd, this, m_Connections[currentTurnHolder]);
 
         // If currentTurnHolder reaches m_Connections.Length, currentTurnHolder is set back to 0
-        currentTurnHolder = ((currentTurnHolder + 1) % m_Connections.Length);
+        currentTurnHolder = (currentTurnHolder + 1) % m_Connections.Length;
         NetworkMessage.Send(ServerMessage.TurnStart, this, m_Connections[currentTurnHolder]);
     }
 
@@ -256,6 +257,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         }
     }
 
+    public Camera ServerCamera;
     public IEnumerator AnnounceGameStart()
     {
         yield return new WaitForSeconds(.5f);
@@ -263,7 +265,9 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         yield return new WaitForSeconds(.5f);
         NetworkMessage.SendAll(ServerMessage.GameStart, this);
         SceneManager.LoadScene("stage0", LoadSceneMode.Additive);
-        SceneManager.LoadScene("servercamera", LoadSceneMode.Additive);
+        if (Camera.main != null)
+            Camera.main.gameObject.SetActive(false);
+        Instantiate(ServerCamera);
         SetPlayerSpawns();
         StartCoroutine(ManageTurns());
         GameIsOngoing = true;
@@ -395,6 +399,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
             playerPositions.Add(player.controller.Rigidbody.position);
             playerRotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
         }
+        NetworkMessage.SendAll(ServerMessage.PlayerPositions, this);
+        NetworkMessage.SendAll(ServerMessage.PlayerRotations, this);
     }
 
     public void UpdateProjectilePositions()

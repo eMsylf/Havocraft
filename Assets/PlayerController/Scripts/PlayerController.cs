@@ -5,6 +5,7 @@ using GD.MinMaxSlider;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    [Tooltip("If in the scene that's hosted by the server")]
     public bool ServerControlled = false;
     private GameControls controls;
     private GameControls Controls

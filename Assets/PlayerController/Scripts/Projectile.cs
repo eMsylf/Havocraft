@@ -127,7 +127,8 @@ public class Projectile : MonoBehaviour
                     GameManager.Instance.PlayerTakesDamage(playerHit, Damage, Owner);
 
                 }
-                GameManager.Instance.PlayerTakesDamage(playerHit, Damage);
+                else
+                    GameManager.Instance.PlayerTakesDamage(playerHit, Damage);
                 //player.Die();
             }
         }

@@ -105,7 +105,7 @@ PrefabInstance:
     - target: {fileID: 4772672320393863259, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: m_Name
-      value: DUMMY PLAYER
+      value: Player Dummy (Server)
       objectReference: {fileID: 0}
     - target: {fileID: 4772672320969898287, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
@@ -134,6 +134,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: cad88527da991f144a2b9975b8eca3eb, type: 2}
     - target: {fileID: 8513927240580669476, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142216969944243105, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: m_IsActive
       value: 0

@@ -280,6 +280,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4772672320393863253, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: onMovementInputChanged.m_PersistentCalls.m_Calls.Array.size
@@ -294,7 +299,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onMovementInputChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4926461225083524346}
     - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: onMovementInputChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -314,7 +319,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OnShootingChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4926461225083524346}
     - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: OnShootingChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -333,7 +338,7 @@ PrefabInstance:
     - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: ServerControlled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4772672320393863259, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}

@@ -131,6 +131,7 @@ namespace BobJeltes.Networking
 
         public static void WriteVector3ListToStream(List<Vector3> vector3s, ref DataStreamWriter writer)
         {
+            writer.WriteInt(vector3s.Count);
             foreach (Vector3 vector3 in vector3s)
             {
                 writer.WriteFloat(vector3.x);
@@ -268,19 +269,14 @@ namespace BobJeltes.Networking
 
         public static List<Vector3> ExtractVector3List(ref DataStreamReader stream)
         {
+            int vector3Count = stream.ReadInt();
             List<Vector3> vector3s = new List<Vector3>();
-            while (stream.Length >= 3)
+            for (int i = 0; i < vector3Count; i++)
             {
                 Vector3 newVector3 = new Vector3();
-                for (int i = 0; i < 3; i++)
-                {
-                    if (i == 0)
-                        newVector3.x = stream.ReadFloat();
-                    if (i == 1)
-                        newVector3.y = stream.ReadFloat();
-                    if (i == 2)
-                        newVector3.z = stream.ReadFloat();
-                }
+                newVector3.x = stream.ReadFloat();
+                newVector3.y = stream.ReadFloat();
+                newVector3.z = stream.ReadFloat();
                 vector3s.Add(newVector3);
             }
             Debug.Log("Extracted " + vector3s.Count + " vector3s");

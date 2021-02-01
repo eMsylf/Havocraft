@@ -226,12 +226,12 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         pci.UpdateScore(score);
     }
 
-    public string playerScene;
+    //public string playerScene;
     public string stageScene;
     internal void GameStart(int playerCount)
     {
         DontDestroyOnLoad(gameObject);
-        AsyncOperation async = SceneManager.LoadSceneAsync(playerScene);
+        AsyncOperation async = SceneManager.LoadSceneAsync(stageScene);
         async.completed += _ => PlayerReady(async, playerCount);
     }
 

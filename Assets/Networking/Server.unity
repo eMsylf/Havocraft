@@ -2980,9 +2980,12 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   players: []
-  playerPrefab: {fileID: 7151156330828827079, guid: 70c3a760d33a549479d0da1bc16574ff,
+  playerPositions: []
+  playerRotations: []
+  playerPrefab: {fileID: 7151156330828827079, guid: 1c019a5f36ec4e3419d1ada04dccae2f,
     type: 3}
   projectiles: []
+  projectilePositions: []
   playersRequiredForGameStart: 2
   playersReady: 0
   gameManager: {fileID: 16572621}
@@ -3054,6 +3057,8 @@ MonoBehaviour:
   PingInterval: 1
   turnDuration: 5
   currentTurnHolder: 0
+  ServerCamera: {fileID: 3961408620488059379, guid: 446885e829b2e0347b244c305bdfb246,
+    type: 3}
 --- !u!4 &1770029874
 Transform:
   m_ObjectHideFlags: 0
