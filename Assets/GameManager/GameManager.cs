@@ -117,7 +117,7 @@ public class GameManager : Singleton<GameManager>
     {
         if (Server != null)
         {
-            Server.GameOver(winner.ID, second.ID, winner.ScoreValue.Value);
+            Server.GameOver(winner.ID, second.ID, (int)winner.ScoreValue.Value);
             return;
         }
 

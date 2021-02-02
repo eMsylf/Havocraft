@@ -165,9 +165,9 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         timeSinceLastPing = 0f;
     }
 
-    internal void ReadPong(int playerID)
+    internal void ReadPong(int connectionID)
     {
-        Debug.Log("Received pong from " + playerID);
+        Debug.Log("Received pong from " + connectionID);
     }
 
     public void StartServer()
@@ -311,25 +311,44 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         NetworkMessage.Send(ServerMessage.ScoreUpdate, this, m_Connections[dealer.ID]);
     }
 
+    public void PlayerCollision()
+    {
+        if (!GameIsOngoing)
+            return;
+        // Als de spelers tegen elkaar botsen, wordt degene die op dit moment de beurt heeft als winnaar uitgeroepen. De andere speler wordt de verliezer.
+        int loserID = (currentTurnHolder == 0 ? 1 : 0);
+        latestDamageData.Update(players[currentTurnHolder].controller.Player, players[loserID].controller.Player, 100);
+        NetworkMessage.Send(ServerMessage.ScoreUpdate, this, m_Connections[currentTurnHolder]);
+        GameOver(players[currentTurnHolder].playerID, players[loserID].playerID, 100);
+    }
+
     internal int PlayerIDWinner = 0;
     internal int PlayerIDSecond = 0;
     internal int WinnerScore = 0;
-    public void GameOver(int playerIDWinner, int playerIDSecond, float score)
+    public void GameOver(int playerIDWinner, int playerIDSecond, int score)
     {
         GameIsOngoing = false;
 
         // Send game over
         PlayerIDWinner = playerIDWinner;
         PlayerIDSecond = playerIDSecond;
-        WinnerScore = (int)score;
-        NetworkMessage.SendAll(ServerMessage.GameOver, this);
-
+        WinnerScore = score;
+        StartCoroutine(SendGameOverWithDelay());
+        Debug.Log("Send score");
         // Send game result to database
         StartCoroutine(
             SendScore(
-            DatabaseCommunication.GetScoreSendURI((int)score, playerIDWinner, playerIDSecond)
+                DatabaseCommunication.GetServerLoginURI(1, "admin"),
+            score, playerIDWinner, playerIDSecond
             )
             );
+    }
+
+    public IEnumerator SendGameOverWithDelay(float delay = 2f)
+    {
+        yield return new WaitForSeconds(delay);
+
+        NetworkMessage.SendAll(ServerMessage.GameOver, this);
     }
 
     public void CancelGame()
@@ -337,19 +356,42 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         GameIsOngoing = false;
     }
 
-    public IEnumerator SendScore(string uri)
+    public IEnumerator SendScore(string serverLoginURI, int score, int playerIDWinner, int playerIDSecond)
     {
-        UnityEngine.Networking.UnityWebRequest webRequest = UnityEngine.Networking.UnityWebRequest.Get(uri);
-        yield return webRequest.SendWebRequest();
+        // Database login
+        UnityEngine.Networking.UnityWebRequest webRequestServerLogin = UnityEngine.Networking.UnityWebRequest.Get(serverLoginURI);
+        yield return webRequestServerLogin.SendWebRequest();
 
-        if (webRequest.isNetworkError || webRequest.isHttpError)
+        if (webRequestServerLogin.isNetworkError || webRequestServerLogin.isHttpError)
         {
             Debug.LogError("Error sending send-score request to server");
             yield break;
         }
 
-        string text = webRequest.downloadHandler.text;
-        Debug.Log("Score send result: " + text);
+        string loginResponse = webRequestServerLogin.downloadHandler.text;
+        Debug.Log("Server login return string: " + loginResponse);
+        if (loginResponse.Length < 2)
+        {
+            Debug.LogError("Failed to get a session id from the database");
+            yield break;
+        }
+        else
+        {
+            Debug.Log("Server login success");
+        }
+
+        // Send score
+        UnityEngine.Networking.UnityWebRequest webRequestScore = UnityEngine.Networking.UnityWebRequest.Get(DatabaseCommunication.GetScoreSendURI(loginResponse, score, playerIDWinner, playerIDSecond));
+        yield return webRequestScore.SendWebRequest();
+
+        if (webRequestScore.isNetworkError || webRequestScore.isHttpError)
+        {
+            Debug.LogError("Error sending send-score request to server");
+            yield break;
+        }
+
+        string sendScoreResponse = webRequestScore.downloadHandler.text;
+        Debug.Log("Score send result: " + sendScoreResponse);
     }
 
     #endregion
@@ -377,6 +419,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     internal void ShootInput(int connectionID, bool isShooting)
     {
+        Debug.Log("Received shoot input " + isShooting + " from " + connectionID);
         players[connectionID].controller.SetShootingActive(isShooting);
     }
 

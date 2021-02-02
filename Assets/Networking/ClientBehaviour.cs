@@ -10,6 +10,8 @@ using System.Collections.Generic;
 
 public class ClientBehaviour : Singleton<ClientBehaviour>
 {
+    public static int player_id = -1;
+
     public NetworkDriver m_Driver;
     public NetworkConnection m_Connection;
     public bool AutoConnect = true;
@@ -289,7 +291,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         int winnerID = stream.ReadInt();
         int secondID = stream.ReadInt();
         int winnerScore = stream.ReadInt();
-        pci.GameOver(winnerID == clientInfo.id);
+        pci.GameOver(winnerID == player_id);
     }
 
     public void ReportConnectionState()
@@ -346,6 +348,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
 
     internal void UpdateProjectilePositions(List<Vector3> newPositions)
     {
+        Debug.LogError("Number of projectiles: " + newPositions.Count);
         UpdateProjectileListLength(newPositions.Count);
         for (int i = 0; i < projectiles.Count; i++)
         {

@@ -72,5 +72,7 @@ public class PlayerClientInterface : MonoBehaviour
     {
         Player.endGameScreen.gameObject.SetActive(true);
         Player.endGameScreen.Activate(isWinner);
+        if (isWinner)
+            Player.endGameScreen.ScoreText.UpdateValue(100);
     }
 }

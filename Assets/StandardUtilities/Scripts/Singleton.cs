@@ -17,6 +17,8 @@ namespace BobJeltes.StandardUtilities
         private static T m_Instance;
         public static bool HasActiveInstance()
         {
+            if (m_Instance == null)
+                m_Instance = FindObjectOfType<T>();
             return m_Instance != null;
         }
 

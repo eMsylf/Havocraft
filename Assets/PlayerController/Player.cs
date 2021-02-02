@@ -70,6 +70,15 @@ public class Player : MonoBehaviour
         Debug.Log("Disable " + name, gameObject);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Player player = collision.collider.attachedRigidbody.GetComponent<Player>();
+        if (ServerBehaviour.HasActiveInstance() && player != null && player != this)
+        {
+            Debug.Log("Found server behaviour: " + ServerBehaviour.Instance.name, ServerBehaviour.Instance);
+            ServerBehaviour.Instance.PlayerCollision();
+        }
+    }
 
     public void TakeDamage(float damage)
     {

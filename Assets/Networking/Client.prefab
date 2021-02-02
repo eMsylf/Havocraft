@@ -60,13 +60,16 @@ MonoBehaviour:
     type: 3}
   spawnPoints: []
   projectileImpactPrefab: {fileID: 0}
-  projectilePrefab: {fileID: 6548899645079843253, guid: 720463018d0238a4bb7bf57662c492af,
+  projectilePrefab: {fileID: 3013486598739321440, guid: 7e944e14d98747843ab22b7657183de4,
     type: 3}
   projectiles: []
   pingInterval: 1
   IsShooting: 0
-  playerScene: playerclientscene
   stageScene: stage0
   gmInstance: {fileID: 0}
   gmPrefab: {fileID: 8610143996436127403, guid: 7935bf05f858eef4fa2ea6e186f36324,
     type: 3}
+  playerPositions: []
+  playerRotations: []
+  positionSmoothing: 0.5
+  rotationSmoothing: 0.5

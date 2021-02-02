@@ -156,9 +156,9 @@ namespace BobJeltes.Networking
                 case ClientMessage.MovementInput:
                     reader.ReadMovementInput(ExtractVector2(ref stream), connectionID);
                     break;
-                case ClientMessage.ShootInput:
-                    reader.ShootInput(connectionID, Convert.ToBoolean(stream.ReadByte())); // Dit ging fout: er stond in de SEND eerst een WriteInt (is nu WriteByte), en hier wordt een Byte gelezen.
-                    break;
+                //case ClientMessage.ShootInput:
+                //    reader.ShootInput(connectionID, Convert.ToBoolean(stream.ReadByte())); 
+                //    break;
                 case ClientMessage.PlayerID:
                     int val = stream.ReadInt();
                     reader.AssignPlayerIDToConnection(connectionID, val);
@@ -176,6 +176,7 @@ namespace BobJeltes.Networking
         {
             DataStreamWriter writer = sender.m_Driver.BeginSend(sender.m_Connection);
             writer.WriteByte((byte)clientMessageType);
+            Debug.LogError("Player_id: " + ClientBehaviour.player_id);
 
             switch (clientMessageType)
             {
@@ -186,11 +187,11 @@ namespace BobJeltes.Networking
                 case ClientMessage.MovementInput:
                     WriteVector2(ref writer, sender.MovementInput);
                     break;
-                case ClientMessage.ShootInput:
-                    writer.WriteByte(Convert.ToByte(sender.IsShooting));
-                    break;
+                //case ClientMessage.ShootInput:
+                //    writer.WriteByte(Convert.ToByte(sender.IsShooting));
+                //    break;
                 case ClientMessage.PlayerID:
-                    writer.WriteInt(sender.clientInfo.id);
+                    writer.WriteInt(ClientBehaviour.player_id);
                     break;
             }
             sender.m_Driver.EndSend(writer);

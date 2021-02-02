@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 2216079737525880137, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}
       propertyPath: m_Name
-      value: Bullet
+      value: Bullet (DUMMY)
       objectReference: {fileID: 0}
     - target: {fileID: 2216079737525880141, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}
@@ -66,6 +66,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4308041674242250729, guid: 720463018d0238a4bb7bf57662c492af,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6548899645079843253, guid: 720463018d0238a4bb7bf57662c492af,
         type: 3}

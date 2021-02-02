@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ControlledByClient)
             return;
-        //Debug.Log("Shoot");
+        Debug.Log("Shoot", this);
         foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
         {
             weapon.Fire();
@@ -184,12 +184,14 @@ public class PlayerController : MonoBehaviour
     {
         if (Player.PlayerClientInterface == null)
         {
+            Debug.Log("Set shooting active: " + _shooting);
             shooting = _shooting;
             if (shooting)
                 Shoot();
         }
         else
         {
+            Debug.Log("Set shooting active: " + _shooting);
             Player.PlayerClientInterface.ShootingChanged(_shooting);
         }
         OnShootingChanged.Invoke(_shooting);

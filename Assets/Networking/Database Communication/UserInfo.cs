@@ -14,6 +14,7 @@ public class UserInfo
 
     public void SaveToPlayerPrefs()
     {
+        ClientBehaviour.player_id = player_id;
         PlayerPrefs.SetString("session_id", session_id);
         PlayerPrefs.SetInt("player_id", player_id);
         PlayerPrefs.SetString("username", username);

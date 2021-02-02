@@ -692,7 +692,9 @@ MonoBehaviour:
   Body: {fileID: 522774893670409774}
   Speed: 10
   RotationSpeed: 4
-  movementMethod: 5
+  forceAddMethod: 5
+  ExternallyControlled: 0
+  ControlledByClient: 0
   boostSpeedMultiplier: 2
   Animation: 1
   AnimationTiltAngle: {x: 9.834772, y: 18.914772}
@@ -735,12 +737,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 759485c2790bb3a42b5d781826a3131f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
   Health: {fileID: 8579964155033599980}
   ScoreValue: {fileID: 0}
-  PlayerController: {fileID: 0}
+  playerController: {fileID: 0}
   HoverJets: []
   DeathEffectObjects: []
   endGameScreen: {fileID: 0}
+  Score: 0
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
@@ -1062,6 +1066,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberFormat: 1
+  Value: 0
   CustomFormat: 
   output: 
   OutputTextComponent: {fileID: 0}
@@ -1351,6 +1356,12 @@ PrefabInstance:
       propertyPath: ParentVelocityInfluence
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 4215788875288357661, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: Ammunition
+      value: 
+      objectReference: {fileID: 6548899645079843253, guid: 720463018d0238a4bb7bf57662c492af,
+        type: 3}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name
@@ -1941,6 +1952,12 @@ PrefabInstance:
       propertyPath: ParentVelocityInfluence
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 4215788875288357661, guid: ac21a501d610df04fa578afd39210833,
+        type: 3}
+      propertyPath: Ammunition
+      value: 
+      objectReference: {fileID: 6548899645079843253, guid: 720463018d0238a4bb7bf57662c492af,
+        type: 3}
     - target: {fileID: 5186767980035092489, guid: ac21a501d610df04fa578afd39210833,
         type: 3}
       propertyPath: m_Name
