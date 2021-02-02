@@ -151,7 +151,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
             return;
         }
         // Ping
-        Debug.Log("Pinging " + m_Connections.Length + " clients");
+        //Debug.Log("Pinging " + m_Connections.Length + " clients");
         for (int i = 0; i < m_Connections.Length; i++)
         {
             NetworkConnection connection = m_Connections[i];
@@ -229,8 +229,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     {
         while (GameIsOngoing)
         {
-            yield return new WaitForSeconds(turnDuration);
             SwitchTurns();
+            yield return new WaitForSeconds(turnDuration);
         }
     }
 
@@ -277,8 +277,8 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
             Camera.main.gameObject.SetActive(false);
         Instantiate(ServerCamera);
         SetPlayerSpawns();
-        StartCoroutine(ManageTurns());
         GameIsOngoing = true;
+        StartCoroutine(ManageTurns());
     }
 
     public void SendProjectileImpact(Projectile projectile)
@@ -301,10 +301,9 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         }
     }
     internal LatestDamageData latestDamageData = new LatestDamageData();
-    internal void PlayerTakesDamage(Player receiver, Player dealer, float damage)
+    internal void PlayerTakesDamage(Player receiver, Player dealer, int damage)
     {
         latestDamageData.Update(receiver, dealer, damage);
-        
         // Damage
         NetworkMessage.SendAll(ServerMessage.PlayerTakesDamage, this);
 
@@ -442,5 +441,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         }
         if (projectilePositions.Count == 0)
             Debug.Log("Projectile positions count is 0");
+
+        NetworkMessage.SendAll(ServerMessage.ProjectilePositions, this);
     }
 }

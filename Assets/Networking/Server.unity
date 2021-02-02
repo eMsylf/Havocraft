@@ -3058,7 +3058,7 @@ MonoBehaviour:
   timeSinceLastPosRotUpdate: 0
   lastSentWasPosition: 0
   PingInterval: 1
-  turnDuration: 5
+  turnDuration: 3
   currentTurnHolder: 0
   ServerCamera: {fileID: 3961408620488059379, guid: 446885e829b2e0347b244c305bdfb246,
     type: 3}

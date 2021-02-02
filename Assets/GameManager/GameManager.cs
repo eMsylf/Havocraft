@@ -88,11 +88,12 @@ public class GameManager : Singleton<GameManager>
 #endif
     }
 
-    public void PlayerTakesDamage(Player receiver, float damage, Player dealer = null)
+    public void PlayerTakesDamage(Player receiver, int damage, Player dealer = null)
     {
         if (Server != null)
         {
             // Report damage to server
+            dealer.Score += damage;
             Server.PlayerTakesDamage(receiver, dealer, damage);
         }
         else

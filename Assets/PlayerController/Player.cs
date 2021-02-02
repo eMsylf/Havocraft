@@ -39,12 +39,25 @@ public class Player : MonoBehaviour
             return playerController;
         }
     }
+
+    private PlayerClientInterface pci;
+    public PlayerClientInterface PlayerClientInterface
+    {
+        get
+        {
+            if (pci == null)
+            {
+                pci = GetComponent<PlayerClientInterface>();
+            }
+            return pci;
+        }
+    }
     public List<GameObject> HoverJets;
     public List<GameObject> DeathEffectObjects;
     public EndGameScreen endGameScreen;
 
     bool disabling = false;
-
+    public int Score = 0;
     private void OnEnable()
     {
         disabling = false;

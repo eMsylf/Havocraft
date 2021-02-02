@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject Ammunition;
+    public Projectile Ammunition;
     [Tooltip("The speed of the projectile")]
     public float ProjectileSpeed = 10f;
     [Tooltip("The end of the barrel of the weapon")]
@@ -26,10 +26,6 @@ public class Weapon : MonoBehaviour
         barrelStartRotation = Barrel.rotation.eulerAngles;
     }
 
-    private void Update()
-    {
-    }
-
     public float ParentVelocityInfluence = 1f;
 
     public virtual void Fire()
@@ -43,21 +39,15 @@ public class Weapon : MonoBehaviour
         if (Ammunition != null)
         {
             // Instantiate
-            GameObject projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
+            Projectile projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
 
             // Add force
             projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + Muzzle.forward * ProjectileSpeed, ForceMode.Impulse);
+            projectile.Owner = GetComponentInParent<Player>();
 
-            // Add an owner to the projectile
-            Projectile projectileComponent = projectile.GetComponent<Projectile>();
-            if (projectileComponent == null)
-            {
-                projectileComponent = projectile.AddComponent<Projectile>();
-            }
-            projectileComponent.Owner = GetComponentInParent<Player>();
             if (ServerBehaviour.HasActiveInstance())
             {
-                ServerBehaviour.Instance.projectiles.Add(projectileComponent);
+                ServerBehaviour.Instance.projectiles.Add(projectile);
             }
 
             StartCoroutine(Cooldown.Start());

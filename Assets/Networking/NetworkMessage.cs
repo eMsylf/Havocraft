@@ -20,8 +20,8 @@ namespace BobJeltes.Networking
 
     public enum ClientMessage : byte
     {
-        PlayerID,
         Pong,
+        PlayerID,
         PlayerReady,        // int=playerID
         MovementInput,      // vector2
         ShootInput         // 
@@ -55,7 +55,7 @@ namespace BobJeltes.Networking
         {
             var writer = sender.m_Driver.BeginSend(receiver);
             writer.WriteByte((byte)serverMessageType);
-            Debug.Log("Send: " + serverMessageType.ToString() + " to " + receiver.InternalId);
+            //Debug.Log("Send: " + serverMessageType.ToString() + " to " + receiver.InternalId);
             switch (serverMessageType)
             {
                 case ServerMessage.Ping:
@@ -143,7 +143,7 @@ namespace BobJeltes.Networking
         public static void Read(ServerBehaviour reader, int connectionID, DataStreamReader stream)
         {
             ClientMessage clientMessageType = (ClientMessage)stream.ReadByte();
-            Debug.Log(reader.name + " got message of type " + clientMessageType.ToString());
+            //Debug.Log(reader.name + " got message of type " + clientMessageType.ToString());
 
             switch (clientMessageType)
             {
@@ -157,7 +157,7 @@ namespace BobJeltes.Networking
                     reader.ReadMovementInput(ExtractVector2(ref stream), connectionID);
                     break;
                 case ClientMessage.ShootInput:
-                    reader.ShootInput(connectionID, Convert.ToBoolean(stream.ReadByte()));
+                    reader.ShootInput(connectionID, Convert.ToBoolean(stream.ReadByte())); // Dit ging fout: er stond in de SEND eerst een WriteInt (is nu WriteByte), en hier wordt een Byte gelezen.
                     break;
                 case ClientMessage.PlayerID:
                     int val = stream.ReadInt();
@@ -187,7 +187,7 @@ namespace BobJeltes.Networking
                     WriteVector2(ref writer, sender.MovementInput);
                     break;
                 case ClientMessage.ShootInput:
-                    writer.WriteInt(Convert.ToByte(sender.IsShooting));
+                    writer.WriteByte(Convert.ToByte(sender.IsShooting));
                     break;
                 case ClientMessage.PlayerID:
                     writer.WriteInt(sender.clientInfo.id);

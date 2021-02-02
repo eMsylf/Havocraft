@@ -9,10 +9,10 @@ public class NetworkPlayerInfo
     public Vector2 input = new Vector2();
     public PlayerController controller;
 
-    public NetworkPlayerInfo(int _playerID, PlayerController _controller, bool serverControlled)
+    public NetworkPlayerInfo(int _playerID, PlayerController _controller, bool externallyControlled)
     {
         playerID = _playerID;
         controller = _controller;
-        controller.ServerControlled = serverControlled;
+        controller.ExternallyControlled = externallyControlled;
     }
 }

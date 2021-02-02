@@ -112,6 +112,11 @@ PrefabInstance:
       propertyPath: ServerControlled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4772672320393863258, guid: 5644d316173a75342a6676f0b22638ef,
+        type: 3}
+      propertyPath: ExternallyControlled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4772672320393863259, guid: 5644d316173a75342a6676f0b22638ef,
         type: 3}
       propertyPath: m_Name

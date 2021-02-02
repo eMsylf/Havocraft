@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
 
     public bool DisappearUponImpact = true;
 
-    public float Damage = 1f;
+    public int Damage = 1;
 
     protected Vector3 impactPosition;
     private float startTime = 0f;

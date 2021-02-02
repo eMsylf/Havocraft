@@ -1,8 +1,10 @@
 ﻿using BobJeltes.StandardUtilities;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
 public class PlayerClientInterface : MonoBehaviour
 {
+    [SerializeField]
     private Player player;
     public Player Player
     {
@@ -51,13 +53,13 @@ public class PlayerClientInterface : MonoBehaviour
     internal void TurnStart()
     {
         Player.PlayerController.enabled = true;
-        Debug.LogError("Turn start");
+        Debug.LogError("Turn start: " + Player.name);
     }
 
     internal void TurnEnd()
     {
         Player.PlayerController.enabled = false;
-        Debug.LogError("Turn end");
+        Debug.LogError("Turn end" + Player.name);
     }
 
     internal void UpdateScore(int score)

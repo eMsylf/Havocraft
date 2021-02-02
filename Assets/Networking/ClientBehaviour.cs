@@ -53,17 +53,17 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     }
 
     public GameObject projectileImpactPrefab;
-    public Projectile projectilePrefab;
-    public List<Projectile> projectiles = new List<Projectile>();
+    public Rigidbody projectilePrefab;
+    public List<Rigidbody> projectiles = new List<Rigidbody>();
     public void UpdateProjectileListLength(int newCount)
     {
         while (projectiles.Count < newCount)
         {
             projectiles.Add(Instantiate(projectilePrefab));
         }
-        if (projectiles.Count > newCount)
+        while (projectiles.Count > newCount)
         {
-            projectiles.RemoveRange(0, projectiles.Count - newCount);
+            projectiles.RemoveAt(0);
         }
     }
 
@@ -195,6 +195,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     public void ShootingChanged(bool isShooting)
     {
         IsShooting = isShooting;
+        Debug.LogError("Shooting changed to " + isShooting);
         NetworkMessage.Send(ClientMessage.ShootInput, this);
     }
 
@@ -228,7 +229,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     internal void ScoreUpdate(int score)
     {
         PlayerClientInterface pci = GetPlayerClientInterface();
-        pci.UpdateScore(score);
+        pci.UpdateScore(score);// of ik moet hier de score bijhouden, of op de server. Op de server lijkt mij logischer
     }
 
     //public string playerScene;
@@ -265,7 +266,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             if (clientInfo.connectionID == i)
             {
                 PlayerController controlledPlayer = Instantiate(playerPrefab);
-                GetPlayerClientInterface().Player = controlledPlayer.GetComponent<Player>();
+                //GetPlayerClientInterface().Player = controlledPlayer.GetComponent<Player>();
                 players.Add(new NetworkPlayerInfo(clientInfo.id, controlledPlayer, true));
                 Debug.Log("Spawned the player prefab");
             }
@@ -330,10 +331,16 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         for (int i = 0; i < players.Count; i++)
         {
             Rigidbody rb = players[i].controller.Rigidbody;
-            Vector3 smoothPosition = Vector3.Lerp(rb.position, playerPositions[i], positionSmoothing);
-            rb.MovePosition(smoothPosition);
-            Quaternion smoothRotation = Quaternion.Lerp(rb.rotation, Quaternion.Euler(playerRotations[i]), rotationSmoothing);
-            rb.MoveRotation(smoothRotation);
+            if (playerPositions.Count == players.Count)
+            {
+                Vector3 smoothPosition = Vector3.Lerp(rb.position, playerPositions[i], positionSmoothing);
+                rb.MovePosition(smoothPosition);
+            }
+            if (playerRotations.Count == players.Count)
+            {
+                Quaternion smoothRotation = Quaternion.Lerp(rb.rotation, Quaternion.Euler(playerRotations[i]), rotationSmoothing);
+                rb.MoveRotation(smoothRotation);
+            }
         }
     }
 
@@ -342,7 +349,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         UpdateProjectileListLength(newPositions.Count);
         for (int i = 0; i < projectiles.Count; i++)
         {
-            projectiles[i].Rigidbody.MovePosition(newPositions[i]);
+            projectiles[i].MovePosition(newPositions[i]);
         }
     }
 
@@ -364,7 +371,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
     {
         int receiverPlayerID = stream.ReadInt();
         int dealerPlayerID = stream.ReadInt();
-        float damage = stream.ReadInt();
+        int damage = stream.ReadInt();
 
         Player receivingPlayer = null;
         Player dealingPlayer = null;

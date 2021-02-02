@@ -5,8 +5,6 @@ using GD.MinMaxSlider;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    [Tooltip("If in the scene that's hosted by the server")]
-    public bool ServerControlled = false;
     private GameControls controls;
     private GameControls Controls
     {
@@ -39,9 +37,11 @@ public class PlayerController : MonoBehaviour
     public float RotationSpeed = 1f;
     public ForceMode forceAddMethod = ForceMode.Acceleration;
 
+    public bool ExternallyControlled = false;
+    public bool ControlledByClient = false;
     private void Awake()
     {
-        if (ServerControlled)
+        if (ExternallyControlled)
             return;
         Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
         Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
@@ -97,8 +97,14 @@ public class PlayerController : MonoBehaviour
 
     void Move(Vector2 direction)
     {
-        //Debug.Log("Move! " + direction);
         movementInput = direction;
+
+        if (Player.PlayerClientInterface != null)
+        {
+            Player.PlayerClientInterface.MovementChanged(calculatedMovementInput);
+        }
+
+        //Debug.Log("Move! " + direction);
         onMovementInputChanged.Invoke(calculatedMovementInput);
     }
 
@@ -146,6 +152,8 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
+        if (ControlledByClient)
+            return;
         //Debug.Log("Shoot");
         foreach (Weapon weapon in GetComponentsInChildren<Weapon>())
         {
@@ -156,19 +164,36 @@ public class PlayerController : MonoBehaviour
 #endif
     }
 
+    Player player;
+    public Player Player
+    {
+        get
+        {
+            if (player == null)
+            {
+                player = GetComponent<Player>();
+                if (player == null)
+                    Debug.LogError("Player Controller has no Player component assigned");
+            }
+            return player;
+        }
+    }
 
     bool shooting = false;
     public void SetShootingActive(bool _shooting)
     {
-        if (!ControlledByClient)
+        if (Player.PlayerClientInterface == null)
         {
             shooting = _shooting;
             if (shooting)
                 Shoot();
         }
+        else
+        {
+            Player.PlayerClientInterface.ShootingChanged(_shooting);
+        }
         OnShootingChanged.Invoke(_shooting);
     }
-    public bool ControlledByClient;
     public UnityEventBool OnShootingChanged;
 
     void ShootContinuous()
