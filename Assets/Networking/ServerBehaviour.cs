@@ -58,6 +58,11 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
     public UnityEvent OnServerStart;
     public UnityEvent OnServerStop;
 
+    [Min(0)]
+    public float PositionRotationSendInterval = .2f;
+    public float timeSinceLastPosRotUpdate = 0f;
+    public bool lastSentWasPosition = false;
+
     private void Start()
     {
         if (AutoStart)
@@ -69,7 +74,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         StopServer();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (!m_Driver.IsCreated)
             return;
@@ -123,10 +128,13 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
                 }
             }
         }
+    }
 
+    private void FixedUpdate()
+    {
         if (GameIsOngoing)
         {
-            UpdatePlayerPositionsRotations();
+            UpdatePlayerPositionsOrRotations();
             UpdateProjectilePositions();
         }
     }
@@ -139,7 +147,7 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
         // Check time
         if (timeSinceLastPing < PingInterval)
         {
-            timeSinceLastPing += Time.deltaTime;
+            timeSinceLastPing += Time.fixedDeltaTime;
             return;
         }
         // Ping
@@ -385,22 +393,40 @@ public class ServerBehaviour : Singleton<ServerBehaviour>
 
     #endregion
 
-    public void UpdatePlayerPositionsRotations()
+    public void UpdatePlayerPositionsOrRotations()
     {
         if (players.Count == 0)
             return;
-
-        playerPositions = new List<Vector3>();
-        playerRotations = new List<Vector3>();
-        Debug.Log("Updating positions and rotations of " + players.Count + " players.");
-        foreach (NetworkPlayerInfo player in players)
+        // Manage interal
+        if (timeSinceLastPosRotUpdate < PositionRotationSendInterval)
         {
-            player.controller.ApplyForces(player.input);
-            playerPositions.Add(player.controller.Rigidbody.position);
-            playerRotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
+            timeSinceLastPosRotUpdate += Time.fixedDeltaTime;
+            return;
         }
-        NetworkMessage.SendAll(ServerMessage.PlayerPositions, this);
-        NetworkMessage.SendAll(ServerMessage.PlayerRotations, this);
+        timeSinceLastPosRotUpdate = 0f;
+        if (lastSentWasPosition)
+        {
+            // Update rotation
+            playerRotations = new List<Vector3>();
+            foreach (NetworkPlayerInfo player in players)
+            {
+                player.controller.ApplyForces(player.input);
+                playerRotations.Add(player.controller.Rigidbody.rotation.eulerAngles);
+            }
+            NetworkMessage.SendAll(ServerMessage.PlayerRotations, this);
+        }
+        else
+        {
+            // UpdatePosition
+            playerPositions = new List<Vector3>();
+            foreach (NetworkPlayerInfo player in players)
+            {
+                player.controller.ApplyForces(player.input);
+                playerPositions.Add(player.controller.Rigidbody.position);
+            }
+            NetworkMessage.SendAll(ServerMessage.PlayerPositions, this);
+        }
+        lastSentWasPosition = !lastSentWasPosition;
     }
 
     public void UpdateProjectilePositions()

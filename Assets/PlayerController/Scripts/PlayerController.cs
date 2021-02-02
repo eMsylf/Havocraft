@@ -160,12 +160,15 @@ public class PlayerController : MonoBehaviour
     bool shooting = false;
     public void SetShootingActive(bool _shooting)
     {
-        shooting = _shooting;
-        if (shooting)
-            Shoot();
+        if (!ControlledByClient)
+        {
+            shooting = _shooting;
+            if (shooting)
+                Shoot();
+        }
         OnShootingChanged.Invoke(_shooting);
     }
-
+    public bool ControlledByClient;
     public UnityEventBool OnShootingChanged;
 
     void ShootContinuous()

@@ -3054,6 +3054,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  PositionRotationSendInterval: 0
+  timeSinceLastPosRotUpdate: 0
+  lastSentWasPosition: 0
   PingInterval: 1
   turnDuration: 5
   currentTurnHolder: 0

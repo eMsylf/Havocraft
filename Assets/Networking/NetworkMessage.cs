@@ -31,8 +31,8 @@ namespace BobJeltes.Networking
 
     public enum ServerMessage : byte
     {
-        ConnectionID,
         Ping,
+        ConnectionID,
         //Disconnection,          // byte=reason
         GameStart,              // int=connectionID
         GameOver,               // byte=winner
@@ -207,7 +207,7 @@ namespace BobJeltes.Networking
                     reader.SaveConnectionID(stream.ReadInt());
                     break;
                 case ServerMessage.Ping:
-                    //SendPing(reader.m_Driver, reader.m_Connection);
+                    SendPing(reader.m_Driver, reader.m_Connection);
                     break;
                 //case ServerMessage.Disconnection:
                 //    reader.Disconnect((DisconnectionReason)stream.ReadByte());

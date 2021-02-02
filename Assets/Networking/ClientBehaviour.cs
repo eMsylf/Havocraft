@@ -97,7 +97,7 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             m_Driver.Dispose();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (!m_Driver.IsCreated)
             return;
@@ -132,6 +132,11 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
             default:
                 break;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        ApplyPlayerPositionsAndRotations();
     }
 
     public void ConnectToServer(bool forceReconnection)
@@ -305,35 +310,30 @@ public class ClientBehaviour : Singleton<ClientBehaviour>
         Debug.Log(name + " disconnected from the server. Reason: " + reason.ToString(), this);
     }
 
+    public List<Vector3> playerPositions = new List<Vector3>();
     internal void UpdatePlayerPositions(List<Vector3> positions)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (i == clientInfo.connectionID)
-            {
-                GetPlayerClientInterface().Player.PlayerController.Rigidbody.MovePosition(positions[i]);
-                continue;
-            }
-            else
-            {
-                players[i].controller.Rigidbody.MovePosition(positions[i]);
-            }
-        }
+        playerPositions = positions;
     }
 
+    public List<Vector3> playerRotations = new List<Vector3>();
     internal void UpdatePlayerRotations(List<Vector3> rotations)
+    {
+        playerRotations = rotations;
+    }
+
+    [Range(0f, 1f)] 
+    public float positionSmoothing = .5f;
+    public float rotationSmoothing = .5f;
+    internal void ApplyPlayerPositionsAndRotations()
     {
         for (int i = 0; i < players.Count; i++)
         {
-            if (i == clientInfo.connectionID)
-            {
-                GetPlayerClientInterface().Player.PlayerController.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
-                Debug.LogError("Set player rotation to " + rotations[i]);
-            }
-            else
-            {
-                players[i].controller.Rigidbody.MoveRotation(Quaternion.Euler(rotations[i]));
-            }
+            Rigidbody rb = players[i].controller.Rigidbody;
+            Vector3 smoothPosition = Vector3.Lerp(rb.position, playerPositions[i], positionSmoothing);
+            rb.MovePosition(smoothPosition);
+            Quaternion smoothRotation = Quaternion.Lerp(rb.rotation, Quaternion.Euler(playerRotations[i]), rotationSmoothing);
+            rb.MoveRotation(smoothRotation);
         }
     }
 
