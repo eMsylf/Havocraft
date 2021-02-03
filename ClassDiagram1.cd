@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LookAtTarget" Collapsed="true">
+    <Position X="28" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAAAAAACBAIAAAAABAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Camera\LookAtTarget.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LookAtTargetGroup" Collapsed="true">
+    <Position X="29.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAAAAAACBAIAAAAEBAAAAAAAIAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\Camera\LookAtTargetGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConditionalButton" Collapsed="true">
+    <Position X="12.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABIAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\ConditionalButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager" Collapsed="true">
+    <Position X="7.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAYAQAAAACEAAAAAAAAgAAggCAAAAiAAggACCQA=</HashCode>
+      <FileName>Assets\GameManager\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Health" Collapsed="true">
+    <Position X="29.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAQAAAACA=</HashCode>
+      <FileName>Assets\Health.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ValueText" Collapsed="true">
+    <Position X="31.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAIAAAACAACAAAAAAAAAAgAADAgAA=</HashCode>
+      <FileName>Assets\Menus\Scripts\ValueText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientBehaviour" Collapsed="true">
+    <Position X="5.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EQRhgAUAAjICABAFEJRCDRAgHCACKGwAMgBAcAYigAI=</HashCode>
+      <FileName>Assets\Networking\ClientBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientConnectionPage" Collapsed="true">
+    <Position X="12.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAA=</HashCode>
+      <FileName>Assets\Networking\ClientConnectionPage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DatabaseCommunication" Collapsed="true">
+    <Position X="12.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAACAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAACAAIE=</HashCode>
+      <FileName>Assets\Networking\Database Communication\DatabaseCommunication.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EditUserInfo" Collapsed="true">
+    <Position X="12.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAQAAAAAAAAEAAoAEAAEAQEBAAQAAIgA=</HashCode>
+      <FileName>Assets\Networking\Database Communication\EditUserInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Login" Collapsed="true">
+    <Position X="24.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAACAAAAAAAAAAAAAAAIAAABAEQIBAAQAAAgA=</HashCode>
+      <FileName>Assets\Networking\Database Communication\Login.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logout" Collapsed="true">
+    <Position X="26.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Networking\Database Communication\Logout.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserInfo" Collapsed="true">
+    <Position X="28" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQgBAAAAAAgAMQAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Networking\Database Communication\UserInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetworkPlayerInfo" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAEAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Networking\NetworkPlayerInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerClientInterface" Collapsed="true">
+    <Position X="29.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAgAAAAAAAAAAAAgAABIAgAAAAAAABAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Networking\PlayerClientInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ServerBehaviour" Collapsed="true">
+    <Position X="3" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IFWBlg0AAjAABJhgIEAAA4AoTECAAX0QJoBBBAAioAI=</HashCode>
+      <FileName>Assets\Networking\ServerBehaviour.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenDevConsoleScript" Collapsed="true">
+    <Position X="24.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\OpenDevConsoleScript.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="28" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACBICAAIAAAAggggAAAAAIAEgAAgAIAICABAgBAACAA=</HashCode>
+      <FileName>Assets\PlayerController\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cannon" Collapsed="true">
+    <Position X="10.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Cannon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Explosive" Collapsed="true">
+    <Position X="24.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIEACgAAIACAAAAAAAAAgAAAAAAAAABAAAAAAIAAA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Explosive.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerController" Collapsed="true">
+    <Position X="31.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KBQYAAAQAoAQBAAAgIIJERABUAgACLAJASAgAQAASEA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Projectile" Collapsed="true">
+    <Position X="33.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJQMAACAACEAAAAAASAgEEABAAhAAIAIAAAAAAAACAI=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Projectile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ExplosionData" Collapsed="true">
+    <Position X="22.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Projectile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Weapon" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAECBAAAAQAAALAAAEAAAEAABgAAAAAAAAQAA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Weapon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneFunctions" Collapsed="true">
+    <Position X="0.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAEACAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\SceneNavigation\Scripts\SceneFunctions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="@GameControls" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAACACaCAABCAAACACBABBCAiAGgEABkgEAgSAAA=</HashCode>
+      <FileName>Assets\Settings\Game Controls.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="UnityEventCustom" Collapsed="true">
+    <Position X="31.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventCustom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UsernameDisplayer" Collapsed="true">
+    <Position X="29.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UsernameDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Menu.EndGameScreen" Collapsed="true">
+    <Position X="15.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAQAAABBAAEAAAACAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\Menus\Scripts\EndGameScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Menu.MenuManager" Collapsed="true">
+    <Position X="31.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IABAAAAACCIAIAAAAAYAggAyAAAAQDAICIRgiEiAGQA=</HashCode>
+      <FileName>Assets\Menus\Scripts\MenuManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Menu.StartScreen" Collapsed="true">
+    <Position X="31.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Assets\Menus\Scripts\MenuManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Menu.NavigationButton" Collapsed="true">
+    <Position X="15.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQEAMAEAAAAAAAAAAAAAAAAAAAAAAABAAAAAE=</HashCode>
+      <FileName>Assets\Menus\Scripts\NavigationButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Networking.NetworkMessage" Collapsed="true">
+    <Position X="2.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAAAAAAAACGAQAAEgAACAAAAAoAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Networking\NetworkMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.Networking.NetworkMessageUtilities" Collapsed="true">
+    <Position X="4.25" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAgCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Networking\NetworkMessageUtilities.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BobJeltes.StandardUtilities.Singleton&lt;T&gt;" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQABABAAAAAAAAAAAAAAAAAAAAAAAAAIVAAAAAAAAAA=</HashCode>
+      <FileName>Assets\StandardUtilities\Scripts\Singleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Combat.Stat" Collapsed="true">
+    <Position X="33.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACwAAAAAACAAMABAgAgAAAQAAAQMAAEAgCAgAAAAAAA=</HashCode>
+      <FileName>Assets\Stat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventGameObject" Collapsed="true">
+    <Position X="19.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventFloat" Collapsed="true">
+    <Position X="17.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventInt" Collapsed="true">
+    <Position X="21" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventString" Collapsed="true">
+    <Position X="22.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventBool" Collapsed="true">
+    <Position X="29.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventVector2" Collapsed="true">
+    <Position X="24.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventCustomType&lt;T&gt;" Collapsed="true">
+    <Position X="33.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnityEngine.Events.UnityEventData" Collapsed="true">
+    <Position X="15.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAQAAAAAAAQACAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\UnityEventTyped.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="ArmType" Collapsed="true">
+    <Position X="10.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\PlayerController\Scripts\Projectile.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BobJeltes.Networking.DisconnectionReason" Collapsed="true">
+    <Position X="9.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAAAAwAEAAAAIAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\Networking\NetworkMessage.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BobJeltes.Networking.ClientMessage" Collapsed="true">
+    <Position X="3.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAgAAAQAEAAAAABAAAAAAA=</HashCode>
+      <FileName>Assets\Networking\NetworkMessage.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BobJeltes.Networking.ServerMessage" Collapsed="true">
+    <Position X="3.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAgAAAAAACIIAgAEQAAAAgAAAAAQAAAAAAAAACAAA=</HashCode>
+      <FileName>Assets\Networking\NetworkMessage.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
