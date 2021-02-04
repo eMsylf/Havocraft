@@ -7,14 +7,19 @@ namespace BobJeltes
     [System.Serializable]
     public class Cooldown
     {
+        [Min(0)]
         public float Time = 1f;
-        public bool Active = false;
+        [SerializeField]
+        private bool isActive = false;
+        public bool IsActive { get => isActive; private set { isActive = value; } }
 
         public IEnumerator Start()
         {
-            Active = true;
+            if (Time <= 0)
+                yield break;
+            IsActive = true;
             yield return new WaitForSeconds(Time);
-            Active = false;
+            IsActive = false;
         }
     }
 }

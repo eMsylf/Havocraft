@@ -633,7 +633,6 @@ GameObject:
   - component: {fileID: 4772672320393863252}
   - component: {fileID: 4772672320393863253}
   - component: {fileID: 4772672320393863258}
-  - component: {fileID: 883134679}
   - component: {fileID: 5911833288188397965}
   m_Layer: 0
   m_Name: Player (Hovercraft)
@@ -710,21 +709,6 @@ MonoBehaviour:
   OnShootingChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &883134679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4772672320393863259}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07d87349d5dba47429e3f53e5b7ed1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Direction: {x: 0, y: 9.81, z: 0}
-  forceMode: 0
-  space: 0
 --- !u!114 &5911833288188397965
 MonoBehaviour:
   m_ObjectHideFlags: 0

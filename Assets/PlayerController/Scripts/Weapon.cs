@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     public Projectile Ammunition;
     [Tooltip("The speed of the projectile")]
     public float ProjectileSpeed = 10f;
+    public ForceMode forceMode = ForceMode.VelocityChange;
     [Tooltip("The end of the barrel of the weapon")]
     public Transform Base;
     public Transform Barrel;
@@ -30,9 +31,9 @@ public class Weapon : MonoBehaviour
 
     public virtual void Fire()
     {
-        if (Cooldown.Active)
+        if (Cooldown.IsActive)
         {
-            //Debug.Log(name + " is on cooldown.", this);
+            Debug.Log(name + " is on cooldown.", this);
             return;
         }
         //Debug.Log("Fire " + name);
@@ -42,7 +43,7 @@ public class Weapon : MonoBehaviour
             Projectile projectile = Instantiate(Ammunition, Muzzle.position, Muzzle.rotation);
 
             // Add force
-            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + Muzzle.forward * ProjectileSpeed, ForceMode.Impulse);
+            projectile.GetComponent<Rigidbody>()?.AddForce(GetComponentInParent<Rigidbody>().velocity * ParentVelocityInfluence + Muzzle.forward * ProjectileSpeed, forceMode);
             projectile.Owner = GetComponentInParent<Player>();
 
             if (ServerBehaviour.HasActiveInstance())
