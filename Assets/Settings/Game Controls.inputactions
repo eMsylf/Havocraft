@@ -61,9 +61,9 @@
                 },
                 {
                     "name": "Movement",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "d5ddfa9a-4fd1-43ea-97d5-105d81e2c10a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector3",
                     "processors": "",
                     "interactions": ""
                 },
@@ -229,8 +229,30 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Thumbstick",
-                    "id": "51ec604c-e7b6-4620-aea9-6e9391a17759",
+                    "name": "",
+                    "id": "25caa640-3261-49e0-adb2-fa9381027667",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d5caec8a-197f-4079-8ac7-4ca598b083d3",
+                    "path": "<GravitySensor>/gravity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mobile",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Gamepad",
+                    "id": "3934e518-8fc1-4288-adb4-2ce36db68d4c",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
@@ -241,44 +263,44 @@
                 },
                 {
                     "name": "up",
-                    "id": "767e7eba-f30c-450d-a7ab-fe87745bdec6",
-                    "path": "<Gamepad>/leftStick/up",
+                    "id": "1b29ac63-1eec-4c4f-839a-856e3183399b",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "down",
-                    "id": "ec43c386-e867-46b4-a8eb-f1447d481482",
-                    "path": "<Gamepad>/leftStick/down",
+                    "id": "e5c1ef95-6e4f-4c21-a6db-827c97f0835b",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "left",
-                    "id": "544f2712-6b54-452b-b9c4-5302d3e84706",
+                    "id": "82d2d64b-fea8-4a0d-8157-a2e951a81df0",
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
                     "name": "right",
-                    "id": "0e226d0f-0916-4828-9026-1c956a6991a9",
+                    "id": "ad303c86-f960-43fc-bec4-ae35bc0e1de2",
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -290,6 +312,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard & Mouse",
+                    "action": "Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61082fa7-7746-4ee3-89b3-7ec545962424",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -421,6 +454,22 @@
             "devices": [
                 {
                     "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Mobile",
+            "bindingGroup": "Mobile",
+            "devices": [
+                {
+                    "devicePath": "<Touchscreen>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Gyroscope>",
                     "isOptional": false,
                     "isOR": false
                 }
