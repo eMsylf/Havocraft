@@ -69,7 +69,7 @@ public class ConstantForceExtension : MonoBehaviour
     private Vector3 CalculateAlteredForce(Vector3 reference)
     {
         float distance = CheckSurfaceProximity();
-        Debug.Log("Distance" + distance);
+        //Debug.Log("Distance" + distance);
         Vector3 force = proximityForceCurve.Evaluate(1-distance/CheckRange) * reference * CheckRange;
         return force;
     }

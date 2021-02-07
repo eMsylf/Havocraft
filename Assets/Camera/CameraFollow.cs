@@ -40,7 +40,6 @@ public class CameraFollow : MonoBehaviour
             targetPosition = value;
         }
     }
-
     // Code for getting the center position of multiple points from: https://stackoverflow.com/questions/52375649/get-the-center-point-between-many-gameobjects-in-unity
     public Vector3 GetCenterPosition(List<Transform> transforms)
     {
@@ -57,7 +56,16 @@ public class CameraFollow : MonoBehaviour
         center /= transforms.Count;
         return center ;
     }
+    public enum Method
+    {
+        AsChild,
+        CameraResources
+    }
+    public Method method = Method.CameraResources;
 
+    [Header("As Child")]
+    public Transform simulatedParent;
+    [Header("Camera Resources")]
     [SerializeField] private Transform cameraResources;
     public Transform CameraResources
     {
@@ -132,7 +140,7 @@ public class CameraFollow : MonoBehaviour
     public float LookSmoothing = .125f;
 
     [Header("Live preview")]
-    public bool LivePreview = false;
+    public bool EditorPreview = false;
 
     private new Rigidbody rigidbody;
     private Rigidbody Rigidbody
@@ -147,7 +155,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
-        LivePreview = false;
+        EditorPreview = false;
     }
 
     private void FixedUpdate()
@@ -157,13 +165,21 @@ public class CameraFollow : MonoBehaviour
 
     public void SetPositionAndLook()
     {
-        CalculatePivot();
-
-        SetPosition(CalculatePosition());
-
-        CalculateRotationAroundTarget();
-
-        SetLook(CalculateLook());
+        switch (method)
+        {
+            case Method.AsChild:
+                SetPosition(simulatedParent.position);
+                SetLookTo(simulatedParent);
+                break;
+            case Method.CameraResources:
+                CalculatePivot();
+                SetPosition(CalculatePosition());
+                CalculateRotationAroundTarget();
+                SetLook(CalculateLook());
+                break;
+            default:
+                break;
+        }
     }
 
     public void CalculatePivot()
@@ -190,7 +206,7 @@ public class CameraFollow : MonoBehaviour
 
     private void SetPosition(Vector3 position)
     {
-        if (LivePreview)
+        if (EditorPreview)
             transform.position = Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing);
         else
             Rigidbody.MovePosition(Vector3.Lerp(Rigidbody.position, position, 1f - PositionSmoothing));
@@ -201,7 +217,7 @@ public class CameraFollow : MonoBehaviour
         PositionPivot.rotation = Quaternion.Euler(RotationAroundTarget);
     }
 
-    private Vector3 CalculateLook()
+    private Transform CalculateLook()
     {
         // Get camera look position
         Vector3 desiredLook = TargetPosition + LookOffset;
@@ -209,16 +225,21 @@ public class CameraFollow : MonoBehaviour
             LookTransform.position = desiredLook;
         else
             LookTransform.position = Vector3.Lerp(lookTransform.position, desiredLook, 1f - LookSmoothing);
-        return LookTransform.position;
+        return LookTransform;
     }
 
-    private void SetLook(Vector3 position)
+    private void SetLookTo(Transform rottationTransform)
+    {
+        Rigidbody.MoveRotation(Quaternion.Lerp(Rigidbody.rotation, rottationTransform.rotation, 1f - LookSmoothing));
+    }
+
+    private void SetLook(Transform lookTarget)
     {
         // Camera looks at the target position
-        if (LivePreview)
-            transform.LookAt(position);
+        if (EditorPreview)
+            transform.LookAt(lookTarget.position);
         else
-            Rigidbody.MoveRotation(Quaternion.LookRotation(position - Rigidbody.position));
+            Rigidbody.MoveRotation(Quaternion.LookRotation(lookTarget.position - Rigidbody.position));
     }
 
     //public void OverrideOffsets()

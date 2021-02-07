@@ -18,7 +18,7 @@ public class CameraFollowInspector : Editor
         //    targetScript.OverrideOffsets();
         //}
 
-        if (targetScript.LivePreview)
+        if (targetScript.EditorPreview)
         {
             targetScript.SetPositionAndLook();
         }

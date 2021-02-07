@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using GD.MinMaxSlider;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -49,16 +50,24 @@ public class PlayerController : MonoBehaviour
         Controls.InGame.Shoot.started += _ => SetShootingActive(_.ReadValueAsButton());
         Controls.InGame.Shoot.canceled += _ => SetShootingActive(false);
         Controls.InGame.Shoot.performed += _ => Shoot();
-        Controls.InGame.Boost.performed += _ => Boost(true);
-        Controls.InGame.Boost.canceled += _ => Boost(false);
+        Controls.InGame.Boost.performed += _ => SetBoost(true);
+        Controls.InGame.Boost.canceled += _ => SetBoost(false);
     }
 
     bool boostActivated = false;
+    [Tooltip("The value that needs to be passed before the boost is automatically applied")]
+    [Range(0, 1)]
+    public float BoostZoneTrigger = .8f;
     public float boostSpeedMultiplier = 2f;
-    private void Boost(bool enabled)
+    private void SetBoost(bool enabled)
     {
         boostActivated = enabled;
+        if (boostActivated) BoostActivated.Invoke();
+        else BoostStopped.Invoke();
     }
+
+    public UnityEvent BoostActivated;
+    public UnityEvent BoostStopped;
 
     public bool Animation = true;
     [Tooltip("Min value = regular tilt angle, Max value = boosting tilt angle")]
@@ -94,10 +103,16 @@ public class PlayerController : MonoBehaviour
     }
 
     public UnityEventVector2 onMovementInputChanged;
-
     void Move(Vector2 direction)
     {
         movementInput = direction;
+#if UNITY_ANDROID
+        SetBoost(Mathf.Abs(direction.y) > BoostZoneTrigger);
+        if (boostActivated)
+        {
+            Debug.Log("Y input exceeds 1, activate boost");
+        }
+#endif
 
         if (Player.PlayerClientInterface != null)
         {
