@@ -13,9 +13,12 @@ public class Health : MonoBehaviour
     public void UpdateValue(float val)
     {
         value = val;
-        slider.value = value;
+        if (slider == null)
+            Debug.LogError("Health component has no slider", this);
+        else
+            slider.value = value;
         Debug.Log("Value: " + value);
-        if (Mathf.Approximately(value, 0f))
+        if (value <= 0f)
         {
             HealthDepleted();
         }

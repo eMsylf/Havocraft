@@ -162,11 +162,3 @@ public enum ArmType
     Distance,
     Time
 }
-
-[System.Serializable]
-public class ExplosionData
-{
-    public bool Explosive = false;
-    public float Force = 10f;
-    public float Radius = 2f;
-}

@@ -4,28 +4,44 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public Enemy EnemyPrefab;
     [Tooltip("Spawns per second")]
-    public float SpawnRate = 1;
-    public AnimationCurve SpawnrateMultiplierOverTime = new AnimationCurve();
-    private float MultipliedSpawnRate;
-    private float TimeBeforeNextSpawn;
+    public AnimationCurve SpawnrateOverTime = new AnimationCurve();
+    private float currentSpawnRate;
+    private float timeBeforeNextSpawn;
+    private float countdown = 0;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        MultipliedSpawnRate = SpawnrateMultiplierOverTime.Evaluate(Time.time);
-        TimeBeforeNextSpawn = 1 / MultipliedSpawnRate;
+        countdown = UpdateSpawnTime(Time.time);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        MultipliedSpawnRate = SpawnrateMultiplierOverTime.Evaluate(Time.time);
-        //if (MultipliedSpawnRate
+        if (countdown > 0)
+        {
+            countdown -= Time.deltaTime;
+            return;
+        }
+
+        Spawn();
+        countdown = UpdateSpawnTime(Time.time);
+    }
+
+    float UpdateSpawnTime(float time)
+    {
+        currentSpawnRate = SpawnrateOverTime.Evaluate(time);
+        if (currentSpawnRate != 0f)
+            timeBeforeNextSpawn = 1 / currentSpawnRate;
+        else
+            timeBeforeNextSpawn = 1f;
+        return timeBeforeNextSpawn;
     }
 
     void Spawn()
     {
-        
+        if (EnemyPrefab == null)
+            Debug.LogError("Enemy Spawner has no enemy prefab assigned", this);
+        Instantiate(EnemyPrefab, transform);
     }
 }

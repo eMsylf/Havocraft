@@ -8,6 +8,12 @@ public class EnemyMovement : RigidbodyMonobehaviour
     public float Speed = 1f;
     public ForceMode SpeedType = ForceMode.Acceleration;
 
+    private void Awake()
+    {
+        if (targetPlayer == null)
+            targetPlayer = FindObjectOfType<Player>();
+    }
+
     private void FixedUpdate()
     {
         if (targetPlayer == null)
