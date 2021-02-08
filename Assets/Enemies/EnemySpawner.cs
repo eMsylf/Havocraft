@@ -7,13 +7,16 @@ public class EnemySpawner : MonoBehaviour
     public Enemy EnemyPrefab;
     [Tooltip("Spawns per second")]
     public AnimationCurve SpawnrateOverTime = new AnimationCurve();
+    public bool SpawnAtStart;
     private float currentSpawnRate;
     private float timeBeforeNextSpawn;
     private float countdown = 0;
 
     private void Start()
     {
-        countdown = UpdateSpawnTime(Time.time);
+        if (SpawnAtStart)
+            Spawn();
+        countdown = UpdateSpawnTime(Time.timeSinceLevelLoad);
     }
 
     void Update()
@@ -25,7 +28,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         Spawn();
-        countdown = UpdateSpawnTime(Time.time);
+        countdown = UpdateSpawnTime(Time.timeSinceLevelLoad);
     }
 
     float UpdateSpawnTime(float time)

@@ -10,7 +10,7 @@ public class TouchDamage : MonoBehaviour
     {
         if (AffectedLayers != (AffectedLayers | 1 << collision.gameObject.layer))
         {
-            Debug.Log("Hit object not in affected layer");
+            //Debug.Log("Hit object not in affected layer");
             return;
         }
 

@@ -44,7 +44,8 @@ namespace BobJeltes.StandardUtilities
                         return newInstance;
                     }
                 }
-
+                if (m_Instance == null)
+                    m_Instance = FindObjectOfType<T>();
                 lock (m_Lock)
                 {
                     if (m_Instance == null)

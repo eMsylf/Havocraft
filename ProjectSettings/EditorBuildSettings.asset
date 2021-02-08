@@ -29,7 +29,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Loading.unity
     guid: 85cbbfdde337c71429c419ca26278caa
-  - enabled: 1
+  - enabled: 0
     path: Assets/PlayerController/Scenes/MovementExperimentation.unity
     guid: f277aa0c2c746b744815b9f724a15dc4
   - enabled: 0
@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Networking/Networking com.unity.transport.unity
     guid: a03d8f812cd496744bf55e73d987d1b0
+  - enabled: 1
+    path: Assets/Scenes/Stage1.unity
+    guid: 8c7092f049ea01a48a8541aff23dbb7d
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a32bde428a031c04fb252981d0e9e7dd,
       type: 2}

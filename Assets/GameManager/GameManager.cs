@@ -3,14 +3,15 @@ using System.Linq;
 using BobJeltes.Menu;
 using BobJeltes.StandardUtilities;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
     protected GameManager() { }
-
+    public ScoreManager scoreManager;
     public EndGameScreen EndGameScreenPrefab;
-    private EndGameScreen EndGameScreenInstance;
+    public EndGameScreen EndGameScreenInstance;
 
     public List<Player> Players = new List<Player>();
 
@@ -109,11 +110,18 @@ public class GameManager : Singleton<GameManager>
         PrintPlayers();
         if (Players.Count == 1)
         {
-            MatchComplete(Players[0], player);
+            EndMatch(Players[0], player);
         }
     }
+    public UnityEvent OnMatchEnd;
+    public void EndMatch()
+    {
+        EndGameScreenInstance.gameObject.SetActive(true);
+        EndGameScreenInstance.Activate(scoreManager.Score);
+        OnMatchEnd.Invoke();
+    }
 
-    public void MatchComplete(Player winner, Player second)
+    public void EndMatch(Player winner, Player second)
     {
         if (Server != null)
         {
@@ -139,5 +147,6 @@ public class GameManager : Singleton<GameManager>
 
         EndGameScreenInstance.gameObject.SetActive(true);
         EndGameScreenInstance.Activate(true);
+        OnMatchEnd.Invoke();
     }
 }

@@ -23,6 +23,12 @@ namespace BobJeltes.Menu
             Activate(false, score);
         }
 
+        public void Activate(float score)
+        {
+            Debug.Log("Update score text to " + score, this);
+            if (ScoreText != null) ScoreText.UpdateValue(score);
+        }
+
         public void Activate(bool winner, float score = 0)
         {
             if (Background != null) Background.enabled = true;

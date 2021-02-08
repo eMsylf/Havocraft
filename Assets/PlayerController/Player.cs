@@ -95,12 +95,14 @@ public class Player : MonoBehaviour
     public UnityEvent OnDeath;
     public void Die()
     {
+        if (!enabled)
+            return;
         ExplodeViolently();
         TurnOffHoverjets();
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.PlayerDeath(this);
-        }
+        //if (GameManager.Instance != null)
+        //{
+        //    GameManager.Instance.PlayerDeath(this);
+        //}
         OnDeath.Invoke();
         if (!disabling)
             enabled = false;
@@ -115,20 +117,21 @@ public class Player : MonoBehaviour
         {
             foreach (GameObject obj in DeathEffectObjects)
             {
-                obj.SetActive(true);
-                VisualEffect vfx = obj.GetComponent<VisualEffect>();
+                Instantiate(obj, transform);
                 // Give the visual effect additional velocity
-                if (vfx != null)
-                {
-                    if (vfx.HasVector3("Additional Velocity"))
-                        vfx.SetVector3("Additional Velocity", Rigidbody.velocity);
-                }
+                //if (vfx != null)
+                //{
+                //    if (vfx.HasVector3("Additional Velocity"))
+                //        vfx.SetVector3("Additional Velocity", Rigidbody.velocity);
+                //}
             }
         }
     }
 
     void TurnOffHoverjets()
     {
+        if (PlayerController != null)
+            PlayerController.enabled = false;
         ConstantForce force = GetComponent<ConstantForce>();
         if (force != null) force.enabled = false;
         foreach (GameObject hoverJet in HoverJets)
