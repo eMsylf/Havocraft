@@ -82,6 +82,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Gyro",
+                    "type": "Value",
+                    "id": "aef604d6-87fd-447f-953f-dac3582a64b9",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -244,7 +252,7 @@
                     "id": "d5caec8a-197f-4079-8ac7-4ca598b083d3",
                     "path": "<GravitySensor>/gravity",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector3(x=2,y=4,z=0)",
                     "groups": "Mobile",
                     "action": "Movement",
                     "isComposite": false,
@@ -267,7 +275,7 @@
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -278,7 +286,7 @@
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -289,7 +297,7 @@
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -300,7 +308,7 @@
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -335,6 +343,17 @@
                     "processors": "",
                     "groups": "Keyboard & Mouse",
                     "action": "Open Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "45d394be-8a6f-43a5-9e46-d6f03da8defc",
+                    "path": "<Gyroscope>/angularVelocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mobile",
+                    "action": "Gyro",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

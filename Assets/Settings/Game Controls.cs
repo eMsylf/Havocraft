@@ -95,6 +95,14 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Gyro"",
+                    ""type"": ""Value"",
+                    ""id"": ""aef604d6-87fd-447f-953f-dac3582a64b9"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -257,7 +265,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""id"": ""d5caec8a-197f-4079-8ac7-4ca598b083d3"",
                     ""path"": ""<GravitySensor>/gravity"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector3(x=2,y=4,z=0)"",
                     ""groups"": ""Mobile"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
@@ -280,7 +288,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -291,7 +299,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -302,7 +310,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/leftStick/left"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -313,7 +321,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""path"": ""<Gamepad>/leftStick/right"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -348,6 +356,17 @@ public class @GameControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard & Mouse"",
                     ""action"": ""Open Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45d394be-8a6f-43a5-9e46-d6f03da8defc"",
+                    ""path"": ""<Gyroscope>/angularVelocity"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mobile"",
+                    ""action"": ""Gyro"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -500,6 +519,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         m_InGame_Movement = m_InGame.FindAction("Movement", throwIfNotFound: true);
         m_InGame_Boost = m_InGame.FindAction("Boost", throwIfNotFound: true);
         m_InGame_OpenMenu = m_InGame.FindAction("Open Menu", throwIfNotFound: true);
+        m_InGame_Gyro = m_InGame.FindAction("Gyro", throwIfNotFound: true);
         // ToContinue
         m_ToContinue = asset.FindActionMap("ToContinue", throwIfNotFound: true);
         m_ToContinue_SkipAll = m_ToContinue.FindAction("SkipAll", throwIfNotFound: true);
@@ -598,6 +618,7 @@ public class @GameControls : IInputActionCollection, IDisposable
     private readonly InputAction m_InGame_Movement;
     private readonly InputAction m_InGame_Boost;
     private readonly InputAction m_InGame_OpenMenu;
+    private readonly InputAction m_InGame_Gyro;
     public struct InGameActions
     {
         private @GameControls m_Wrapper;
@@ -606,6 +627,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         public InputAction @Movement => m_Wrapper.m_InGame_Movement;
         public InputAction @Boost => m_Wrapper.m_InGame_Boost;
         public InputAction @OpenMenu => m_Wrapper.m_InGame_OpenMenu;
+        public InputAction @Gyro => m_Wrapper.m_InGame_Gyro;
         public InputActionMap Get() { return m_Wrapper.m_InGame; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -627,6 +649,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @OpenMenu.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
                 @OpenMenu.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
                 @OpenMenu.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnOpenMenu;
+                @Gyro.started -= m_Wrapper.m_InGameActionsCallbackInterface.OnGyro;
+                @Gyro.performed -= m_Wrapper.m_InGameActionsCallbackInterface.OnGyro;
+                @Gyro.canceled -= m_Wrapper.m_InGameActionsCallbackInterface.OnGyro;
             }
             m_Wrapper.m_InGameActionsCallbackInterface = instance;
             if (instance != null)
@@ -643,6 +668,9 @@ public class @GameControls : IInputActionCollection, IDisposable
                 @OpenMenu.started += instance.OnOpenMenu;
                 @OpenMenu.performed += instance.OnOpenMenu;
                 @OpenMenu.canceled += instance.OnOpenMenu;
+                @Gyro.started += instance.OnGyro;
+                @Gyro.performed += instance.OnGyro;
+                @Gyro.canceled += instance.OnGyro;
             }
         }
     }
@@ -726,6 +754,7 @@ public class @GameControls : IInputActionCollection, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
+        void OnGyro(InputAction.CallbackContext context);
     }
     public interface IToContinueActions
     {

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using GD.MinMaxSlider;
-using System;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -40,19 +39,6 @@ public class PlayerController : MonoBehaviour
 
     public bool ExternallyControlled = false;
     public bool ControlledByClient = false;
-    private void Awake()
-    {
-        if (ExternallyControlled)
-            return;
-        Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
-        Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
-        Controls.InGame.Movement.canceled += _ => StopMove();
-        Controls.InGame.Shoot.started += _ => SetShootingActive(_.ReadValueAsButton());
-        Controls.InGame.Shoot.canceled += _ => SetShootingActive(false);
-        Controls.InGame.Shoot.performed += _ => Shoot();
-        Controls.InGame.Boost.performed += _ => SetBoost(true);
-        Controls.InGame.Boost.canceled += _ => SetBoost(false);
-    }
 
     bool boostActivated = false;
     [Tooltip("The value that needs to be passed before the boost is automatically applied")]
@@ -69,24 +55,13 @@ public class PlayerController : MonoBehaviour
     public UnityEvent BoostActivated;
     public UnityEvent BoostStopped;
 
+    [Header("Animation")]
     public bool Animation = true;
-    [Tooltip("Min value = regular tilt angle, Max value = boosting tilt angle")]
-    [Header("Min = unboosted, Max = boosted")]
-    [MinMaxSlider(0f, 90f)]
-    public Vector2 AnimationTiltAngle;
-    [Tooltip("Min value = regular tilt angle, Max value = boosting tilt angle")]
-    [MinMaxSlider(0f, 90f)]
-    public Vector2 AnimationRollAngle;
+    [Tooltip("Min value = regular angle, Max value = boosting angle")]
+    public Vector2 AnimationTiltAngle, AnimationRollAngle;
     [Range(0f, 1f)]
     public float AnimationRigidity = .5f;
 
-    void Update()
-    {
-        // The below line is an alternative for the Move() and StopMove() functions
-        //movementInput = controls.InGame.Movement.ReadValue<Vector2>();
-
-        ShootContinuous();
-    }
     public bool ContinuouslyResetAnimationY = true;
     [Tooltip("Makes sure the weapons are aimed at the same angle relative to the world, so that the player doesn't shoot into the ground when tilted forward")]
     public bool GimbalWeapons = true;
@@ -103,31 +78,42 @@ public class PlayerController : MonoBehaviour
     }
 
     public UnityEventVector2 onMovementInputChanged;
-    void Move(Vector2 direction)
+
+    private void Awake()
     {
-        movementInput = direction;
-#if UNITY_ANDROID
-        SetBoost(Mathf.Abs(direction.y) > BoostZoneTrigger);
-        if (boostActivated)
-        {
-            Debug.Log("Y input exceeds 1, activate boost");
-        }
-#endif
-
-        if (Player.PlayerClientInterface != null)
-        {
-            Player.PlayerClientInterface.MovementChanged(calculatedMovementInput);
-        }
-
-        //Debug.Log("Move! " + direction);
-        onMovementInputChanged.Invoke(calculatedMovementInput);
+        if (ExternallyControlled)
+            return;
+        //Controls.InGame.Movement.started += _ => Move(_.ReadValue<Vector2>());
+        //Controls.InGame.Movement.performed += _ => Move(_.ReadValue<Vector2>());
+        //Controls.InGame.Movement.canceled += _ => StopMove();
+        Controls.InGame.Shoot.started += _ => SetShootingActive(_.ReadValueAsButton());
+        Controls.InGame.Shoot.canceled += _ => SetShootingActive(false);
+        Controls.InGame.Shoot.performed += _ => Shoot();
+        Controls.InGame.Boost.performed += _ => SetBoost(true);
+        Controls.InGame.Boost.canceled += _ => SetBoost(false);
     }
 
-    void StopMove()
+    void Update()
     {
-        //Debug.Log("Stop moving");
-        Move(Vector2.zero);
+        // The line below is an alternative for the event-based functions in Awake()
+        Move(controls.InGame.Movement.ReadValue<Vector3>());
+        //Debug.Log("" "movement input: " + movementInput);
+        //if (GravitySensor.current != null)
+        //{
+        //    if (GravitySensor.current.enabled)
+        //    {
+        //        GravitySensor.current.
+        //    }
+        //    else
+        //        Debug.LogError("Gravity sensor disabled");
+        //}
+        
+        Debug.Log("Gyroscope enabled: " + UnityEngine.InputSystem.Gyroscope.current.enabled + " output value: " + Controls.InGame.Gyro.ReadValue<Vector3>());
+
+        ShootContinuous();
     }
+
+    public UnityEventVector2 TestValue;
 
     private void FixedUpdate()
     {
@@ -157,6 +143,33 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void Move(Vector2 direction)
+    {
+        movementInput = Vector2.ClampMagnitude(direction, 1f);
+        
+#if UNITY_ANDROID
+        SetBoost(Mathf.Abs(direction.y) > BoostZoneTrigger);
+        if (boostActivated)
+        {
+            Debug.Log("Y input exceeds 1, activate boost");
+        }
+#endif
+
+        if (Player.PlayerClientInterface != null)
+        {
+            Player.PlayerClientInterface.MovementChanged(calculatedMovementInput);
+        }
+
+        //Debug.Log("Move! " + direction);
+        onMovementInputChanged.Invoke(calculatedMovementInput);
+    }
+
+    void StopMove()
+    {
+        //Debug.Log("Stop moving");
+        Move(Vector2.zero);
     }
 
     public void ApplyForces(Vector2 input)
@@ -232,12 +245,33 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("Enable " + name, gameObject);
+        //InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
+        //Debug.Log("Initial gyroscope frequency: " + UnityEngine.InputSystem.Gyroscope.current.samplingFrequency);
+        //UnityEngine.InputSystem.Gyroscope.current.samplingFrequency = 16;
+
+        if (GravitySensor.current != null)
+        {
+            InputSystem.EnableDevice(GravitySensor.current);
+            Debug.Log("Enabled gravity sensor");
+            Debug.LogError("Current gravity sensor freq: " + GravitySensor.current.samplingFrequency);
+            GravitySensor.current.samplingFrequency = 16;
+        }
+        else
+            Debug.LogError("No gravity sensor");
+
         Controls.Enable();
     }
 
     private void OnDisable()
     {
         Debug.Log("Disable " + name, gameObject);
+        if (GravitySensor.current != null)
+        {
+            InputSystem.DisableDevice(GravitySensor.current);
+            Debug.Log("Disabled gravity sensor");
+        }
+        else
+            Debug.LogError("No gravity sensor");
         Controls.Disable();
 
     }
