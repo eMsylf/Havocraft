@@ -1,18 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BobJeltes.StandardUtilities;
 
-public class ScoreManager : MonoBehaviour
+public class ScoreManager : Singleton<ScoreManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    public int Score = 0;
+    public ValueText ScoreDisplay;
+
+    public void SetScore(int score)
     {
-        
+        Score = score;
+        if (ScoreDisplay != null)
+        {
+            ScoreDisplay.UpdateValue(score);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddScore(int addition)
     {
-        
+        SetScore(Score + addition);
     }
 }

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3645463345606434656}
   - component: {fileID: 3645463345606434657}
   - component: {fileID: 3645463345606434661}
+  - component: {fileID: 8850323819119105945}
   m_Layer: 9
   m_Name: Sphere Enemy
   m_TagString: Untagged
@@ -198,6 +199,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8850323819119105945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3645463345606434654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 438de1db8fe8fe448959d15637abd2c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 10
 --- !u!1001 &4976110127596724757
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -384,6 +398,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -130
+      objectReference: {fileID: 0}
+    - target: {fileID: 8191136670546854889, guid: 53df947d1fe84e248a6a1ca5a72c996a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53df947d1fe84e248a6a1ca5a72c996a, type: 3}
