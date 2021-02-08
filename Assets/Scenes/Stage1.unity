@@ -2316,10 +2316,20 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7373895394268523362, guid: 7b5d9ce4a26fe2d4b8bc73d903717289,
+        type: 3}
+      propertyPath: ProjectileSpeed
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7550373736073908055, guid: 7b5d9ce4a26fe2d4b8bc73d903717289,
         type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7605082006623480466, guid: 7b5d9ce4a26fe2d4b8bc73d903717289,
+        type: 3}
+      propertyPath: ProjectileSpeed
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7637538371641168031, guid: 7b5d9ce4a26fe2d4b8bc73d903717289,
         type: 3}
