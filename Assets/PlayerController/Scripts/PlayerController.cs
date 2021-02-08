@@ -41,19 +41,21 @@ public class PlayerController : MonoBehaviour
     public bool ControlledByClient = false;
 
     bool boostActivated = false;
-    [Tooltip("The value that needs to be passed before the boost is automatically applied")]
+    [Tooltip("The value that needs to be exceeded before the boost is automatically applied")]
     [Range(0, 1)]
     public float BoostZoneTrigger = .8f;
     public float boostSpeedMultiplier = 2f;
     private void SetBoost(bool enabled)
     {
         boostActivated = enabled;
-        if (boostActivated) BoostActivated.Invoke();
-        else BoostStopped.Invoke();
+        if (boostActivated) OnBoostActivated.Invoke();
+        else OnBoostStopped.Invoke();
     }
+    public GameObject OnScreenJoystick;
 
-    public UnityEvent BoostActivated;
-    public UnityEvent BoostStopped;
+
+    public UnityEvent OnBoostActivated;
+    public UnityEvent OnBoostStopped;
 
     [Header("Animation")]
     public bool Animation = true;
@@ -67,7 +69,7 @@ public class PlayerController : MonoBehaviour
     public bool GimbalWeapons = true;
     [Range(0f, 1f)]
     public float GimbalRigidity = 1f;
-    public bool PauseEditorUponFiring = false;
+    //public bool PauseEditorUponFiring = false;
     Vector2 movementInput = new Vector2();
     Vector2 calculatedMovementInput
     {
@@ -95,25 +97,25 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // The line below is an alternative for the event-based functions in Awake()
+        // Platform-dependent vector readings. Cannot be tested in editor when build platform is Android
+#if UNITY_ANDROID
         Move(controls.InGame.Movement.ReadValue<Vector3>());
-        //Debug.Log("" "movement input: " + movementInput);
-        //if (GravitySensor.current != null)
+#else
+        Move(controls.InGame.Movement.ReadValue<Vector2>());
+#endif
+        // Universal across all platforms
+        // Checks if there is a sensor active. Allows Android phones without gyroscopes to use on-screen joystick instead
+        //if (GravitySensor.current != null && GravitySensor.current.enabled)
         //{
-        //    if (GravitySensor.current.enabled)
-        //    {
-        //        GravitySensor.current.
-        //    }
-        //    else
-        //        Debug.LogError("Gravity sensor disabled");
+        //    Move(controls.InGame.Movement.ReadValue<Vector3>());
         //}
-        
-        Debug.Log("Gyroscope enabled: " + UnityEngine.InputSystem.Gyroscope.current.enabled + " output value: " + Controls.InGame.Gyro.ReadValue<Vector3>());
+        //else
+        //{
+        //    Move(controls.InGame.Movement.ReadValue<Vector2>());
+        //}
 
         ShootContinuous();
     }
-
-    public UnityEventVector2 TestValue;
 
     private void FixedUpdate()
     {
@@ -187,9 +189,9 @@ public class PlayerController : MonoBehaviour
         {
             weapon.Fire();
         }
-#if UNITY_EDITOR
-        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
-#endif
+//#if UNITY_EDITOR
+//        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
+//#endif
     }
 
     Player player;
@@ -237,27 +239,30 @@ public class PlayerController : MonoBehaviour
                 weapon.Fire();
             }
         }
-#if UNITY_EDITOR
-        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
-#endif
+//#if UNITY_EDITOR
+//        if (PauseEditorUponFiring) UnityEditor.EditorApplication.isPaused = true;
+//#endif
     }
 
     private void OnEnable()
     {
         Debug.Log("Enable " + name, gameObject);
-        //InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
-        //Debug.Log("Initial gyroscope frequency: " + UnityEngine.InputSystem.Gyroscope.current.samplingFrequency);
-        //UnityEngine.InputSystem.Gyroscope.current.samplingFrequency = 16;
 
+#if UNITY_ANDROID
         if (GravitySensor.current != null)
         {
             InputSystem.EnableDevice(GravitySensor.current);
             Debug.Log("Enabled gravity sensor");
-            Debug.LogError("Current gravity sensor freq: " + GravitySensor.current.samplingFrequency);
             GravitySensor.current.samplingFrequency = 16;
         }
         else
+        {
+            // Activates an on-screen joystick if no gravity sensor is present
+            if (OnScreenJoystick != null)
+                OnScreenJoystick.SetActive(true);
             Debug.LogError("No gravity sensor");
+        }
+#endif
 
         Controls.Enable();
     }
@@ -265,14 +270,20 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         Debug.Log("Disable " + name, gameObject);
+#if UNITY_ANDROID
         if (GravitySensor.current != null)
         {
             InputSystem.DisableDevice(GravitySensor.current);
             Debug.Log("Disabled gravity sensor");
         }
         else
+        {
+            if (OnScreenJoystick != null)
+                OnScreenJoystick.SetActive(false);
             Debug.LogError("No gravity sensor");
-        Controls.Disable();
+        }
+#endif
 
+        Controls.Disable();
     }
 }

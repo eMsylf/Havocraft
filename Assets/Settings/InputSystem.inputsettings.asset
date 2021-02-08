@@ -16,8 +16,8 @@ MonoBehaviour:
   - Keyboard
   - Mouse
   - Gamepad
-  - GravitySensor
   - Touchscreen
+  - GravitySensor
   - Gyroscope
   m_UpdateMode: 1
   m_CompensateForScreenOrientation: 1

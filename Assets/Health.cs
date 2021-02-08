@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
+    public float value = 100f;
+    public Slider slider;
     public UnityEvent OnHealthDepleted;
 
-    public void ProcessValue(float val)
+    public void UpdateValue(float val)
     {
-        Debug.Log("Value: " + val);
-        if (Mathf.Approximately(val, 0f))
+        value = val;
+        slider.value = value;
+        Debug.Log("Value: " + value);
+        if (Mathf.Approximately(value, 0f))
         {
             HealthDepleted();
         }

@@ -29,9 +29,19 @@ public class CameraFollow : MonoBehaviour
     {
         get
         {
-            if (Targets != null && Targets.Count != 0)
+            switch (method)
             {
-                targetPosition = GetCenterPosition(Targets);
+                case Method.AsChild:
+                    targetPosition = simulatedParent.position;
+                    break;
+                case Method.CameraResources:
+                    if (Targets != null && Targets.Count != 0)
+                    {
+                        targetPosition = GetCenterPosition(Targets);
+                    }
+                    break;
+                default:
+                    break;
             }
             return targetPosition;
         }

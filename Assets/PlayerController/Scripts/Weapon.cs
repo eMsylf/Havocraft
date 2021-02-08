@@ -33,7 +33,7 @@ public class Weapon : MonoBehaviour
     {
         if (Cooldown.IsActive)
         {
-            Debug.Log(name + " is on cooldown.", this);
+            //Debug.Log(name + " is on cooldown.", this);
             return;
         }
         //Debug.Log("Fire " + name);

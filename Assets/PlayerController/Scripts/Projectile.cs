@@ -117,7 +117,7 @@ public class Projectile : MonoBehaviour
                 output += Owner.name + " with ";
             }
             output += name;
-            Debug.Log(collisionData.gameObject.name + " was hit by " + output);
+            //Debug.Log(collisionData.gameObject.name + " was hit by " + output);
             Player playerHit = collisionData.gameObject.GetComponent<Player>();
             if (playerHit != null)
             {
@@ -131,6 +131,10 @@ public class Projectile : MonoBehaviour
                     GameManager.Instance.PlayerTakesDamage(playerHit, Damage);
                 //player.Die();
             }
+
+            Health healthComponent = collisionData.collider.GetComponentInParent<Health>();
+            if (healthComponent != null)
+                healthComponent.UpdateValue(healthComponent.value - Damage);
         }
 
         impactPosition = transform.position;
