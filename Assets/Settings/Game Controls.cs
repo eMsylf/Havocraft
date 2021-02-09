@@ -263,7 +263,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""Gamepad"",
                     ""id"": ""3934e518-8fc1-4288-adb4-2ce36db68d4c"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=2)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -274,7 +274,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""up"",
                     ""id"": ""1b29ac63-1eec-4c4f-839a-856e3183399b"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -285,7 +285,7 @@ public class @GameControls : IInputActionCollection, IDisposable
                 {
                     ""name"": ""down"",
                     ""id"": ""e5c1ef95-6e4f-4c21-a6db-827c97f0835b"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",

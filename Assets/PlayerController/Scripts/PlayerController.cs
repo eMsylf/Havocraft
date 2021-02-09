@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
         if (boostActivated) OnBoostActivated.Invoke();
         else OnBoostStopped.Invoke();
     }
+    public GameObject OnScreenControls;
     public GameObject OnScreenJoystick;
 
 
@@ -262,6 +263,9 @@ public class PlayerController : MonoBehaviour
                 OnScreenJoystick.SetActive(true);
             Debug.LogError("No gravity sensor");
         }
+#else
+        if (OnScreenControls != null)
+            OnScreenControls.SetActive(false);
 #endif
 
         Controls.Enable();

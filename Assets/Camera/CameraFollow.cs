@@ -263,11 +263,20 @@ public class CameraFollow : MonoBehaviour
     {
         Vector3 targetPos = TargetPosition;
         Gizmos.DrawWireSphere(targetPos, 1f);
-        Gizmos.DrawLine(transform.position, targetPos);
-        Gizmos.DrawLine(PositionTransform.position, targetPos);
-        Gizmos.DrawLine(LookTransform.position, targetPos);
-        Gizmos.DrawLine(PositionTransform.position, PositionPivot.position);
-        Gizmos.DrawLine(PositionPivot.position, TargetPosition);
+        switch (method)
+        {
+            case Method.AsChild:
+                break;
+            case Method.CameraResources:
+                Gizmos.DrawLine(transform.position, targetPos);
+                Gizmos.DrawLine(PositionTransform.position, targetPos);
+                Gizmos.DrawLine(LookTransform.position, targetPos);
+                Gizmos.DrawLine(PositionTransform.position, PositionPivot.position);
+                Gizmos.DrawLine(PositionPivot.position, TargetPosition);
+                break;
+            default:
+                break;
+        }
     }
 #endif
 }
